@@ -52,7 +52,7 @@ sealed class Program
         // Регистрация окон
         services.AddTransient<AuthorizationWindow>();
         services.AddTransient<MainWindow>();
-        services.AddTransient<MyProfilePage>();
-        services.AddTransient<PersonProfilePage>();
+        services.AddTransient<MyProfilePageView>();
+        services.AddTransient<PersonProfilePageView>();
     }
 }

@@ -5,10 +5,10 @@ using RealtorTool.Desktop.ViewModels.Pages;
 
 namespace RealtorTool.Desktop.Views.Pages;
 
-public partial class MyProfilePage : UserControl
+public partial class PersonProfilePageView : UserControl
 {
-    public MyProfilePage(
-        MyProfilePageViewModel viewModel)
+    public PersonProfilePageView(
+        PersonProfilePageViewModel viewModel)
     {
         InitializeComponent();
         DataContext = viewModel;

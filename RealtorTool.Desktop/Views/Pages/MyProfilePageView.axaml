@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="RealtorTool.Desktop.Views.Pages.PersonProfilePage"
-             x:DataType="pages:PersonProfilePageViewModel">
+             x:Class="RealtorTool.Desktop.Views.Pages.MyProfilePageView"
+             x:DataType="pages:MyProfilePageViewModel">
     
     <Design.DataContext>
-        <pages:PersonProfilePageViewModel/>
+        <pages:MyProfilePageViewModel/>
     </Design.DataContext>
+    
 </UserControl>
