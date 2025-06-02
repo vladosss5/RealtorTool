@@ -7,10 +7,14 @@ namespace RealtorTool.Desktop.Views.Pages;
 
 public partial class MyProfilePageView : UserControl
 {
-    public MyProfilePageView(
-        MyProfilePageViewModel viewModel)
+    public MyProfilePageView()
     {
         InitializeComponent();
+    }
+    
+    public MyProfilePageView(MyProfilePageViewModel viewModel) 
+        : this()
+    {
         DataContext = viewModel;
     }
 }

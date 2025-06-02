@@ -11,4 +11,5 @@
         <pages:MyProfilePageViewModel/>
     </Design.DataContext>
     
+    <TextBlock>sdfdsfdfsfdddd</TextBlock>
 </UserControl>
