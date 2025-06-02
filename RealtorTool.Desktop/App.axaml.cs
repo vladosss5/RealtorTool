@@ -16,9 +16,7 @@ public partial class App : Application
         {
             var authWindow = Program.ServiceProvider.GetRequiredService<AuthorizationWindow>();
             desktop.MainWindow = authWindow;
-            authWindow.Show();
         }
-
         base.OnFrameworkInitializationCompleted();
     }
 }

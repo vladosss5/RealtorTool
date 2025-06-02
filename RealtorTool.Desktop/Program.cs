@@ -39,15 +39,18 @@ sealed class Program
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        // Регистрация сервисов
         services.AddDbContext<DataContext>(options => 
             options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=Realtor;"));
         
         services.AddSingleton<IWindowService, WindowService>();
-
-        services.AddTransient<MainWindow>();
-        services.AddTransient<AuthorizationWindow>();
-        
-        services.AddTransient<MainWindowViewModel>();
+    
+        // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();
+        services.AddTransient<MainWindowViewModel>();
+    
+        // Регистрация окон
+        services.AddTransient<AuthorizationWindow>();
+        services.AddTransient<MainWindow>();
     }
 }

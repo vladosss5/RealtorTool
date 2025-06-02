@@ -23,7 +23,7 @@ public class WindowService : IWindowService
     {
         var window = _serviceProvider.GetRequiredService<TWindow>();
         window.Show();
-        SetCurrentWindow(window);
+        _currentWindow = window;
     }
 
     /// <inheritdoc />

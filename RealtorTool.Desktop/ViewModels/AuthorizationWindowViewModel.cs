@@ -22,8 +22,6 @@ public class AuthorizationWindowViewModel : ViewModelBase
 
     private readonly IWindowService _windowService;
     
-    private readonly Window _currentWindow;
-    
     /// <summary>
     /// Поле логина.
     /// </summary>
@@ -38,26 +36,16 @@ public class AuthorizationWindowViewModel : ViewModelBase
     /// Бинд для кнопки авторизации.
     /// </summary>
     public ReactiveCommand<Window, Unit> Auth { get; }
-
-    /// <summary>
-    /// Конструктор по умолчанию.
-    /// </summary>
-    public AuthorizationWindowViewModel()
-    {
-        
-    }
     
     /// <summary>
     /// Конструктор.
     /// </summary>
     public AuthorizationWindowViewModel(
         DataContext context, 
-        IWindowService windowService, 
-        Window currentWindow)
+        IWindowService windowService)
     {
         _context = context;
         _windowService = windowService;
-        _currentWindow = currentWindow;
         Auth = ReactiveCommand.CreateFromTask<Window>(AuthAsync);
     }
 
@@ -68,10 +56,10 @@ public class AuthorizationWindowViewModel : ViewModelBase
     {
         var authData = await _context.AuthorizationData.FirstOrDefaultAsync(x => x.Login == Login);
 
-        if (authData == null || authData.Password == Password)
+        if (authData == null || authData.Password != Password)
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка", "Логин или пароль не совпадают", ButtonEnum.YesNo)
+                .GetMessageBoxStandard("Ошибка", "Логин или пароль не совпадают", ButtonEnum.Ok)
                 .ShowAsync();
             
             return;

@@ -22,7 +22,7 @@
                                 <TextBox Watermark="Пароль" Text="{Binding Password}">
                                 </TextBox>
                                 <StackPanel Orientation="Horizontal">
-                                        <Button Content="Войти" Command="{Binding Auth}" CommandParameter="{Binding }"/>
+                                        <Button Content="Войти" Command="{Binding Auth}" CommandParameter="{Binding ElementName=ThisWindow}"/>
                                         <Button Content="Подать заявку на регистрацию"/>
                                 </StackPanel>
                         </StackPanel>
