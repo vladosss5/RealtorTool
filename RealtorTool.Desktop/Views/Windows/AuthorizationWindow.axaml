@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:RealtorTool.Desktop.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RealtorTool.Desktop.Views.Windows.AuthorizationWindow"
+        x:DataType="viewModels:AuthorizationWindowViewModel"
+        x:Name="ThisWindow"
+        Title="AuthorizationWindow">
+        
+        <Design.DataContext>
+                <viewModels:AuthorizationWindowViewModel/>
+        </Design.DataContext>
+    
+        <Panel>
+                <Border MinWidth="200" MaxWidth="500" 
+                        Margin="15" Padding="30" CornerRadius="25">
+                        <StackPanel>
+                                <TextBlock>Авторизация</TextBlock>
+                                <TextBox Watermark="Логин" Text="{Binding Login}"></TextBox>
+                                <TextBox Watermark="Пароль" Text="{Binding Password}">
+                                </TextBox>
+                                <StackPanel Orientation="Horizontal">
+                                        <Button Content="Войти" Command="{Binding Auth}" CommandParameter="{Binding }"/>
+                                        <Button Content="Подать заявку на регистрацию"/>
+                                </StackPanel>
+                        </StackPanel>
+                </Border>
+        </Panel>
+</Window>
