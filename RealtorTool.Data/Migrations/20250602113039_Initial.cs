@@ -5,21 +5,40 @@
 namespace RealtorTool.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddPerson : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "Dictionaries",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.PrimaryKey("PK_Dictionaries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DictionaryValues",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    DictionaryId = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DictionaryValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DictionaryValues_Dictionaries_DictionaryId",
+                        column: x => x.DictionaryId,
+                        principalTable: "Dictionaries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,11 +55,11 @@ namespace RealtorTool.Data.Migrations
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Persons_Roles_RoleId",
+                        name: "FK_Persons_DictionaryValues_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "Roles",
+                        principalTable: "DictionaryValues",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,6 +82,11 @@ namespace RealtorTool.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_DictionaryValues_DictionaryId",
+                table: "DictionaryValues",
+                column: "DictionaryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Persons_RoleId",
                 table: "Persons",
                 column: "RoleId");
@@ -78,7 +102,10 @@ namespace RealtorTool.Data.Migrations
                 name: "Persons");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "DictionaryValues");
+
+            migrationBuilder.DropTable(
+                name: "Dictionaries");
         }
     }
 }

@@ -39,6 +39,40 @@ namespace RealtorTool.Data.Migrations
                     b.ToTable("AuthorizationData");
                 });
 
+            modelBuilder.Entity("RealtorTool.Core.DbModels.Dictionary", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Dictionaries");
+                });
+
+            modelBuilder.Entity("RealtorTool.Core.DbModels.DictionaryValue", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DictionaryId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DictionaryId");
+
+                    b.ToTable("DictionaryValues");
+                });
+
             modelBuilder.Entity("RealtorTool.Core.DbModels.Person.Person", b =>
                 {
                     b.Property<string>("Id")
@@ -66,20 +100,6 @@ namespace RealtorTool.Data.Migrations
                     b.ToTable("Persons");
                 });
 
-            modelBuilder.Entity("RealtorTool.Core.DbModels.Person.Role", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("RealtorTool.Core.DbModels.AuthorizationData", b =>
                 {
                     b.HasOne("RealtorTool.Core.DbModels.Person.Person", null)
@@ -89,15 +109,31 @@ namespace RealtorTool.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RealtorTool.Core.DbModels.Person.Person", b =>
+            modelBuilder.Entity("RealtorTool.Core.DbModels.DictionaryValue", b =>
                 {
-                    b.HasOne("RealtorTool.Core.DbModels.Person.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
+                    b.HasOne("RealtorTool.Core.DbModels.Dictionary", "Dictionary")
+                        .WithMany("DictionaryValues")
+                        .HasForeignKey("DictionaryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Dictionary");
+                });
+
+            modelBuilder.Entity("RealtorTool.Core.DbModels.Person.Person", b =>
+                {
+                    b.HasOne("RealtorTool.Core.DbModels.DictionaryValue", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("RealtorTool.Core.DbModels.Dictionary", b =>
+                {
+                    b.Navigation("DictionaryValues");
                 });
 
             modelBuilder.Entity("RealtorTool.Core.DbModels.Person.Person", b =>

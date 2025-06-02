@@ -37,45 +37,22 @@ public partial class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Person>(entity =>
-        {
-            entity.HasKey(p => p.Id);
-            
-            entity.Property(p => p.FName).IsRequired();
-            entity.Property(p => p.SName).IsRequired();
-            
-            entity.HasOne(p => p.Role)
-                .WithMany()
-                .HasForeignKey("RoleId")
-                .IsRequired();
-            
-            entity.HasOne(p => p.AuthorizationData)
-                .WithOne()
-                .HasForeignKey<AuthorizationData>(ad => ad.Id)
-                .IsRequired();
-        });
-        
-        modelBuilder.Entity<AuthorizationData>(entity =>
-        {
-            entity.HasKey(ad => ad.Id);
-            entity.Property(ad => ad.Login).IsRequired();
-            entity.Property(ad => ad.Password).IsRequired();
-        });
-        
-        modelBuilder.Entity<Dictionary>(entity =>
-        {
-            entity.HasKey(r => r.Id);
-            entity.Property(r => r.Type).IsRequired();
-        });
-        
-        modelBuilder.Entity<DictionaryValue>(entity =>
-        {
-            entity.HasKey(r => r.Id);
-            
-            entity.HasOne(p => p.Dictionary)
-                .WithMany(x => x.DictionaryValues)
-                .HasForeignKey("DictionaryId")
-                .IsRequired();
-        });
+        modelBuilder.Entity<Person>()
+            .HasOne(p => p.AuthorizationData)
+            .WithOne()
+            .HasForeignKey<AuthorizationData>(ad => ad.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Person>()
+            .HasOne(p => p.Role)
+            .WithMany()
+            .HasForeignKey("RoleId")
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Dictionary>()
+            .HasMany(d => d.DictionaryValues)
+            .WithOne(dv => dv.Dictionary)
+            .HasForeignKey("DictionaryId")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

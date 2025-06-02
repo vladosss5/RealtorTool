@@ -11,7 +11,7 @@ public class Dictionary : BaseIdModel
     /// <summary>
     /// Значения справочника данного типа.
     /// </summary>
-    public ICollection<DictionaryValue?> DictionaryValues { get; set; } = new Collection<DictionaryValue?>();
+    public ICollection<DictionaryValue>? DictionaryValues { get; set; } = new Collection<DictionaryValue?>()!;
 
     /// <summary>
     /// Наименование типа справочника.
