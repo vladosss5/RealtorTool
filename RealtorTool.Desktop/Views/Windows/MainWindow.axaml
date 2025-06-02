@@ -10,11 +10,31 @@
         Title="RealtorTool.Desktop">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <SplitView IsPaneOpen="True" OpenPaneLength="200"
+               DisplayMode="Inline" x:Name="SplitView">
+        <SplitView.Pane>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                    <TextBlock Text=""/>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding PaneItems}" 
+                         SelectedItem="{Binding SelectedPageItem}"
+                         SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <ContentControl Content="{Binding SelectedPageItem}"/>
+        </SplitView.Content>
+    </SplitView>
 </Window>

@@ -9,11 +9,17 @@ namespace RealtorTool.Data;
 /// </summary>
 public partial class DataContext : DbContext
 {
+    /// <inheritdoc cref="Person" />
     public DbSet<Person> Persons { get; set; }
     
+    /// <inheritdoc cref="AuthorizationData" />
     public DbSet<AuthorizationData> AuthorizationData { get; set; }
     
-    public DbSet<Role> Roles { get; set; }
+    /// <inheritdoc cref="Dictionary" />
+    public DbSet<Dictionary> Dictionaries => Set<Dictionary>();
+
+    /// <inheritdoc cref="DictionaryValue" />
+    public DbSet<DictionaryValue> DictionaryValues => Set<DictionaryValue>();
 
     /// <summary>
     /// Конструктор для миграций.
@@ -56,10 +62,20 @@ public partial class DataContext : DbContext
             entity.Property(ad => ad.Password).IsRequired();
         });
         
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<Dictionary>(entity =>
         {
             entity.HasKey(r => r.Id);
-            entity.Property(r => r.Name).IsRequired();
+            entity.Property(r => r.Type).IsRequired();
+        });
+        
+        modelBuilder.Entity<DictionaryValue>(entity =>
+        {
+            entity.HasKey(r => r.Id);
+            
+            entity.HasOne(p => p.Dictionary)
+                .WithMany(x => x.DictionaryValues)
+                .HasForeignKey("DictionaryId")
+                .IsRequired();
         });
     }
 }

@@ -3,18 +3,16 @@ using Avalonia.ReactiveUI;
 using System;
 using RealtorTool.Data;
 using RealtorTool.Desktop.ViewModels;
-using RealtorTool.Desktop.Views;
+using RealtorTool.Desktop.ViewModels.Pages;
+using RealtorTool.Desktop.Views.Pages;
 using RealtorTool.Desktop.Views.Windows;
 using RealtorTool.Services.Implementations;
 using RealtorTool.Services.Interfaces;
 using MainWindow = RealtorTool.Desktop.Views.Windows.MainWindow;
-
-namespace RealtorTool.Desktop;
-
-using Avalonia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+
+namespace RealtorTool.Desktop;
 
 sealed class Program
 {
@@ -48,9 +46,13 @@ sealed class Program
         // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<MyProfilePageViewModel>();
+        services.AddTransient<PersonProfilePageViewModel>();
     
         // Регистрация окон
         services.AddTransient<AuthorizationWindow>();
         services.AddTransient<MainWindow>();
+        services.AddTransient<MyProfilePage>();
+        services.AddTransient<PersonProfilePage>();
     }
 }

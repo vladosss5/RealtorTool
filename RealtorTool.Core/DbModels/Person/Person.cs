@@ -8,7 +8,7 @@ public class Person : BaseIdModel
     
     public string? LName { get; set; }
     
-    public Role Role { get; set; }
+    public DictionaryValue Role { get; set; }
     
     public AuthorizationData AuthorizationData { get; set; }
 }
