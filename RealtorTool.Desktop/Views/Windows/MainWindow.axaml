@@ -13,20 +13,28 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <SplitView IsPaneOpen="True" OpenPaneLength="200"
-               DisplayMode="Inline" x:Name="SplitView">
+    <SplitView IsPaneOpen="True" 
+               OpenPaneLength="200"
+               DisplayMode="Inline" 
+               x:Name="SplitView">
         <SplitView.Pane>
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
                     <TextBlock Text=""/>
                 </StackPanel>
+            
                 <ListBox ItemsSource="{Binding PaneItems}" 
                          SelectedItem="{Binding SelectedPageItem}"
-                         SelectionMode="Single">
+                         SelectionMode="Single"
+                         Theme="{StaticResource HorizontalListBoxTheme}"
+                         ItemContainerTheme="{StaticResource TopAlignedItemTheme}">
+                
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock Text="{Binding Title}"/>
+                                <TextBlock Text="{Binding Title}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

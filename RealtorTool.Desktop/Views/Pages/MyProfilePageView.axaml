@@ -11,5 +11,7 @@
         <pages:MyProfilePageViewModel/>
     </Design.DataContext>
     
-    <TextBlock>sdfdsfdfsfdddd</TextBlock>
+    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto, *">
+        
+    </Grid>
 </UserControl>

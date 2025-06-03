@@ -31,6 +31,11 @@ public class Person : BaseIdModel
     public string? EMail { get; set; }
     
     /// <summary>
+    /// Путь до фото профиля.
+    /// </summary>
+    public string? ProfilePhotoPath { get; set; }
+    
+    /// <summary>
     /// Ссылка на роль человека в системе.
     /// </summary>
     public DictionaryValue Role { get; set; } = null!;
