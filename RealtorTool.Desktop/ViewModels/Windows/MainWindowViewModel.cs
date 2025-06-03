@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbModels;
+using RealtorTool.Core.DbModels.PersonModels;
 using RealtorTool.Desktop.ViewModels.Pages;
 
 namespace RealtorTool.Desktop.ViewModels;

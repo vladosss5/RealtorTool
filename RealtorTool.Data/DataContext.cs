@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RealtorTool.Core.DbModels;
-using RealtorTool.Core.DbModels.Person;
+using RealtorTool.Core.DbModels.PersonModels;
 
 namespace RealtorTool.Data;
 
@@ -41,6 +41,12 @@ public partial class DataContext : DbContext
             .HasOne(p => p.AuthorizationData)
             .WithOne()
             .HasForeignKey<AuthorizationData>(ad => ad.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Person>()
+            .HasOne(p => p.RealtorDetails)
+            .WithOne()
+            .HasForeignKey<RealtorDetails>(ad => ad.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Person>()

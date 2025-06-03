@@ -1,6 +1,4 @@
-using RealtorTool.Core.DbModels.Person;
-
-namespace RealtorTool.Core.DbModels;
+namespace RealtorTool.Core.DbModels.PersonModels;
 
 public class AuthorizationData : BaseIdModel
 {
