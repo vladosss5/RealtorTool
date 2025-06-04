@@ -1,35 +1,60 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using RealtorTool.Core.DbModels;
 using RealtorTool.Core.DbModels.PersonModels;
 using RealtorTool.Desktop.ViewModels.Pages;
 
-namespace RealtorTool.Desktop.ViewModels;
+namespace RealtorTool.Desktop.ViewModels.Windows;
 
+/// <summary>
+/// VM Главного окна.
+/// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
+    private AuthorizationData CurrentAuth { get; set; }
+    
     public ObservableCollection<PageViewModelBase> PaneItems { get; set; }
     
     [Reactive] public PageViewModelBase SelectedPageItem { get; set; }
     
-    public string Greeting { get; } = "Welcome to Avalonia!";
+    public ICommand OpenMyProfilePage { get; private set; }
     
-    private AuthorizationData CurrentAuth { get; set; }
+    public ICommand OpenHomePage { get; private set; }
 
+    /// <summary>
+    /// Конструктор.
+    /// </summary>
     public MainWindowViewModel(
         MyProfilePageViewModel myProfilePageViewModel,
-        PersonProfilePageViewModel personProfilePageViewModel)
+        PersonProfilePageViewModel personProfilePageViewModel,
+        HomePageViewModel homePageViewModel)
     {
-        PaneItems = (
+        PaneItems = 
         [
-            myProfilePageViewModel,
-            personProfilePageViewModel
-        ]);
+            myProfilePageViewModel, 
+            personProfilePageViewModel, 
+            homePageViewModel
+        ];
+        SelectedPageItem = PaneItems[2];
+        
+        InitialButtons();
+        GetDataFromMessageBus();
+    }
 
-        SelectedPageItem = PaneItems[0];
-            
+    private void InitialButtons()
+    {
+        OpenMyProfilePage = ReactiveCommand.Create(OpenMyProfilePageImpl);
+        OpenHomePage = ReactiveCommand.Create(OpenHomePageImpl);
+    }
+
+    private void OpenHomePageImpl() => SelectedPageItem = PaneItems[2];
+
+    private void OpenMyProfilePageImpl() => SelectedPageItem = PaneItems[0];
+
+    private void GetDataFromMessageBus()
+    {
         MessageBus.Current
             .Listen<AuthorizationData>("CurrentAuth")
             .Subscribe(x => 

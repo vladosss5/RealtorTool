@@ -3,46 +3,36 @@
         xmlns:vm="using:RealtorTool.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:windows="clr-namespace:RealtorTool.Desktop.ViewModels.Windows"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RealtorTool.Desktop.Views.Windows.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:DataType="windows:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="RealtorTool.Desktop">
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <windows:MainWindowViewModel/>
     </Design.DataContext>
-
-    <SplitView IsPaneOpen="True" 
-               OpenPaneLength="200"
-               DisplayMode="Inline" 
-               x:Name="SplitView">
-        <SplitView.Pane>
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
-                    <TextBlock Text=""/>
-                </StackPanel>
-            
-                <ListBox ItemsSource="{Binding PaneItems}" 
-                         SelectedItem="{Binding SelectedPageItem}"
-                         SelectionMode="Single"
-                         Theme="{StaticResource HorizontalListBoxTheme}"
-                         ItemContainerTheme="{StaticResource TopAlignedItemTheme}">
-                
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="{Binding Title}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </DockPanel>
-        </SplitView.Pane>
-        <SplitView.Content>
-            <ContentControl Content="{Binding SelectedPageItem}"/>
-        </SplitView.Content>
-    </SplitView>
+    
+    <Grid RowDefinitions="Auto, *">
+        <Border Grid.Column="0" Background="DarkBlue"
+                Margin="5" CornerRadius="10">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Домашняя" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Command="{Binding OpenHomePage}"/>
+                <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Command="{Binding OpenMyProfilePage}"/>
+            </StackPanel>
+        </Border>
+        
+        <TransitioningContentControl Grid.Row="1" Margin="5" 
+                                     Background="Transparent"
+                                     Content="{Binding SelectedPageItem}" />
+    </Grid>
 </Window>

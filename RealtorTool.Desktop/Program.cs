@@ -11,6 +11,7 @@ using RealtorTool.Services.Interfaces;
 using MainWindow = RealtorTool.Desktop.Views.Windows.MainWindow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RealtorTool.Desktop.ViewModels.Windows;
 
 namespace RealtorTool.Desktop;
 
@@ -48,11 +49,13 @@ sealed class Program
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MyProfilePageViewModel>();
         services.AddTransient<PersonProfilePageViewModel>();
+        services.AddTransient<HomePageViewModel>();
     
         // Регистрация окон
         services.AddTransient<AuthorizationWindow>();
         services.AddTransient<MainWindow>();
         services.AddTransient<MyProfilePageView>();
         services.AddTransient<PersonProfilePageView>();
+        services.AddTransient<HomePageView>();
     }
 }
