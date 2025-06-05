@@ -60,5 +60,17 @@ public partial class DataContext : DbContext
             .WithOne(dv => dv.Dictionary)
             .HasForeignKey("DictionaryId")
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ClientTags>()
+            .HasOne(x => x.Client)
+            .WithMany()
+            .HasForeignKey("clientTag_client")
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<ClientTags>()
+            .HasOne(x => x.Tag)
+            .WithMany()
+            .HasForeignKey("clientTag_tag")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
