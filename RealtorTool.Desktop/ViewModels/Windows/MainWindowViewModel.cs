@@ -20,8 +20,8 @@ public class MainWindowViewModel : ViewModelBase
     [Reactive] public PageViewModelBase SelectedPageItem { get; set; }
     
     public ICommand OpenMyProfilePage { get; private set; }
-    
     public ICommand OpenHomePage { get; private set; }
+    public bool CanOpenMyProfile { get; } = false;
 
     /// <summary>
     /// Конструктор.
@@ -48,9 +48,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenMyProfilePage = ReactiveCommand.Create(OpenMyProfilePageImpl);
         OpenHomePage = ReactiveCommand.Create(OpenHomePageImpl);
     }
-
     private void OpenHomePageImpl() => SelectedPageItem = PaneItems[2];
-
     private void OpenMyProfilePageImpl() => SelectedPageItem = PaneItems[0];
 
     private void GetDataFromMessageBus()

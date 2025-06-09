@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RealtorTool.Core.DbModels;
 using RealtorTool.Core.DbModels.PersonModels;
+using RealtorTool.Core.DbModels.Realty;
 
 namespace RealtorTool.Data;
 
@@ -20,6 +21,27 @@ public partial class DataContext : DbContext
 
     /// <inheritdoc cref="DictionaryValue" />
     public DbSet<DictionaryValue> DictionaryValues => Set<DictionaryValue>();
+    
+    /// <inheritdoc cref="Realty" />
+    public DbSet<Realty> Realties { get; set; }
+    
+    /// <inheritdoc cref="Area" />
+    public DbSet<Area> Areas { get; set; }
+    
+    /// <inheritdoc cref="Flat" />
+    public DbSet<Flat> Flats { get; set; }
+    
+    /// <inheritdoc cref="House" />
+    public DbSet<House> Houses { get; set; }
+    
+    /// <inheritdoc cref="PrivateHome" />
+    public DbSet<PrivateHome> PrivateHomes { get; set; }
+    
+    /// <inheritdoc cref="Address" />
+    public DbSet<Address> Addresses { get; set; }
+    
+    /// <inheritdoc cref="Photo" />
+    public DbSet<Photo> Photos { get; set; }
 
     /// <summary>
     /// Конструктор для миграций.
@@ -40,37 +62,74 @@ public partial class DataContext : DbContext
         modelBuilder.Entity<Person>()
             .HasOne(p => p.AuthorizationData)
             .WithOne()
-            .HasForeignKey<AuthorizationData>(ad => ad.Id)
+            .HasForeignKey<AuthorizationData>(a => a.Id)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         modelBuilder.Entity<Person>()
             .HasOne(p => p.RealtorDetails)
             .WithOne()
-            .HasForeignKey<RealtorDetails>(ad => ad.Id)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Person>()
-            .HasOne(p => p.Role)
-            .WithMany()
-            .HasForeignKey("RoleId")
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Dictionary>()
-            .HasMany(d => d.DictionaryValues)
-            .WithOne(dv => dv.Dictionary)
-            .HasForeignKey("DictionaryId")
+            .HasForeignKey<RealtorDetails>(r => r.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ClientTags>()
-            .HasOne(x => x.Client)
+            .HasOne(ct => ct.Client)
             .WithMany()
-            .HasForeignKey("clientTag_client")
+            .HasForeignKey(ct => ct.ClientId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<ClientTags>()
-            .HasOne(x => x.Tag)
+
+        modelBuilder.Entity<Area>()
+            .HasOne(a => a.Address)
             .WithMany()
-            .HasForeignKey("clientTag_tag")
+            .HasForeignKey(a => a.Id)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Flat>()
+            .HasOne(f => f.House)
+            .WithMany()
+            .HasForeignKey(f => f.HouseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PrivateHome>()
+            .HasOne(ph => ph.Area)
+            .WithMany()
+            .HasForeignKey(ph => ph.AreaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Realty>()
+            .HasMany(r => r.Photos)
+            .WithOne()
+            .HasForeignKey(p => p.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Realty>()
+            .HasOne(r => r.Application)
+            .WithMany()
+            .HasForeignKey(r => r.ApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Flat>()
+            .HasOne(f => f.BathroomType)
+            .WithMany()
+            .HasForeignKey(f => f.BathroomTypeId);
+
+        modelBuilder.Entity<Flat>()
+            .HasOne(f => f.Repair)
+            .WithMany()
+            .HasForeignKey(f => f.RepairId);
+
+        modelBuilder.Entity<Flat>()
+            .HasOne(f => f.UsedType)
+            .WithMany()
+            .HasForeignKey(f => f.UsedTypeId);
+
+        modelBuilder.Entity<House>()
+            .HasOne(h => h.СonstructionType)
+            .WithMany()
+            .HasForeignKey(h => h.СonstructionTypeId);
+
+        modelBuilder.Entity<Realty>()
+            .HasOne(r => r.Type)
+            .WithMany()
+            .HasForeignKey(r => r.TypeId);
     }
 }

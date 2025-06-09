@@ -5,20 +5,4 @@
             <!-- Add Controls for Previewer Here -->
         </Border>
     </Design.PreviewWith>
-
-    <ControlTheme x:Key="HorizontalListBoxTheme" TargetType="ListBox">
-        <Setter Property="ItemsPanel">
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
-        </Setter>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-    </ControlTheme>
-
-    <!-- ControlTheme для выравнивания элементов -->
-    <ControlTheme x:Key="TopAlignedItemTheme" TargetType="ListBoxItem">
-        <Setter Property="VerticalContentAlignment" Value="Top"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="Padding" Value="8,4"/>
-    </ControlTheme>
 </Styles>
