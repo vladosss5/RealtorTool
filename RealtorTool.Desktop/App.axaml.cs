@@ -14,7 +14,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var firstWindow = Program.ServiceProvider.GetRequiredService<MainWindow>();
+            var firstWindow = Program.ServiceProvider.GetRequiredService<AuthorizationWindow>();
             desktop.MainWindow = firstWindow;
         }
         base.OnFrameworkInitializationCompleted();

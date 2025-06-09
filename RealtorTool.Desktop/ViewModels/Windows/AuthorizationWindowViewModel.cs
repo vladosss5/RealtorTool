@@ -19,7 +19,6 @@ namespace RealtorTool.Desktop.ViewModels;
 public class AuthorizationWindowViewModel : ViewModelBase
 {
     private readonly DataContext _context;
-
     private readonly IWindowService _windowService;
     
     /// <summary>
@@ -50,6 +49,12 @@ public class AuthorizationWindowViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// Конструктор по умолчанию
+    /// </summary>
+    public AuthorizationWindowViewModel()
+    { }
+
+    /// <summary>
     /// Метод проверки авторизации.
     /// </summary>
     private async Task AuthAsync(Window currentWindow)
@@ -65,7 +70,7 @@ public class AuthorizationWindowViewModel : ViewModelBase
             return;
         }
             
-        MessageBus.Current.SendMessage(authData, "CurrentAuth");
+        MessageBus.Current.SendMessage(authData.Id, "CurrentAuthId");
         
         _windowService.ShowWindow<MainWindow>();
         currentWindow.Close();

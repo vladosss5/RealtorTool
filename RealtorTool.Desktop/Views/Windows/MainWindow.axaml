@@ -18,11 +18,15 @@
         <Border Grid.Column="0" Background="DarkBlue"
                 Margin="5" CornerRadius="10">
             <StackPanel Orientation="Horizontal">
-                <Button Content="Домашняя" HorizontalContentAlignment="Center" 
+                <Button Command="{Binding OpenHomePage}" 
+                        HorizontalContentAlignment="Center" 
                         VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
-                        Height="30" Margin="5"
-                        Command="{Binding OpenHomePage}"/>
+                        Background="Transparent"
+                        Height="30" Margin="5">
+                    <Image Width="10" Height="10"
+                           Source="/Assets/home.png"/>
+                </Button>
                 <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
                         VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"

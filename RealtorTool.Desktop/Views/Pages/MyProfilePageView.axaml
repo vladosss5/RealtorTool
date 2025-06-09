@@ -12,6 +12,14 @@
     </Design.DataContext>
     
     <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto, *">
-        
+        <Border Grid.Column="1" Grid.Row="1">
+            <StackPanel>
+                <TextBox Text="{Binding FName}" Margin="5" CornerRadius="5"/>
+                <TextBox Text="{Binding SName}" Margin="5" CornerRadius="5"/>
+                <TextBox Text="{Binding LName}" Margin="5" CornerRadius="5"/>
+                <TextBox Text="{Binding PhoneNumber}" Margin="5" CornerRadius="5"/>
+                <TextBox Text="{Binding EMail}" Margin="5" CornerRadius="5"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

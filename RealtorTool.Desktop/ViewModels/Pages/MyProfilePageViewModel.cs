@@ -1,9 +1,60 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using RealtorTool.Core.DbModels.PersonModels;
+using RealtorTool.Data;
+
 namespace RealtorTool.Desktop.ViewModels.Pages;
 
 public class MyProfilePageViewModel : PageViewModelBase
 {
-    public MyProfilePageViewModel()
+    [Reactive] public Person? CurrentPerson { get; set; }
+    
+    [Reactive] public string FName { get; set; }
+    
+    [Reactive] public string SName { get; set; }
+    
+    [Reactive] public string LName { get; set; }
+    
+    [Reactive] public string PhoneNumber { get; set; }
+    
+    [Reactive] public string EMail { get; set; }
+
+    private AuthorizationData _authorizationData;
+
+    private readonly DataContext _context;
+    
+    public MyProfilePageViewModel(DataContext context)
     {
-        Title = "Мой профиль";
+        _context = context;
+        
+        GetDataFromMessageBus();
+        LoadPersonData();
+    }
+
+    private void LoadPersonData()
+    {
+        CurrentPerson = _context.Persons.FirstOrDefault(x => x.Id == _authorizationData.Id);
+
+        if (CurrentPerson == default)
+            return;
+        
+        FName = CurrentPerson?.FName!;
+        SName = CurrentPerson?.SName!;
+        LName = CurrentPerson?.LName!;
+        PhoneNumber = CurrentPerson?.PhoneNumber!;
+        EMail = CurrentPerson?.EMail!;
+    }
+    
+    private void GetDataFromMessageBus()
+    {
+        MessageBus.Current
+            .Listen<string>("CurrentAuthId")
+            .Subscribe(x => 
+            {
+                _authorizationData = new AuthorizationData{Id = x};
+            });
     }
 }

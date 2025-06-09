@@ -8,24 +8,25 @@
         x:DataType="viewModels:AuthorizationWindowViewModel"
         x:Name="ThisWindow"
         Title="AuthorizationWindow">
-        
-        <Design.DataContext>
-                <viewModels:AuthorizationWindowViewModel/>
-        </Design.DataContext>
-    
-        <Panel>
-                <Border MinWidth="200" MaxWidth="500" 
-                        Margin="15" Padding="30" CornerRadius="25">
-                        <StackPanel>
-                                <TextBlock>Авторизация</TextBlock>
-                                <TextBox Watermark="Логин" Text="{Binding Login}"></TextBox>
-                                <TextBox Watermark="Пароль" Text="{Binding Password}">
-                                </TextBox>
-                                <StackPanel Orientation="Horizontal">
-                                        <Button Content="Войти" Command="{Binding Auth}" CommandParameter="{Binding ElementName=ThisWindow}"/>
-                                        <Button Content="Подать заявку на регистрацию"/>
-                                </StackPanel>
-                        </StackPanel>
-                </Border>
-        </Panel>
+
+    <Design.DataContext>
+        <viewModels:AuthorizationWindowViewModel />
+    </Design.DataContext>
+
+    <Panel>
+        <Border MinWidth="200" MaxWidth="500"
+                Margin="15" Padding="30" CornerRadius="25">
+            <StackPanel>
+                <TextBlock>Авторизация</TextBlock>
+                <TextBox Watermark="Логин" Text="{Binding Login}"></TextBox>
+                <TextBox Watermark="Пароль" Text="{Binding Password}">
+                </TextBox>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Войти" Command="{Binding Auth}"
+                            CommandParameter="{Binding ElementName=ThisWindow}" />
+                    <Button Content="Подать заявку на регистрацию" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Panel>
 </Window>
