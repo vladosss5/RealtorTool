@@ -69,10 +69,9 @@ public class AuthorizationWindowViewModel : ViewModelBase
             
             return;
         }
-            
-        MessageBus.Current.SendMessage(authData.Id, "CurrentAuthId");
         
         _windowService.ShowWindow<MainWindow>();
+        MessageBus.Current.SendMessage(authData, "CurrentAuthId");
         currentWindow.Close();
     }
 }

@@ -30,8 +30,15 @@ public class MyProfilePageViewModel : PageViewModelBase
     {
         _context = context;
         
-        GetDataFromMessageBus();
-        LoadPersonData();
+        MessageBus.Current
+            .Listen<AuthorizationData>("CurrentAuthId")
+            .Subscribe(x => 
+            {
+                _authorizationData = x;
+                
+                if (_authorizationData != default)
+                    LoadPersonData();
+            });
     }
 
     private void LoadPersonData()
@@ -46,15 +53,5 @@ public class MyProfilePageViewModel : PageViewModelBase
         LName = CurrentPerson?.LName!;
         PhoneNumber = CurrentPerson?.PhoneNumber!;
         EMail = CurrentPerson?.EMail!;
-    }
-    
-    private void GetDataFromMessageBus()
-    {
-        MessageBus.Current
-            .Listen<string>("CurrentAuthId")
-            .Subscribe(x => 
-            {
-                _authorizationData = new AuthorizationData{Id = x};
-            });
     }
 }
