@@ -19,6 +19,7 @@
                 <TextBox Text="{Binding LName}" Margin="5" CornerRadius="5"/>
                 <TextBox Text="{Binding PhoneNumber}" Margin="5" CornerRadius="5"/>
                 <TextBox Text="{Binding EMail}" Margin="5" CornerRadius="5"/>
+                <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}"/>
             </StackPanel>
         </Border>
     </Grid>

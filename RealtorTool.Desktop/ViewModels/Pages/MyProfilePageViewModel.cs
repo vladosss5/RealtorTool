@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbModels.PersonModels;
@@ -10,6 +11,10 @@ namespace RealtorTool.Desktop.ViewModels.Pages;
 
 public class MyProfilePageViewModel : PageViewModelBase
 {
+    private AuthorizationData _authorizationData;
+
+    private readonly DataContext _context;
+    
     [Reactive] public Person? CurrentPerson { get; set; }
     
     [Reactive] public string FName { get; set; }
@@ -21,10 +26,8 @@ public class MyProfilePageViewModel : PageViewModelBase
     [Reactive] public string PhoneNumber { get; set; }
     
     [Reactive] public string EMail { get; set; }
-
-    private AuthorizationData _authorizationData;
-
-    private readonly DataContext _context;
+    
+    public ICommand SaveChanges { get; }
     
     public MyProfilePageViewModel(DataContext context)
     {
@@ -39,6 +42,20 @@ public class MyProfilePageViewModel : PageViewModelBase
                 if (_authorizationData != default)
                     LoadPersonData();
             });
+
+        SaveChanges = ReactiveCommand.CreateFromTask(SaveChangesProfileDataAsync);
+    }
+
+    private async Task SaveChangesProfileDataAsync()
+    {
+        if (CurrentPerson == default)
+            return;
+        
+        CurrentPerson.EMail = EMail;
+        CurrentPerson.PhoneNumber = PhoneNumber;
+
+        _context.Update(CurrentPerson);
+        await _context.SaveChangesAsync();
     }
 
     private void LoadPersonData()
