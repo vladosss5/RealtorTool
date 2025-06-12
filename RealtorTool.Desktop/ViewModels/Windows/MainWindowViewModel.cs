@@ -21,6 +21,8 @@ public class MainWindowViewModel : ViewModelBase
     
     public ICommand OpenMyProfilePage { get; private set; }
     public ICommand OpenHomePage { get; private set; }
+    public ICommand OpenCreatingApplicationPage { get; private set; }
+    
     public bool CanOpenMyProfile { get; } = false;
 
     /// <summary>
@@ -29,13 +31,15 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         MyProfilePageViewModel myProfilePageViewModel,
         PersonProfilePageViewModel personProfilePageViewModel,
-        HomePageViewModel homePageViewModel)
+        HomePageViewModel homePageViewModel,
+        CreatingApplicationPageViewModel creatingApplicationPageViewModel)
     {
         PaneItems = 
         [
             myProfilePageViewModel, 
             personProfilePageViewModel, 
-            homePageViewModel
+            homePageViewModel,
+            creatingApplicationPageViewModel
         ];
         SelectedPageItem = PaneItems[2];
         
@@ -47,9 +51,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         OpenMyProfilePage = ReactiveCommand.Create(OpenMyProfilePageImpl);
         OpenHomePage = ReactiveCommand.Create(OpenHomePageImpl);
+        OpenCreatingApplicationPage = ReactiveCommand.Create(OpenCreatingApplicationPageImpl);
     }
+
     private void OpenHomePageImpl() => SelectedPageItem = PaneItems[2];
     private void OpenMyProfilePageImpl() => SelectedPageItem = PaneItems[0];
+    private void OpenCreatingApplicationPageImpl() => SelectedPageItem = PaneItems[3];
 
     private void GetDataFromMessageBus()
     {

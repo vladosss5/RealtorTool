@@ -7,11 +7,16 @@
         x:Class="RealtorTool.Desktop.Views.Windows.AuthorizationWindow"
         x:DataType="viewModels:AuthorizationWindowViewModel"
         x:Name="ThisWindow"
+        Icon="/Assets/logo.ico"
         Title="AuthorizationWindow">
 
     <Design.DataContext>
         <viewModels:AuthorizationWindowViewModel />
     </Design.DataContext>
+    
+    <Window.Styles>
+        <StyleInclude Source="/Styles/MainStyles.axaml" />
+    </Window.Styles>
 
     <Panel>
         <Border MinWidth="200" MaxWidth="500"

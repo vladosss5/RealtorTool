@@ -50,6 +50,7 @@ sealed class Program
         services.AddTransient<MyProfilePageViewModel>();
         services.AddTransient<PersonProfilePageViewModel>();
         services.AddTransient<HomePageViewModel>();
+        services.AddTransient<CreatingApplicationPageViewModel>();
     
         // Регистрация окон
         services.AddTransient<AuthorizationWindow>();
@@ -57,5 +58,6 @@ sealed class Program
         services.AddTransient<MyProfilePageView>();
         services.AddTransient<PersonProfilePageView>();
         services.AddTransient<HomePageView>();
+        services.AddTransient<CreatingApplicationPageView>();
     }
 }

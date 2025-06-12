@@ -5,4 +5,12 @@
             <!-- Add Controls for Previewer Here -->
         </Border>
     </Design.PreviewWith>
+    
+    <Style Selector="Window">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush Stretch="UniformToFill" Source="/Assets/Background.png" />
+            </Setter.Value>
+        </Setter>
+    </Style>
 </Styles>

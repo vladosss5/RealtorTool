@@ -7,12 +7,16 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RealtorTool.Desktop.Views.Windows.MainWindow"
         x:DataType="windows:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/logo.ico"
         Title="RealtorTool.Desktop">
 
     <Design.DataContext>
         <windows:MainWindowViewModel/>
     </Design.DataContext>
+    
+    <Window.Styles>
+        <StyleInclude Source="/Styles/MainStyles.axaml" />
+    </Window.Styles>
     
     <Grid RowDefinitions="Auto, *">
         <Border Grid.Column="0" Background="DarkBlue"
@@ -23,8 +27,8 @@
                         VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Background="Transparent"
-                        Height="30" Margin="5">
-                    <Image Width="10" Height="10"
+                        Height="30" Margin="5" Padding="2">
+                    <Image Width="25" Height="25"
                            Source="/Assets/home.png"/>
                 </Button>
                 <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
@@ -32,6 +36,11 @@
                         HorizontalAlignment="Stretch"
                         Height="30" Margin="5"
                         Command="{Binding OpenMyProfilePage}"/>
+                <Button Content="Создать заявку" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Command="{Binding OpenCreatingApplicationPage}"/>
             </StackPanel>
         </Border>
         
