@@ -61,7 +61,7 @@ public partial class DataContext : DbContext
     {
         modelBuilder.Entity<Person>()
             .HasOne(p => p.AuthorizationData)
-            .WithOne()
+            .WithOne(a => a.Person)
             .HasForeignKey<AuthorizationData>(a => a.Id)
             .OnDelete(DeleteBehavior.Cascade);
 

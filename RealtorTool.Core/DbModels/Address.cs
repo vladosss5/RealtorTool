@@ -8,22 +8,22 @@ public class Address : BaseIdModel
     /// <summary>
     /// Регион (область, край)
     /// </summary>
-    public string Region { get; set; }
+    public DictionaryValue? Region { get; set; }
     
     /// <summary>
     /// Город
     /// </summary>
-    public string City { get; set; }
+    public DictionaryValue? City { get; set; }
     
     /// <summary>
     /// Район города
     /// </summary>
-    public string? District { get; set; }
+    public DictionaryValue? District { get; set; }
     
     /// <summary>
     /// Улица
     /// </summary>
-    public string? Street { get; set; }
+    public DictionaryValue? Street { get; set; }
     
     /// <summary>
     /// Номер дома

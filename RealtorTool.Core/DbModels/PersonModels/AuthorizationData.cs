@@ -11,7 +11,17 @@ public class AuthorizationData : BaseIdModel
     public string Login { get; set; }
 
     /// <summary>
-    /// Пароль пользователя
+    /// Хеш пароля
     /// </summary>
-    public string Password { get; set; }
+    public string PasswordHash { get; set; }
+    
+    /// <summary>
+    /// Соль для хеширования
+    /// </summary>
+    public string Salt { get; set; } = null!;
+    
+    /// <summary>
+    /// Пользователь
+    /// </summary>
+    public Person? Person { get; set; }
 }

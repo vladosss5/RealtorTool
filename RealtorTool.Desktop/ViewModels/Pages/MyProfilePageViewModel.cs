@@ -11,21 +11,9 @@ namespace RealtorTool.Desktop.ViewModels.Pages;
 
 public class MyProfilePageViewModel : PageViewModelBase
 {
-    private AuthorizationData _authorizationData;
-
     private readonly DataContext _context;
     
     [Reactive] public Person? CurrentPerson { get; set; }
-    
-    [Reactive] public string FName { get; set; }
-    
-    [Reactive] public string SName { get; set; }
-    
-    [Reactive] public string LName { get; set; }
-    
-    [Reactive] public string PhoneNumber { get; set; }
-    
-    [Reactive] public string EMail { get; set; }
     
     public ICommand SaveChanges { get; }
     
@@ -34,13 +22,10 @@ public class MyProfilePageViewModel : PageViewModelBase
         _context = context;
         
         MessageBus.Current
-            .Listen<AuthorizationData>("CurrentAuthId")
+            .Listen<Person>("CurrentAuth")
             .Subscribe(x => 
             {
-                _authorizationData = x;
-                
-                if (_authorizationData != default)
-                    LoadPersonData();
+                CurrentPerson = x;
             });
 
         SaveChanges = ReactiveCommand.CreateFromTask(SaveChangesProfileDataAsync);
@@ -50,25 +35,22 @@ public class MyProfilePageViewModel : PageViewModelBase
     {
         if (CurrentPerson == default)
             return;
-        
-        CurrentPerson.EMail = EMail;
-        CurrentPerson.PhoneNumber = PhoneNumber;
 
         _context.Update(CurrentPerson);
         await _context.SaveChangesAsync();
     }
 
-    private void LoadPersonData()
-    {
-        CurrentPerson = _context.Persons.FirstOrDefault(x => x.Id == _authorizationData.Id);
-
-        if (CurrentPerson == default)
-            return;
-        
-        FName = CurrentPerson?.FName!;
-        SName = CurrentPerson?.SName!;
-        LName = CurrentPerson?.LName!;
-        PhoneNumber = CurrentPerson?.PhoneNumber!;
-        EMail = CurrentPerson?.EMail!;
-    }
+    // private void LoadPersonData()
+    // {
+    //     CurrentPerson = _context.Persons.FirstOrDefault(x => x.Id == _authorizationData.Id);
+    //
+    //     if (CurrentPerson == default)
+    //         return;
+    //     
+    //     FName = CurrentPerson?.FName!;
+    //     SName = CurrentPerson?.SName!;
+    //     LName = CurrentPerson?.LName!;
+    //     PhoneNumber = CurrentPerson?.PhoneNumber!;
+    //     EMail = CurrentPerson?.EMail!;
+    // }
 }

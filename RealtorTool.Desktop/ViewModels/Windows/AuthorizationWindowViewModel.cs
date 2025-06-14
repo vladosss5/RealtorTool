@@ -18,8 +18,8 @@ namespace RealtorTool.Desktop.ViewModels;
 /// </summary>
 public class AuthorizationWindowViewModel : ViewModelBase
 {
-    private readonly DataContext _context;
     private readonly IWindowService _windowService;
+    private readonly IAuthorizationService _authorizationService;
     
     /// <summary>
     /// Поле логина.
@@ -40,28 +40,30 @@ public class AuthorizationWindowViewModel : ViewModelBase
     /// Конструктор.
     /// </summary>
     public AuthorizationWindowViewModel(
-        DataContext context, 
-        IWindowService windowService)
+        IWindowService windowService,
+        IAuthorizationService authorizationService)
     {
-        _context = context;
         _windowService = windowService;
+        _authorizationService = authorizationService;
         Auth = ReactiveCommand.CreateFromTask<Window>(AuthAsync);
     }
 
     /// <summary>
     /// Конструктор по умолчанию
     /// </summary>
-    public AuthorizationWindowViewModel()
-    { }
+    public AuthorizationWindowViewModel(IAuthorizationService authorizationService)
+    {
+        _authorizationService = authorizationService;
+    }
 
     /// <summary>
     /// Метод проверки авторизации.
     /// </summary>
     private async Task AuthAsync(Window currentWindow)
     {
-        var authData = await _context.AuthorizationData.FirstOrDefaultAsync(x => x.Login == Login);
+        var authPerson = await _authorizationService.LoginAsync(Login, Password);
 
-        if (authData == null || authData.Password != Password)
+        if (authPerson == null)
         {
             await MessageBoxManager
                 .GetMessageBoxStandard("Ошибка", "Логин или пароль не совпадают", ButtonEnum.Ok)
@@ -71,7 +73,7 @@ public class AuthorizationWindowViewModel : ViewModelBase
         }
         
         _windowService.ShowWindow<MainWindow>();
-        MessageBus.Current.SendMessage(authData, "CurrentAuthId");
+        MessageBus.Current.SendMessage(authPerson, "CurrentAuth");
         currentWindow.Close();
     }
 }

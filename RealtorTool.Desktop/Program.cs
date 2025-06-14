@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using System;
+using System.Threading.Tasks;
 using RealtorTool.Data;
 using RealtorTool.Desktop.ViewModels;
 using RealtorTool.Desktop.ViewModels.Pages;
@@ -43,6 +44,7 @@ sealed class Program
             options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=Realtor;"));
         
         services.AddSingleton<IWindowService, WindowService>();
+        services.AddSingleton<IAuthorizationService, AuthorizationService>();
     
         // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();
