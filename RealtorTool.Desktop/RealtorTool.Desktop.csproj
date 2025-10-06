@@ -41,4 +41,10 @@
       <ProjectReference Include="..\RealtorTool.Data\RealtorTool.Data.csproj" />
       <ProjectReference Include="..\RealtorTool.Services\RealtorTool.Services.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

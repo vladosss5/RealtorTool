@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using System;
+using System.IO;
 using RealtorTool.Desktop.ViewModels;
 using RealtorTool.Desktop.ViewModels.Pages;
 using RealtorTool.Desktop.Views.Pages;
@@ -9,6 +10,7 @@ using RealtorTool.Services.Implementations;
 using RealtorTool.Services.Interfaces;
 using MainWindow = RealtorTool.Desktop.Views.Windows.MainWindow;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealtorTool.Data.Context;
 using RealtorTool.Desktop.ViewModels.Windows;
@@ -38,9 +40,20 @@ sealed class Program
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+        
         // Регистрация сервисов
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+    
+        if (string.IsNullOrEmpty(connectionString))
+            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    
+        // Регистрация DataContext
         services.AddDbContext<DataContext>(options => 
-            options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=RT_Dpsk;"));
+            options.UseNpgsql(connectionString));
         
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IAccountingService, AccountingService>();
