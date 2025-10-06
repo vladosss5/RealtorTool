@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using RealtorTool.ViewModels;
+using RealtorTool.Desktop.ViewModels;
 
-namespace RealtorTool;
+namespace RealtorTool.Desktop;
 
 public class ViewLocator : IDataTemplate
 {

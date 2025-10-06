@@ -1,9 +1,8 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="RealtorTool.App"
-             xmlns:local="using:RealtorTool"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+             x:Class="RealtorTool.Desktop.App"
+             xmlns:local="using:RealtorTool.Desktop"
+             RequestedThemeVariant="Dark">
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -11,5 +10,6 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="Styles/MainStyles.axaml"/>
     </Application.Styles>
 </Application>

@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace RealtorTool.ViewModels;
+namespace RealtorTool.Desktop.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {
