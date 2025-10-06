@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RealtorTool.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:windows="clr-namespace:RealtorTool.Desktop.ViewModels.Windows"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RealtorTool.Desktop.Views.Windows.MainWindow"
+        x:DataType="windows:MainWindowViewModel"
+        Icon="/Assets/logo.ico"
+        Title="RealtorTool.Desktop">
+
+    <Design.DataContext>
+        <windows:MainWindowViewModel/>
+    </Design.DataContext>
+    
+    <Window.Styles>
+        <StyleInclude Source="/Styles/MainStyles.axaml" />
+    </Window.Styles>
+    
+    <Grid RowDefinitions="Auto, *">
+        <Border Grid.Column="0" Background="DarkBlue"
+                Margin="5" CornerRadius="10">
+            <StackPanel Orientation="Horizontal">
+                <Button Command="{Binding OpenHomePage}" 
+                        HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Background="Transparent"
+                        Height="30" Margin="5" Padding="2">
+                    <Image Width="25" Height="25"
+                           Source="/Assets/home.png"/>
+                </Button>
+                <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Command="{Binding OpenMyProfilePage}"/>
+                <Button Content="Сотрудники" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Command="{Binding OpenEmployeesPage}"/>
+                <Button Content="Создать заявку" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Command="{Binding OpenCreatingApplicationPage}"/>
+            </StackPanel>
+        </Border>
+        
+        <TransitioningContentControl Grid.Row="1" Margin="5" 
+                                     Background="Transparent"
+                                     Content="{Binding SelectedPageItem}" />
+    </Grid>
+</Window>

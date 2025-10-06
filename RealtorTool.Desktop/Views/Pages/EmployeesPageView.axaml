@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="RealtorTool.Desktop.Views.Pages.EmployeesPageView"
+             x:DataType="pages:EmployeesPageViewModel">
+
+    <Design.DataContext>
+        <pages:EmployeesPageViewModel />
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="*, *">
+        <Border Grid.Column="1">
+            <StackPanel>
+                <TextBox Text="{Binding NewEmployee.Fname}" Watermark="Имя" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.Sname}" Watermark="Фамилия" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.Lname}" Watermark="Отчество" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.PhoneNumber}" Watermark="Телефон" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.EMail}" Watermark="EMail" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.Login}" Watermark="Логин" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding Password}" Watermark="Пароль" Margin="5" CornerRadius="5" />
+                <Button Content="Добавить сотрудника" Command="{Binding CreateEmployee}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
