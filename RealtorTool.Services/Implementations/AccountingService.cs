@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
-using RealtorTool.Core.Models.DbEntities;
+using RealtorTool.Core.Models.DbModels;
 using RealtorTool.Data.Context;
 using RealtorTool.Services.Interfaces;
 

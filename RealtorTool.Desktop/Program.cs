@@ -40,7 +40,7 @@ sealed class Program
     {
         // Регистрация сервисов
         services.AddDbContext<DataContext>(options => 
-            options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=RealtorTools;"));
+            options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=RT_Dpsk;"));
         
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IAccountingService, AccountingService>();

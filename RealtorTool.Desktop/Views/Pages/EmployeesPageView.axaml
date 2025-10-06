@@ -14,11 +14,11 @@
     <Grid ColumnDefinitions="*, *">
         <Border Grid.Column="1">
             <StackPanel>
-                <TextBox Text="{Binding NewEmployee.Fname}" Watermark="Имя" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.Sname}" Watermark="Фамилия" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.Lname}" Watermark="Отчество" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.PhoneNumber}" Watermark="Телефон" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.EMail}" Watermark="EMail" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.FirstName}" Watermark="Имя" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.LastName}" Watermark="Фамилия" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.MiddleName}" Watermark="Отчество" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.Phone}" Watermark="Телефон" Margin="5" CornerRadius="5" />
+                <TextBox Text="{Binding NewEmployee.Email}" Watermark="EMail" Margin="5" CornerRadius="5" />
                 <TextBox Text="{Binding NewEmployee.Login}" Watermark="Логин" Margin="5" CornerRadius="5" />
                 <TextBox Text="{Binding Password}" Watermark="Пароль" Margin="5" CornerRadius="5" />
                 <Button Content="Добавить сотрудника" Command="{Binding CreateEmployee}"/>

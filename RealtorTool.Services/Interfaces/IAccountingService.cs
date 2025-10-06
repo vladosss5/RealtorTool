@@ -1,4 +1,4 @@
-using RealtorTool.Core.Models.DbEntities;
+using RealtorTool.Core.Models.DbModels;
 
 namespace RealtorTool.Services.Interfaces;
 
