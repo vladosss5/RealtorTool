@@ -14,11 +14,11 @@
     <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto, *">
         <Border Grid.Column="1" Grid.Row="1">
             <StackPanel>
-                <TextBox Text="{Binding CurrentPerson.FName}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.SName}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.LName}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.PhoneNumber}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.EMail}" Margin="5" CornerRadius="5"/>
+                <!-- <TextBox Text="{Binding CurrentPerson.FName}" Margin="5" CornerRadius="5"/> -->
+                <!-- <TextBox Text="{Binding CurrentPerson.SName}" Margin="5" CornerRadius="5"/> -->
+                <!-- <TextBox Text="{Binding CurrentPerson.LName}" Margin="5" CornerRadius="5"/> -->
+                <!-- <TextBox Text="{Binding CurrentPerson.PhoneNumber}" Margin="5" CornerRadius="5"/> -->
+                <!-- <TextBox Text="{Binding CurrentPerson.EMail}" Margin="5" CornerRadius="5"/> -->
                 <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}"/>
             </StackPanel>
         </Border>

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using RealtorTool.Core.DbModels.PersonModels;
+using RealtorTool.Core.Models.PersonModels;
 using RealtorTool.Data;
 
 namespace RealtorTool.Desktop.ViewModels.Pages;

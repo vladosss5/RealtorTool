@@ -40,11 +40,11 @@ sealed class Program
     private static void ConfigureServices(IServiceCollection services)
     {
         // Регистрация сервисов
-        services.AddDbContext<DataContext>(options => 
-            options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=Realtor;"));
-        
-        services.AddSingleton<IWindowService, WindowService>();
-        services.AddSingleton<IAuthorizationService, AuthorizationService>();
+        // services.AddDbContext<DataContext>(options => 
+        //     options.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=Realtor;"));
+        //
+        // services.AddSingleton<IWindowService, WindowService>();
+        // services.AddSingleton<IAuthorizationService, AuthorizationService>();
     
         // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();
