@@ -17,8 +17,6 @@
                 <TextBox Text="{Binding CurrentPerson.FirstName}" Margin="5" CornerRadius="5"/>
                 <TextBox Text="{Binding CurrentPerson.MiddleName}" Margin="5" CornerRadius="5"/>
                 <TextBox Text="{Binding CurrentPerson.LastName}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.Phone}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.Email}" Margin="5" CornerRadius="5"/>
                 <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}"/>
             </StackPanel>
         </Border>

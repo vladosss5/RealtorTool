@@ -1,6 +1,4 @@
-using System;
 using System.Reactive;
-using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.Enums;
