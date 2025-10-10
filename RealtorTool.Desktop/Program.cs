@@ -13,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealtorTool.Data.Context;
+using RealtorTool.Desktop.ViewModels.Pages.ApplicationPages;
 using RealtorTool.Desktop.ViewModels.Windows;
+using RealtorTool.Desktop.Views.Pages.ApplicationPages;
 
 namespace RealtorTool.Desktop;
 
@@ -66,6 +68,23 @@ sealed class Program
         services.AddTransient<HomePageViewModel>();
         services.AddTransient<CreatingApplicationPageViewModel>();
         services.AddTransient<EmployeesPageViewModel>();
+        
+        // Регистрация страниц с ленивой загрузкой
+        services.AddTransient<BuyApplicationPageViewModel>();
+        services.AddTransient<Func<BuyApplicationPageViewModel>>(sp => 
+            () => sp.GetRequiredService<BuyApplicationPageViewModel>());
+        
+        services.AddTransient<SellApplicationPageViewModel>();
+        services.AddTransient<Func<SellApplicationPageViewModel>>(sp => 
+            () => sp.GetRequiredService<SellApplicationPageViewModel>());
+        
+        services.AddTransient<LeaseApplicationPageViewModel>();
+        services.AddTransient<Func<LeaseApplicationPageViewModel>>(sp => 
+            () => sp.GetRequiredService<LeaseApplicationPageViewModel>());
+        
+        services.AddTransient<RentalApplicationPageViewModel>();
+        services.AddTransient<Func<RentalApplicationPageViewModel>>(sp => 
+            () => sp.GetRequiredService<RentalApplicationPageViewModel>());
     
         // Регистрация окон
         services.AddTransient<AuthorizationWindow>();
@@ -75,5 +94,9 @@ sealed class Program
         services.AddTransient<HomePageView>();
         services.AddTransient<CreatingApplicationPageView>();
         services.AddTransient<EmployeesPageView>();
+        services.AddTransient<BuyApplicationPageView>();
+        services.AddTransient<SellApplicationPageView>();
+        services.AddTransient<LeaseApplicationPageView>();
+        services.AddTransient<RentalApplicationPageView>();
     }
 }

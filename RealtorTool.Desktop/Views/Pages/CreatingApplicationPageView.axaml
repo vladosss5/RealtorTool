@@ -3,6 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
+             xmlns:applicationPages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages.ApplicationPages"
+             xmlns:applicationPages1="clr-namespace:RealtorTool.Desktop.Views.Pages.ApplicationPages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RealtorTool.Desktop.Views.Pages.CreatingApplicationPageView"
              x:DataType="pages:CreatingApplicationPageViewModel">
@@ -11,69 +13,32 @@
         <pages:CreatingApplicationPageViewModel/>
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto, Auto, *">
-        <Border Grid.Row="0" Margin="5" CornerRadius="10">
+    <Grid RowDefinitions="Auto, *">
+        <Border Grid.Row="0">
             <StackPanel>
-                <TextBlock Text="Данные о клиенте" Margin="5"/>
-                <TextBox Watermark="Фамилия" Margin="5"/>
-                <TextBox Watermark="Имя" Margin="5"/>
-                <TextBox Watermark="Отчество" Margin="5"/>
-                <TextBox Watermark="Контактный номер" Margin="5"/>
-                <TextBox Watermark="EMail" Margin="5"/>
+                <TextBlock Text="Выберите тип операции"/>
+                <TabControl>
+                    <TabItem Header="Покупка">
+                        <applicationPages1:BuyApplicationPageView 
+                            DataContext="{Binding BuyApplicationPageViewModel}" />
+                    </TabItem>
+                    
+                    <TabItem Header="Продажа">
+                        <applicationPages1:SellApplicationPageView 
+                            DataContext="{Binding SellApplicationPageViewModel}" />
+                    </TabItem>
+                    
+                    <TabItem Header="Съём">
+                        <applicationPages1:LeaseApplicationPageView 
+                            DataContext="{Binding LeaseApplicationPageViewModel}" />
+                    </TabItem>
+                    
+                    <TabItem Header="Сдача">
+                        <applicationPages1:RentalApplicationPageView 
+                            DataContext="{Binding RentalApplicationPageViewModel}" />
+                    </TabItem>
+                </TabControl>
             </StackPanel>
         </Border>
-        
-        <Border Grid.Row="1" Margin="5" CornerRadius="10">
-            <Grid ColumnDefinitions="Auto, *, *, *, *">
-                <TextBlock Text="Тип заявки" Grid.Column="0" Margin="5" 
-                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                
-                <!-- <Button Content="Аренда"  -->
-                <!--         Command="{Binding ChangeOperationType}"  -->
-                <!--         CommandParameter="{x:Static enums:ApplicationType.Rent}" -->
-                <!--         Grid.Column="0" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-                <!-- -->
-                <!-- <Button Content="Сдача"  -->
-                <!--         Command="{Binding ChangeOperationType}"  -->
-                <!--         CommandParameter="{x:Static enums:ApplicationType.RentOut}" -->
-                <!--         Grid.Column="1" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-                <!-- -->
-                <!-- <Button Content="Покупка"  -->
-                <!--         Command="{Binding ChangeOperationType}"  -->
-                <!--         CommandParameter="{x:Static enums:ApplicationType.Purchase}" -->
-                <!--         Grid.Column="2" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-                <!-- -->
-                <!-- <Button Content="Продажа"  -->
-                <!--         Command="{Binding ChangeOperationType}"  -->
-                <!--         CommandParameter="{x:Static enums:ApplicationType.Sale}" -->
-                <!--         Grid.Column="3" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-            </Grid>
-        </Border>
-        
-        <Border Grid.Row="2" Margin="5" CornerRadius="10" IsVisible="{Binding RentIsVisible}">
-            <StackPanel>
-                <TextBlock Text="Аренда"/>
-            </StackPanel>
-        </Border>
-        
-        <Border Grid.Row="2" Margin="5" CornerRadius="10" IsVisible="{Binding RentingOutIsVisible}">
-            <StackPanel>
-                <TextBlock Text="Сдача"/>
-            </StackPanel>
-        </Border>
-        
-        <Border Grid.Row="2" Margin="5" CornerRadius="10" IsVisible="{Binding PurchaseIsVisible}">
-            <StackPanel>
-                <TextBlock Text="Покупка"/>
-            </StackPanel>
-        </Border>
-        
-        <Border Grid.Row="2" Margin="5" CornerRadius="10" IsVisible="{Binding SaleIsVisible}">
-            <StackPanel>
-                <TextBlock Text="Продажа"/>
-            </StackPanel>
-        </Border>
-        
-        
     </Grid>
 </UserControl>
