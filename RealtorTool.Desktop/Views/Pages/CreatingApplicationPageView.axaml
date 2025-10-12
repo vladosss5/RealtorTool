@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
-             xmlns:applicationPages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages.ApplicationPages"
              xmlns:applicationPages1="clr-namespace:RealtorTool.Desktop.Views.Pages.ApplicationPages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RealtorTool.Desktop.Views.Pages.CreatingApplicationPageView"
@@ -13,32 +12,25 @@
         <pages:CreatingApplicationPageViewModel/>
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto, *">
-        <Border Grid.Row="0">
-            <StackPanel>
-                <TextBlock Text="Выберите тип операции"/>
-                <TabControl>
-                    <TabItem Header="Покупка">
-                        <applicationPages1:BuyApplicationPageView 
-                            DataContext="{Binding BuyApplicationPageViewModel}" />
-                    </TabItem>
+    <TabControl>
+        <TabItem Header="Покупка">
+                <applicationPages1:BuyApplicationPageView 
+                    DataContext="{Binding BuyApplicationPageViewModel}" />
+        </TabItem>
                     
-                    <TabItem Header="Продажа">
-                        <applicationPages1:SellApplicationPageView 
-                            DataContext="{Binding SellApplicationPageViewModel}" />
-                    </TabItem>
+        <TabItem Header="Продажа">
+                <applicationPages1:SellApplicationPageView 
+                    DataContext="{Binding SellApplicationPageViewModel}" />
+        </TabItem>
                     
-                    <TabItem Header="Съём">
-                        <applicationPages1:LeaseApplicationPageView 
-                            DataContext="{Binding LeaseApplicationPageViewModel}" />
-                    </TabItem>
+        <TabItem Header="Съём">
+                <applicationPages1:LeaseApplicationPageView 
+                    DataContext="{Binding LeaseApplicationPageViewModel}" />
+        </TabItem>
                     
-                    <TabItem Header="Сдача">
-                        <applicationPages1:RentalApplicationPageView 
-                            DataContext="{Binding RentalApplicationPageViewModel}" />
-                    </TabItem>
-                </TabControl>
-            </StackPanel>
-        </Border>
-    </Grid>
+        <TabItem Header="Сдача">
+                <applicationPages1:RentalApplicationPageView 
+                    DataContext="{Binding RentalApplicationPageViewModel}" />
+        </TabItem>
+    </TabControl>
 </UserControl>

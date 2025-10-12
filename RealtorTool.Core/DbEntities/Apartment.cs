@@ -14,9 +14,9 @@ public class Apartment : Realty
 
     public decimal? KitchenArea { get; set; }
 
-    public bool? HasBalcony { get; set; }
+    public bool HasBalcony { get; set; }
 
-    public bool? HasLoggia { get; set; }
+    public bool HasLoggia { get; set; }
 
     public string RenovationTypeId { get; set; }
     

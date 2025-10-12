@@ -15,6 +15,4 @@ public class Client : BaseIdEntity
     public string? PassportNumber { get; set; }
     
     public string? RegistrationAddress { get; set; }
-    
-    
 }

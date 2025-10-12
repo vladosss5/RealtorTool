@@ -8,7 +8,7 @@ public class Address : BaseIdEntity
 
     public string Street { get; set; } = null!;
 
-    public string? HouseNumber { get; set; } = null!;
+    public string? HouseNumber { get; set; }
 
     public string? BuildingNumber { get; set; }
 

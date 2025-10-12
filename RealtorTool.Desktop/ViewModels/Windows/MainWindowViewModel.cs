@@ -23,8 +23,6 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand OpenHomePage { get; private set; }
     public ICommand OpenCreatingApplicationPage { get; private set; }
     public ICommand OpenEmployeesPage { get; private set; }
-    
-    public bool CanOpenMyProfile { get; } = false;
 
     /// <summary>
     /// Конструктор.

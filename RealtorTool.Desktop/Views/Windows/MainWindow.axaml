@@ -19,7 +19,7 @@
     </Window.Styles>
     
     <Grid RowDefinitions="Auto, *">
-        <Border Grid.Column="0" Background="DarkBlue"
+        <Border Grid.Column="0" Background="WhiteSmoke"
                 Margin="5" CornerRadius="10">
             <StackPanel Orientation="Horizontal">
                 <Button Command="{Binding OpenHomePage}" 
@@ -35,21 +35,26 @@
                         VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Height="30" Margin="5"
+                        Background="NavajoWhite"
                         Command="{Binding OpenMyProfilePage}"/>
                 <Button Content="Сотрудники" HorizontalContentAlignment="Center" 
                         VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Height="30" Margin="5"
+                        Background="NavajoWhite"
                         Command="{Binding OpenEmployeesPage}"/>
                 <Button Content="Создать заявку" HorizontalContentAlignment="Center" 
                         VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Height="30" Margin="5"
+                        Background="NavajoWhite"
                         Command="{Binding OpenCreatingApplicationPage}"/>
             </StackPanel>
         </Border>
         
-        <TransitioningContentControl Grid.Row="1" Margin="5" 
+        <Border Grid.Row="1" Margin="5" CornerRadius="10"
+                Background="WhiteSmoke" Opacity="0.5"/>
+        <TransitioningContentControl Grid.Row="1" Margin="5" Padding="5"
                                      Background="Transparent"
                                      Content="{Binding SelectedPageItem}" />
     </Grid>
