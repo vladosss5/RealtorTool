@@ -49,6 +49,12 @@
                         Height="30" Margin="5"
                         Background="NavajoWhite"
                         Command="{Binding OpenCreatingApplicationPage}"/>
+                <Button Content="Заявки" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Height="30" Margin="5"
+                        Background="NavajoWhite"
+                        Command="{Binding OpenApplicationsPage}"/>
             </StackPanel>
         </Border>
         

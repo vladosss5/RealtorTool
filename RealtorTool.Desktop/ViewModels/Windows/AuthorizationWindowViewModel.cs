@@ -7,6 +7,7 @@ using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Data;
+using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.Views;
 using RealtorTool.Services.Interfaces;
 using MainWindow = RealtorTool.Desktop.Views.Windows.MainWindow;

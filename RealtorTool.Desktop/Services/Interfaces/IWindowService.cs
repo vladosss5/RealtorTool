@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace RealtorTool.Services.Interfaces;
+namespace RealtorTool.Desktop.Services.Interfaces;
 
 /// <summary>
 /// Интерфейс для управления окнами.

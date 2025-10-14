@@ -23,6 +23,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand OpenHomePage { get; private set; }
     public ICommand OpenCreatingApplicationPage { get; private set; }
     public ICommand OpenEmployeesPage { get; private set; }
+    public ICommand OpenApplicationsPage { get; private set; }
 
     /// <summary>
     /// Конструктор.
@@ -32,7 +33,8 @@ public class MainWindowViewModel : ViewModelBase
         PersonProfilePageViewModel personProfilePageViewModel,
         HomePageViewModel homePageViewModel,
         CreatingApplicationPageViewModel creatingApplicationPageViewModel,
-        EmployeesPageViewModel employeesPageViewModel)
+        EmployeesPageViewModel employeesPageViewModel,
+        ApplicationsPageViewModel applicationsPageViewModel)
     {
         PaneItems = 
         [
@@ -40,7 +42,8 @@ public class MainWindowViewModel : ViewModelBase
             personProfilePageViewModel, 
             homePageViewModel,
             creatingApplicationPageViewModel,
-            employeesPageViewModel
+            employeesPageViewModel,
+            applicationsPageViewModel
         ];
         SelectedPageItem = PaneItems[2];
         
@@ -54,13 +57,14 @@ public class MainWindowViewModel : ViewModelBase
         OpenHomePage = ReactiveCommand.Create(OpenHomePageImpl);
         OpenCreatingApplicationPage = ReactiveCommand.Create(OpenCreatingApplicationPageImpl);
         OpenEmployeesPage = ReactiveCommand.Create(OpenEmployeesPageImpl);
+        OpenApplicationsPage = ReactiveCommand.Create(OpenApplicationsPageImpl);
     }
 
     private void OpenHomePageImpl() => SelectedPageItem = PaneItems[2];
     private void OpenMyProfilePageImpl() => SelectedPageItem = PaneItems[0];
     private void OpenCreatingApplicationPageImpl() => SelectedPageItem = PaneItems[3];
-
     private void OpenEmployeesPageImpl() => SelectedPageItem = PaneItems[4];
+    private void OpenApplicationsPageImpl() => SelectedPageItem = PaneItems[5];
 
     private void GetDataFromMessageBus()
     {

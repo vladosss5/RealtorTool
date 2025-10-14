@@ -1,8 +1,10 @@
+using System;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Services.Interfaces;
 
-namespace RealtorTool.Services.Implementations;
+namespace RealtorTool.Desktop.Services.Implementations;
 
 /// <inheritdoc />
 public class WindowService : IWindowService

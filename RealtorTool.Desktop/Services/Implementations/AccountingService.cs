@@ -1,9 +1,11 @@
+using System;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
 using RealtorTool.Services.Interfaces;
 
-namespace RealtorTool.Services.Implementations;
+namespace RealtorTool.Desktop.Services.Implementations;
 
 public class AccountingService : IAccountingService
 {

@@ -6,13 +6,14 @@ using RealtorTool.Desktop.ViewModels;
 using RealtorTool.Desktop.ViewModels.Pages;
 using RealtorTool.Desktop.Views.Pages;
 using RealtorTool.Desktop.Views.Windows;
-using RealtorTool.Services.Implementations;
 using RealtorTool.Services.Interfaces;
 using MainWindow = RealtorTool.Desktop.Views.Windows.MainWindow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealtorTool.Data.Context;
+using RealtorTool.Desktop.Services.Implementations;
+using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Pages.ApplicationPages;
 using RealtorTool.Desktop.ViewModels.Windows;
 using RealtorTool.Desktop.Views.Pages.ApplicationPages;
@@ -47,7 +48,6 @@ sealed class Program
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
         
-        // Регистрация сервисов
         var connectionString = configuration.GetConnectionString("DefaultConnection");
     
         if (string.IsNullOrEmpty(connectionString))
@@ -57,8 +57,11 @@ sealed class Program
         services.AddDbContext<DataContext>(options => 
             options.UseNpgsql(connectionString));
         
+        // Регистрация сервисов
+        services.AddSingleton<StatusToColorConverter>();
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IAccountingService, AccountingService>();
+        services.AddSingleton<INavigationService, NavigationService>();
     
         // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();
@@ -68,6 +71,8 @@ sealed class Program
         services.AddTransient<HomePageViewModel>();
         services.AddTransient<CreatingApplicationPageViewModel>();
         services.AddTransient<EmployeesPageViewModel>();
+        services.AddTransient<ApplicationsPageViewModel>();
+        services.AddTransient<ListingDetailViewModel>();
         
         // Регистрация страниц с ленивой загрузкой
         services.AddTransient<BuyApplicationPageViewModel>();
@@ -86,7 +91,7 @@ sealed class Program
         services.AddTransient<Func<RentalApplicationPageViewModel>>(sp => 
             () => sp.GetRequiredService<RentalApplicationPageViewModel>());
     
-        // Регистрация окон
+        // Регистрация View
         services.AddTransient<AuthorizationWindow>();
         services.AddTransient<MainWindow>();
         services.AddTransient<MyProfilePageView>();
@@ -98,5 +103,7 @@ sealed class Program
         services.AddTransient<SellApplicationPageView>();
         services.AddTransient<LeaseApplicationPageView>();
         services.AddTransient<RentalApplicationPageView>();
+        services.AddTransient<ApplicationsPageView>();
+        services.AddTransient<ListingDetailView>();
     }
 }

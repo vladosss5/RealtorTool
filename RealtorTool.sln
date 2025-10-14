@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtorTool.Desktop", "Real
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtorTool.Data", "RealtorTool.Data\RealtorTool.Data.csproj", "{B150CFF5-A6C1-4769-82E7-2FE6575076BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtorTool.Services", "RealtorTool.Services\RealtorTool.Services.csproj", "{6786E8B1-C9D7-4841-8E17-143F4B46FDF9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtorTool.Core", "RealtorTool.Core\RealtorTool.Core.csproj", "{9B581355-9FBF-4CD6-84C9-647E65AE61A3}"
 EndProject
 Global
@@ -22,10 +20,6 @@ Global
 		{B150CFF5-A6C1-4769-82E7-2FE6575076BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B150CFF5-A6C1-4769-82E7-2FE6575076BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B150CFF5-A6C1-4769-82E7-2FE6575076BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6786E8B1-C9D7-4841-8E17-143F4B46FDF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6786E8B1-C9D7-4841-8E17-143F4B46FDF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6786E8B1-C9D7-4841-8E17-143F4B46FDF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6786E8B1-C9D7-4841-8E17-143F4B46FDF9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B581355-9FBF-4CD6-84C9-647E65AE61A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B581355-9FBF-4CD6-84C9-647E65AE61A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B581355-9FBF-4CD6-84C9-647E65AE61A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
