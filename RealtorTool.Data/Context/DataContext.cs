@@ -23,6 +23,7 @@ public class DataContext : DbContext
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<Dictionary> Dictionaries { get; set; } = null!;
     public DbSet<DictionaryValue> DictionaryValues { get; set; } = null!;
+    public DbSet<Photo> Photos { get; set; } = null!;
     
     // Недвижимость и её наследники
     public DbSet<Realty> Realties { get; set; } = null!;
@@ -157,6 +158,23 @@ public class DataContext : DbContext
             .WithMany()
             .HasForeignKey(ph => ph.ConstructionMaterialId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        // Конфигурация для Photo
+        modelBuilder.Entity<Photo>(entity =>
+        {
+            entity.HasKey(p => p.Id);
+
+            // Индексы для производительности
+            entity.HasIndex(p => p.EntityType);
+            entity.HasIndex(p => p.EntityId);
+            entity.HasIndex(p => p.IsMain);
+            entity.HasIndex(p => p.SortOrder);
+            entity.HasIndex(p => p.CreatedDate);
+
+            // Ограничение на размер файла (20MB максимум)
+            entity.Property(p => p.FileData)
+                .HasMaxLength(20 * 1024 * 1024);
+        });
 
         // Уникальные индексы
         modelBuilder.Entity<Employee>()
@@ -170,5 +188,21 @@ public class DataContext : DbContext
         modelBuilder.Entity<Dictionary>()
             .HasIndex(d => d.Type)
             .IsUnique();
+    }
+    
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var photos = ChangeTracker.Entries<Photo>()
+            .Where(e => e.State == EntityState.Added);
+
+        foreach (var photo in photos)
+        {
+            if (photo.Entity.CreatedDate == default)
+            {
+                photo.Entity.CreatedDate = DateTime.UtcNow;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
     }
 }

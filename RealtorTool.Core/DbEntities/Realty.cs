@@ -17,4 +17,6 @@ public class Realty : BaseIdEntity
     public ICollection<Realty>? ChildRealties { get; set; } = new List<Realty>();
     
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
+
+    public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 }

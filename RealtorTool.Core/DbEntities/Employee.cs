@@ -13,4 +13,6 @@ public class Employee : BaseIdEntity
     public string LastName { get; set; } = null!;
 
     public string? MiddleName { get; set; }
+    
+    public Photo? Photo { get; set; }
 }
