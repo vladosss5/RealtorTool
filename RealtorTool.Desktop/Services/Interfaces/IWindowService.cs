@@ -36,4 +36,12 @@ public interface IWindowService
     /// </summary>
     /// <param name="window">Окно.</param>
     public void SetCurrentWindow(Window window);
+    
+    /// <summary>
+    /// Получить родительское окно.
+    /// </summary>
+    /// <returns></returns>
+    public Window? GetMainWindow();
+    
+    public Window? GetActiveWindow();
 }
