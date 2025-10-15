@@ -15,8 +15,10 @@ using RealtorTool.Data.Context;
 using RealtorTool.Desktop.Services.Implementations;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Pages.ApplicationPages;
+using RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages;
 using RealtorTool.Desktop.ViewModels.Windows;
 using RealtorTool.Desktop.Views.Pages.ApplicationPages;
+using RealtorTool.Desktop.Views.Pages.RealtyDetailPages;
 
 namespace RealtorTool.Desktop;
 
@@ -73,6 +75,9 @@ sealed class Program
         services.AddTransient<EmployeesPageViewModel>();
         services.AddTransient<ApplicationsPageViewModel>();
         services.AddTransient<ListingDetailViewModel>();
+        services.AddTransient<ApartmentDetailPageViewModel>();
+        services.AddTransient<AreaDetailPageViewModel>();
+        services.AddTransient<PrivateHouseDetailPageViewModel>();
         
         // Регистрация страниц с ленивой загрузкой
         services.AddTransient<BuyApplicationPageViewModel>();
@@ -105,5 +110,8 @@ sealed class Program
         services.AddTransient<RentalApplicationPageView>();
         services.AddTransient<ApplicationsPageView>();
         services.AddTransient<ListingDetailView>();
+        services.AddTransient<ApartmentDetailPageView>();
+        services.AddTransient<AreaDetailPageView>();
+        services.AddTransient<PrivateHouseDetailPageView>();
     }
 }

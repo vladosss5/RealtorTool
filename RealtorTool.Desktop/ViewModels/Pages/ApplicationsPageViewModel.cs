@@ -11,6 +11,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
+using RealtorTool.Desktop.Services.Implementations;
 using RealtorTool.Desktop.ViewModels.Windows;
 using RealtorTool.Services.Interfaces;
 
@@ -53,6 +54,8 @@ public class ApplicationsPageViewModel : PageViewModelBase
     {
         if (listing != null)
         {
+            MessageBus.Current.SendMessage(listing);
+            
             var detailVm = _serviceProvider.GetRequiredService<ListingDetailViewModel>();
             if (detailVm is IParameterReceiver parameterReceiver)
             {

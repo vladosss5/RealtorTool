@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:realtyDetailPages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="RealtorTool.Desktop.Views.Pages.RealtyDetailPages.ApartmentDetailPageView"
+             x:DataType="realtyDetailPages:ApartmentDetailPageViewModel">
+    
+    <Design.DataContext>
+        <realtyDetailPages:ApartmentDetailPageViewModel/>
+    </Design.DataContext>
+    
+    <StackPanel Spacing="6">
+        <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold"/>
+        <TextBlock Text="{Binding Apartment.Name, StringFormat='Название: {0}'}"/>
+        <TextBlock Text="{Binding Apartment.Address.City, StringFormat='Город: {0}'}"/>
+        <TextBlock Text="{Binding Apartment.ApartmentNumber, StringFormat='Кв. №: {0}'}"/>
+        <TextBlock Text="{Binding Apartment.Floor, StringFormat='Этаж: {0}'}"/>
+        <TextBlock Text="{Binding Apartment.RoomsCount, StringFormat='Комнат: {0}'}"/>
+        <TextBlock Text="{Binding Apartment.TotalArea, StringFormat='Площадь (общая): {0} м²'}"/>
+        <TextBlock Text="{Binding Apartment.LivingArea, StringFormat='Жилая: {0} м²'}"/>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:realtyDetailPages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="RealtorTool.Desktop.Views.Pages.RealtyDetailPages.PrivateHouseDetailPageView"
+             x:DataType="realtyDetailPages:PrivateHouseDetailPageViewModel">
+    
+    <Design.DataContext>
+        <realtyDetailPages:PrivateHouseDetailPageViewModel/>
+    </Design.DataContext>
+    
+    <StackPanel Spacing="6">
+        <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold"/>
+        <TextBlock Text="{Binding House.Name, StringFormat='Название: {0}'}"/>
+        <TextBlock Text="{Binding House.Address.City, StringFormat='Город: {0}'}"/>
+        <TextBlock Text="{Binding House.RoomsCount, StringFormat='Комнат: {0}'}"/>
+        <TextBlock Text="{Binding House.FloorsCount, StringFormat='Этажей: {0}'}"/>
+        <TextBlock Text="{Binding House.TotalArea, StringFormat='Площадь: {0} м²'}"/>
+        <TextBlock Text="{Binding House.YearBuilt, StringFormat='Год постройки: {0}'}"/>
+        <TextBlock Text="{Binding House.HasGarage, StringFormat='Гараж: {0}'}"/>
+        <TextBlock Text="{Binding House.HasBasement, StringFormat='Подвал: {0}'}"/>
+    </StackPanel>
+</UserControl>

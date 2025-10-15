@@ -2,7 +2,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="RealtorTool.Desktop.Views.Pages.ListingDetailView">
-    Welcome to Avalonia!
+             x:Class="RealtorTool.Desktop.Views.Pages.ListingDetailView"
+             x:DataType="pages:ListingDetailViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="20" FontWeight="Bold" />
+
+        <!-- Информация о заявке -->
+        <StackPanel Grid.Row="1" Orientation="Vertical" Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock Text="ID:"/>
+                <TextBlock Text="{Binding Listing.Id}"/>
+                <TextBlock Text="Тип сделки:" Margin="20,0,0,0"/>
+                <TextBlock Text="{Binding Listing.ListingType.Value}"/>
+                <TextBlock Text="Статус:" Margin="20,0,0,0"/>
+                <TextBlock Text="{Binding Listing.Status.Value}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock Text="Владелец:"/>
+                <TextBlock Text="{Binding Listing.Owner.FirstName}"/>
+                <TextBlock Text="{Binding Listing.Owner.LastName}" Margin="6,0,0,0"/>
+                <TextBlock Text="Телефон:" Margin="20,0,0,0"/>
+                <TextBlock Text="{Binding Listing.Owner.Phone}"/>
+            </StackPanel>
+
+            <!-- <StackPanel Orientation="Horizontal" Spacing="12"> -->
+            <!--     <TextBlock Text="Итоговая цена:"/> -->
+            <!--     <TextBlock Text="{Binding Listing.FinalPrice, StringFormat='{}{0:C}'}"/> -->
+            <!--     <TextBlock Text="Комиссия:" Margin="20,0,0,0"/> -->
+            <!--     <TextBlock Text="{Binding Listing.Commission, StringFormat='{}{0:C}'}"/> -->
+            <!--     <TextBlock Text="Дата сделки:" Margin="20,0,0,0"/> -->
+            <!--     <TextBlock Text="{Binding Listing.DealDate, StringFormat='{}{0:dd.MM.yyyy}'}"/> -->
+            <!-- </StackPanel> -->
+        </StackPanel>
+
+        <Separator Grid.Row="2" Margin="0,6"/>
+
+        <!-- Контейнер для конкретного представления недвижимости -->
+        <ContentControl Grid.Row="2"
+                        Content="{Binding RealtyViewModel}"
+                        Margin="0,12,0,0"/>
+    </Grid>
 </UserControl>
