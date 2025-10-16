@@ -29,4 +29,8 @@ public class Listing : BaseIdEntity
     public DictionaryValue? Status { get; set; }
 
     public string? Terms { get; set; }
+    
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    
+    public ICollection<ClientRequest> ClientRequests { get; set; } = new List<ClientRequest>();
 }

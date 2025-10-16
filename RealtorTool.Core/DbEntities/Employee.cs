@@ -14,5 +14,7 @@ public class Employee : BaseIdEntity
 
     public string? MiddleName { get; set; }
     
+    public string? PhotoId { get; set; }
+    
     public Photo? Photo { get; set; }
 }

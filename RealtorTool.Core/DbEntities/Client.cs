@@ -16,5 +16,7 @@ public class Client : BaseIdEntity
     
     public string? RegistrationAddress { get; set; }
     
+    public string? PhotoId { get; set; }
+    
     public Photo? Photo { get; set; }
 }

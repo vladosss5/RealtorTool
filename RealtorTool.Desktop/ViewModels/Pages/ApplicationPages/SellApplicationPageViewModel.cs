@@ -13,7 +13,6 @@ using Avalonia.Media.Imaging;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
@@ -28,6 +27,7 @@ public class SellApplicationPageViewModel : ViewModelBase
 {
     /// Сервисы.
     private readonly DataContext _context;
+
     private readonly IWindowService _windowService;
 
     // Поля.
@@ -44,14 +44,15 @@ public class SellApplicationPageViewModel : ViewModelBase
     // Коллекции.
     public ObservableCollection<DictionaryValue> RenovationTypes { get; set; } = new();
     public ObservableCollection<DictionaryValue> BathroomTypes { get; set; } = new();
-    
+
     public RealtyType CurrentRealtyType { get; private set; }
-    
+
     private int _selectedPropertyTypeIndex;
+
     public int SelectedPropertyTypeIndex
     {
         get => _selectedPropertyTypeIndex;
-        set 
+        set
         {
             this.RaiseAndSetIfChanged(ref _selectedPropertyTypeIndex, value);
             CurrentRealtyType = SelectedPropertyTypeIndex switch
@@ -63,7 +64,7 @@ public class SellApplicationPageViewModel : ViewModelBase
             };
         }
     }
-    
+
     // Кнопки.
     public ICommand CreateSellRequest { get; }
     public ReactiveCommand<Unit, Unit> SelectImagesCommand { get; }
@@ -79,24 +80,24 @@ public class SellApplicationPageViewModel : ViewModelBase
         _context = context;
         _windowService = windowService;
         CreateSellRequest = ReactiveCommand.CreateFromTask(CreateSellRequestAsync);
-        
+
         SelectImagesCommand = ReactiveCommand.CreateFromTask(SelectImagesAsync);
         RemovePhotoCommand = ReactiveCommand.Create<UploadedPhoto>(RemovePhoto);
 
         _ = InitializeAsync();
     }
-    
+
     private async Task InitializeAsync()
     {
         var renovationTypesList = await _context.DictionaryValues
             .Where(x => x.DictionaryId == "renovation_type")
             .ToListAsync();
         RenovationTypes.AddRange(renovationTypesList);
-        
+
         var bathroomTypes = await _context.DictionaryValues
             .Where(x => x.DictionaryId == "bathroom_type")
             .ToListAsync();
-        BathroomTypes.AddRange(bathroomTypes);   
+        BathroomTypes.AddRange(bathroomTypes);
     }
 
     private async Task CreateSellRequestAsync()
@@ -119,7 +120,7 @@ public class SellApplicationPageViewModel : ViewModelBase
                     await AddPrivateHouseDataToContextAsync();
                     break;
             }
-            
+
             NewListing.Owner = NewClient;
             NewListing.CurrencyId = "currency_rub";
             NewListing.ListingTypeId = "listing_sale";
@@ -163,7 +164,7 @@ public class SellApplicationPageViewModel : ViewModelBase
     {
         await _context.AddAsync(NewClient);
     }
-    
+
     private async Task SelectImagesAsync()
     {
         try
@@ -184,7 +185,7 @@ public class SellApplicationPageViewModel : ViewModelBase
 
             // Получаем окно
             var ownerWindow = GetDialogOwnerWindow();
-        
+
             if (ownerWindow == null)
             {
                 Console.WriteLine("Не удалось определить окно для диалога");
@@ -192,7 +193,7 @@ public class SellApplicationPageViewModel : ViewModelBase
             }
 
             var result = await dialog.ShowAsync(ownerWindow);
-        
+
             if (result != null && result.Any())
             {
                 await ProcessSelectedFiles(result);
@@ -203,11 +204,11 @@ public class SellApplicationPageViewModel : ViewModelBase
             Console.WriteLine($"Ошибка при выборе файлов: {ex.Message}");
         }
     }
-    
+
     private Window? GetDialogOwnerWindow()
     {
         // Пробуем разные способы по порядку
-    
+
         // 1. Через WindowService
         var window = _windowService.GetMainWindow();
         if (window != null) return window;
@@ -257,7 +258,7 @@ public class SellApplicationPageViewModel : ViewModelBase
                 await LoadAndAddImage(filePath);
             }
         }
-        
+
         UpdatePhotosSummary();
     }
 
@@ -273,7 +274,7 @@ public class SellApplicationPageViewModel : ViewModelBase
         try
         {
             var fileInfo = new FileInfo(filePath);
-            
+
             // Проверяем размер файла (максимум 10MB)
             if (fileInfo.Length > 10 * 1024 * 1024)
             {
@@ -283,11 +284,11 @@ public class SellApplicationPageViewModel : ViewModelBase
 
             // Читаем файл
             var fileData = await File.ReadAllBytesAsync(filePath);
-            
+
             // Создаем превью
             using var stream = new MemoryStream(fileData);
             var bitmap = new Bitmap(stream);
-            
+
             // Создаем объект загруженного фото
             var uploadedPhoto = new UploadedPhoto
             {
@@ -336,6 +337,7 @@ public class SellApplicationPageViewModel : ViewModelBase
             number /= 1024;
             counter++;
         }
+
         return $"{number:n1} {suffixes[counter]}";
     }
 

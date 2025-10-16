@@ -27,4 +27,8 @@ public class Deal : BaseIdEntity
     public string StatusId { get; set; } = null!;
     
     public DictionaryValue Status { get; set; }
+    
+    public string ClientRequestId { get; set; } = null!;
+    
+    public ClientRequest ClientRequest { get; set; } = null!;
 }
