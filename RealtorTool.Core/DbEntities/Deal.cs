@@ -28,7 +28,5 @@ public class Deal : BaseIdEntity
     
     public DictionaryValue Status { get; set; }
     
-    public string ClientRequestId { get; set; } = null!;
-    
-    public ClientRequest ClientRequest { get; set; } = null!;
+    public ICollection<DealParticipant> Participants { get; set; } = new List<DealParticipant>();
 }

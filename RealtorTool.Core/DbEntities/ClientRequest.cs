@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using RealtorTool.Core.Enums;
 
 namespace RealtorTool.Core.DbEntities;
@@ -109,13 +110,5 @@ public class ClientRequest : BaseIdEntity
     /// </summary>
     public Deal? Deal { get; set; }
     
-    /// <summary>
-    /// Идентификатор объекта недвижимости
-    /// </summary>
-    public string? RealtyId { get; set; }
-    
-    /// <summary>
-    /// Объект недвижимости связанный с запросом
-    /// </summary>
-    public Realty? Realty { get; set; }
+    [NotMapped] public Realty? Realty => Listing?.Realty;
 }

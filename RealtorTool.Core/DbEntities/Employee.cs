@@ -16,5 +16,5 @@ public class Employee : BaseIdEntity
     
     public string? PhotoId { get; set; }
     
-    public Photo? Photo { get; set; }
+    public EmployeePhoto? Photo { get; set; }
 }

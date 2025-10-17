@@ -28,7 +28,7 @@ public class Realty : BaseIdEntity
     
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
 
-    public ICollection<Photo> Photos { get; set; } = new List<Photo>();
+    public ICollection<RealtyPhoto> Photos { get; set; } = new List<RealtyPhoto>();
     
     public ICollection<ClientRequest> Applications { get; set; } = new List<ClientRequest>();
 }
