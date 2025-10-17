@@ -12,8 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealtorTool.Data.Context;
+using RealtorTool.Desktop.Converters;
 using RealtorTool.Desktop.Services.Implementations;
 using RealtorTool.Desktop.Services.Interfaces;
+using RealtorTool.Desktop.ViewModels.Items;
 using RealtorTool.Desktop.ViewModels.Pages.ApplicationPages;
 using RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages;
 using RealtorTool.Desktop.ViewModels.Windows;
@@ -64,6 +66,7 @@ sealed class Program
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IAccountingService, AccountingService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IPhotoService, PhotoService>();
     
         // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();
@@ -78,6 +81,7 @@ sealed class Program
         services.AddTransient<ApartmentDetailPageViewModel>();
         services.AddTransient<AreaDetailPageViewModel>();
         services.AddTransient<PrivateHouseDetailPageViewModel>();
+        services.AddTransient<ListingItemViewModel>();
         
         // Регистрация страниц с ленивой загрузкой
         services.AddTransient<BuyApplicationPageViewModel>();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -12,6 +13,7 @@ using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
 using RealtorTool.Desktop.Services.Implementations;
+using RealtorTool.Desktop.ViewModels.Items;
 using RealtorTool.Desktop.ViewModels.Windows;
 using RealtorTool.Services.Interfaces;
 
@@ -22,8 +24,8 @@ public class ApplicationsPageViewModel : PageViewModelBase
     private readonly IServiceProvider _serviceProvider;
     private readonly DataContext _dataContext;
 
-    [Reactive] public ObservableCollection<Listing> Listings { get; set; } = new();
-    [Reactive] public Listing? SelectedListing { get; set; }
+    [Reactive] public ObservableCollection<ListingItemViewModel> Listings { get; set; } = new();
+    [Reactive] public ListingItemViewModel? SelectedListing { get; set; }
 
     public ApplicationsPageViewModel(
         DataContext dataContext, 
@@ -34,7 +36,7 @@ public class ApplicationsPageViewModel : PageViewModelBase
         
         this.WhenAnyValue(x => x.SelectedListing)
             .Where(listing => listing != null)
-            .Subscribe(async listing => await OpenListingDetailAsync(listing!));
+            .Subscribe(async listing => await OpenListingDetailAsync(listing!.Listing));
         
         _ = LoadDataAsync();
     }
@@ -43,11 +45,18 @@ public class ApplicationsPageViewModel : PageViewModelBase
     {
         var listings = await _dataContext.Listings
             .Include(l => l.Realty)
+            .ThenInclude(r => r.Photos.OrderBy(p => p.SortOrder).Take(1))
             .Include(l => l.Currency)
             .Include(l => l.ListingType)
             .Include(l => l.Status)
             .ToListAsync();
-        Listings.AddRange(listings);
+        
+        Listings.Clear();
+    
+        foreach (var listing in listings)
+        {
+            Listings.Add(new ListingItemViewModel(listing));
+        }
     }
     
     private async Task OpenListingDetailAsync(Listing listing)
@@ -57,10 +66,9 @@ public class ApplicationsPageViewModel : PageViewModelBase
             MessageBus.Current.SendMessage(listing);
             
             var detailVm = _serviceProvider.GetRequiredService<ListingDetailViewModel>();
+            
             if (detailVm is IParameterReceiver parameterReceiver)
-            {
                 parameterReceiver.ReceiveParameter(listing.Id);
-            }
     
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {

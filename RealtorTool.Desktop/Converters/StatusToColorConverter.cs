@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace RealtorTool.Desktop;
+namespace RealtorTool.Desktop.Converters;
 
 public class StatusToColorConverter : IValueConverter
 {

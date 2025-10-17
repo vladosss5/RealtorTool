@@ -1,15 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media.Imaging;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using MsBox.Avalonia;
@@ -27,8 +21,7 @@ public class SellApplicationPageViewModel : ViewModelBase
 {
     /// Сервисы.
     private readonly DataContext _context;
-
-    private readonly IWindowService _windowService;
+    private readonly IPhotoService _photoService;
 
     // Поля.
     [Reactive] public Address NewAddress { get; set; } = new();
@@ -73,12 +66,12 @@ public class SellApplicationPageViewModel : ViewModelBase
     /// <summary>
     /// Конструктор.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="windowService"></param>
-    public SellApplicationPageViewModel(DataContext context, IWindowService windowService)
+    public SellApplicationPageViewModel(
+        DataContext context,
+        IPhotoService photoService)
     {
         _context = context;
-        _windowService = windowService;
+        _photoService = photoService;
         CreateSellRequest = ReactiveCommand.CreateFromTask(CreateSellRequestAsync);
 
         SelectImagesCommand = ReactiveCommand.CreateFromTask(SelectImagesAsync);
@@ -106,6 +99,8 @@ public class SellApplicationPageViewModel : ViewModelBase
         {
             await AddClientDataToContextAsync();
             await AddAddressDataToContextAsync();
+            
+            Realty? createdRealty = null;
 
             switch (CurrentRealtyType)
             {
@@ -113,14 +108,23 @@ public class SellApplicationPageViewModel : ViewModelBase
                     await AddAreaDataToContextAsync();
                     break;
                 case RealtyType.Apartment:
-                    await AddApartmentDataToContextAsync();
+                    createdRealty = await AddApartmentDataToContextAsync();
                     NewListing.Realty = NewApartament;
                     break;
                 case RealtyType.PrivateHouse:
                     await AddPrivateHouseDataToContextAsync();
                     break;
             }
+            
+            if (createdRealty != null)
+            {
+                await _photoService.SavePhotosToDatabaseAsync(
+                    UploadedPhotos.ToList(), 
+                    createdRealty.Id, 
+                    EntityTypeForPhoto.Realty);
+            }
 
+            NewListing.Realty = createdRealty;
             NewListing.Owner = NewClient;
             NewListing.CurrencyId = "currency_rub";
             NewListing.ListingTypeId = "listing_sale";
@@ -147,12 +151,17 @@ public class SellApplicationPageViewModel : ViewModelBase
         throw new NotImplementedException();
     }
 
-    private async Task AddApartmentDataToContextAsync()
+    private async Task<Realty> AddApartmentDataToContextAsync()
     {
         NewApartament.RenovationType = RenovationTypes.FirstOrDefault(x => x.IsSelected);
         NewApartament.BathroomType = BathroomTypes.FirstOrDefault(x => x.IsSelected);
         NewApartament.Address = NewAddress;
+        NewApartament.RealtyType = RealtyType.Apartment;
+        
         await _context.AddAsync(NewApartament);
+        await _context.SaveChangesAsync();
+        
+        return NewApartament;
     }
 
     private async Task AddAreaDataToContextAsync()
@@ -167,151 +176,21 @@ public class SellApplicationPageViewModel : ViewModelBase
 
     private async Task SelectImagesAsync()
     {
-        try
+        var newPhotos = await _photoService.SelectImagesAsync();
+        if (newPhotos.Any())
         {
-            var dialog = new OpenFileDialog
+            foreach (var photo in newPhotos)
             {
-                Title = "Выберите фотографии объекта недвижимости",
-                AllowMultiple = true,
-                Filters = new List<FileDialogFilter>
-                {
-                    new FileDialogFilter
-                    {
-                        Name = "Изображения",
-                        Extensions = new List<string> { "jpg", "jpeg", "png", "bmp", "gif" }
-                    }
-                }
-            };
-
-            // Получаем окно
-            var ownerWindow = GetDialogOwnerWindow();
-
-            if (ownerWindow == null)
-            {
-                Console.WriteLine("Не удалось определить окно для диалога");
-                return;
+                UploadedPhotos.Add(photo);
             }
-
-            var result = await dialog.ShowAsync(ownerWindow);
-
-            if (result != null && result.Any())
-            {
-                await ProcessSelectedFiles(result);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка при выборе файлов: {ex.Message}");
-        }
-    }
-
-    private Window? GetDialogOwnerWindow()
-    {
-        // Пробуем разные способы по порядку
-
-        // 1. Через WindowService
-        var window = _windowService.GetMainWindow();
-        if (window != null) return window;
-
-        // 2. Через ApplicationLifetime
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-        {
-            window = desktopLifetime.MainWindow ?? desktopLifetime.Windows.FirstOrDefault();
-            if (window != null) return window;
-        }
-
-        // 3. Через TopLevel
-        window = TopLevel.GetTopLevel(null) as Window;
-        if (window != null) return window;
-
-        // 4. Если ничего не сработало, пробуем создать временное окно
-        Console.WriteLine("Не удалось найти существующее окно, будет создано временное");
-        return CreateTemporaryWindow();
-    }
-
-    private Window? CreateTemporaryWindow()
-    {
-        try
-        {
-            // Создаем временное невидимое окно для диалога
-            return new Window
-            {
-                Width = 0,
-                Height = 0,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                ShowInTaskbar = false
-            };
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private async Task ProcessSelectedFiles(string[] filePaths)
-    {
-        foreach (var filePath in filePaths)
-        {
-            // Проверяем что файл является изображением
-            if (IsImageFile(filePath))
-            {
-                await LoadAndAddImage(filePath);
-            }
-        }
-
-        UpdatePhotosSummary();
-    }
-
-    private bool IsImageFile(string filePath)
-    {
-        var extensions = new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif" };
-        var extension = Path.GetExtension(filePath).ToLower();
-        return extensions.Contains(extension);
-    }
-
-    private async Task LoadAndAddImage(string filePath)
-    {
-        try
-        {
-            var fileInfo = new FileInfo(filePath);
-
-            // Проверяем размер файла (максимум 10MB)
-            if (fileInfo.Length > 10 * 1024 * 1024)
-            {
-                // Можно показать сообщение о слишком большом файле
-                return;
-            }
-
-            // Читаем файл
-            var fileData = await File.ReadAllBytesAsync(filePath);
-
-            // Создаем превью
-            using var stream = new MemoryStream(fileData);
-            var bitmap = new Bitmap(stream);
-
-            // Создаем объект загруженного фото
-            var uploadedPhoto = new UploadedPhoto
-            {
-                FileName = Path.GetFileName(filePath),
-                FileSize = fileInfo.Length,
-                FileSizeFormatted = FormatFileSize(fileInfo.Length),
-                FileData = fileData,
-                Preview = bitmap,
-                ContentType = GetContentType(filePath)
-            };
-
-            UploadedPhotos.Add(uploadedPhoto);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка загрузки изображения {filePath}: {ex.Message}");
+            UpdatePhotosSummary();
         }
     }
 
     private void RemovePhoto(UploadedPhoto photo)
     {
         UploadedPhotos.Remove(photo);
-        photo.Preview?.Dispose();
+        _photoService.DisposeImagePreview(photo);
         UpdatePhotosSummary();
     }
 
@@ -324,32 +203,6 @@ public class SellApplicationPageViewModel : ViewModelBase
         }
 
         var totalSize = UploadedPhotos.Sum(p => p.FileSize);
-        PhotosSummary = $"{UploadedPhotos.Count} фото • {FormatFileSize(totalSize)}";
-    }
-
-    private string FormatFileSize(long bytes)
-    {
-        string[] suffixes = { "B", "KB", "MB", "GB" };
-        int counter = 0;
-        decimal number = bytes;
-        while (Math.Round(number / 1024) >= 1)
-        {
-            number /= 1024;
-            counter++;
-        }
-
-        return $"{number:n1} {suffixes[counter]}";
-    }
-
-    private string GetContentType(string filePath)
-    {
-        return Path.GetExtension(filePath).ToLower() switch
-        {
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".bmp" => "image/bmp",
-            ".gif" => "image/gif",
-            _ => "application/octet-stream"
-        };
+        PhotosSummary = $"{UploadedPhotos.Count} фото • {_photoService.FormatFileSize(totalSize)}";
     }
 }

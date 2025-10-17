@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
-             xmlns:local="clr-namespace:RealtorTool.Desktop"
+             xmlns:converters="clr-namespace:RealtorTool.Desktop.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RealtorTool.Desktop.Views.Pages.ApplicationsPageView"
              x:DataType="pages:ApplicationsPageViewModel">
@@ -13,8 +13,19 @@
     </Design.DataContext>
     
     <UserControl.Resources>
-        <local:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+        <converters:ObjectIsNotNullConverter x:Key="ObjectIsNotNullConverter"/>
     </UserControl.Resources>
+    
+    <UserControl.Styles>
+        <Style Selector="Border.default-image">
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+    </UserControl.Styles>
 
     <ListBox ItemsSource="{Binding Listings}" 
              SelectedItem="{Binding SelectedListing}"
@@ -22,6 +33,7 @@
              Background="Transparent"
              BorderThickness="0"
              Margin="10">
+        
         <ListBox.Styles>
             <Style Selector="ListBoxItem">
                 <Setter Property="Background" Value="Transparent"/>
@@ -50,33 +62,64 @@
                         </Style>
                     </Border.Styles>
                     
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                        <!-- Тип объявления и статус -->
-                        <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0" Grid.Row="0">
-                            <TextBlock Text="{Binding ListingType.Value}" 
+                    <Grid ColumnDefinitions="80,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="15">
+                        
+                        <!-- Колонка 0: Главное изображение -->
+                        <Border Grid.Column="0" Grid.RowSpan="3"
+                                CornerRadius="6"
+                                BorderThickness="1"
+                                BorderBrush="#E0E0E0"
+                                Width="70" 
+                                Height="70"
+                                Background="#F5F5F5">
+                            
+                            <Panel>
+                                
+                                <!-- Плейсхолдер (всегда на заднем плане) -->
+                                <Border Background="#F5F5F5"
+                                        CornerRadius="4">
+                                    <TextBlock Text="🏠"
+                                               FontSize="24"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Opacity="0.3"/>
+                                </Border>
+                                
+                                <!-- Изображение (перекрывает плейсхолдер когда есть) -->
+                                <Image Source="{Binding MainImage}"
+                                       Stretch="UniformToFill"
+                                       IsVisible="{Binding HasImage}"/>
+                                
+                            </Panel>
+                        </Border>
+                        
+                        <!-- Колонка 1: Основная информация -->
+                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{Binding Listing.ListingType.Value}" 
                                        FontWeight="Bold" 
                                        FontSize="16"
                                        Foreground="#1976D2"/>
                             
-                            <Border Background="{Binding Status.Value, Converter={StaticResource StatusToColorConverter}}"
+                            <Border Background="{Binding Listing.Status.Value, Converter={StaticResource StatusToColorConverter}}"
                                     CornerRadius="4" 
                                     Padding="6,2"
                                     VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Status.Value}" 
+                                <TextBlock Text="{Binding Listing.Status.Value}" 
                                            FontSize="11"
                                            FontWeight="Medium"
                                            Foreground="White"/>
                             </Border>
                         </StackPanel>
                         
-                        <!-- Цена -->
-                        <StackPanel Orientation="Horizontal" Spacing="5" Grid.Column="1" Grid.Row="0"
+                        <!-- Колонка 2: Цена -->
+                        <StackPanel Grid.Column="2" Grid.Row="0"
+                                    Orientation="Horizontal" Spacing="5"
                                     HorizontalAlignment="Right">
-                            <TextBlock Text="{Binding Price}" 
+                            <TextBlock Text="{Binding Listing.Price, StringFormat='{}{0:N0}'}" 
                                        FontWeight="Bold" 
                                        FontSize="18"
                                        Foreground="#2E7D32"/>
-                            <TextBlock Text="{Binding Currency.Value}" 
+                            <TextBlock Text="{Binding Listing.Currency.Value}" 
                                        FontSize="14"
                                        Foreground="#666"
                                        VerticalAlignment="Bottom"
@@ -84,31 +127,41 @@
                         </StackPanel>
                         
                         <!-- Название объекта -->
-                        <TextBlock Text="{Binding Realty.Name}" 
-                                   Grid.Column="0" Grid.Row="1"
+                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"
+                                   Text="{Binding Listing.Realty.Name}" 
                                    FontSize="14"
                                    Margin="0,8,0,0"
-                                   TextWrapping="Wrap"/>
+                                   TextWrapping="Wrap"
+                                   FontWeight="SemiBold"/>
                         
                         <!-- Дополнительная информация -->
-                        <StackPanel Orientation="Horizontal" Spacing="15" 
-                                    Grid.Column="0" Grid.Row="2"
+                        <StackPanel Grid.Column="1" Grid.Row="2"
+                                    Orientation="Horizontal" Spacing="15" 
                                     Margin="0,8,0,0">
                             <StackPanel Orientation="Horizontal" Spacing="5">
                                 <TextBlock Text="ID:" FontSize="11" Opacity="0.6"/>
-                                <TextBlock Text="{Binding Id}" FontSize="11" Opacity="0.8"/>
+                                <TextBlock Text="{Binding Listing.Id}" FontSize="11" Opacity="0.8"/>
                             </StackPanel>
                             
-                            <StackPanel Orientation="Horizontal" Spacing="5">
+                            <StackPanel Orientation="Horizontal" Spacing="5" 
+                                        IsVisible="{Binding Listing.ResponsibleEmployee, Converter={StaticResource ObjectIsNotNullConverter}}">
                                 <TextBlock Text="Ответственный:" FontSize="11" Opacity="0.6"/>
-                                <TextBlock Text="{Binding ResponsibleEmployee.FirstName}" 
+                                <TextBlock Text="{Binding Listing.ResponsibleEmployee.FirstName}" 
+                                           FontSize="11" 
+                                           Opacity="0.8"/>
+                            </StackPanel>
+                            
+                            <!-- Адрес -->
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Адрес:" FontSize="11" Opacity="0.6"/>
+                                <TextBlock Text="{Binding Listing.Realty.Address.City}" 
                                            FontSize="11" 
                                            Opacity="0.8"/>
                             </StackPanel>
                         </StackPanel>
                         
                         <!-- Иконка клика -->
-                        <PathIcon Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"
+                        <PathIcon Grid.Column="2" Grid.Row="1" Grid.RowSpan="2"
                                   Data="M9,5V11L12,8.5M11,21H4C2.895,21 2,20.105 2,19V5C2,3.895 2.895,3 4,3H16C17.105,3 18,3.895 18,5V13H16V5H4V19H11V21Z"
                                   Width="16" Height="16"
                                   Opacity="0.6"
