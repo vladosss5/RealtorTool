@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:applicationPages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages.ApplicationPages"
+             xmlns:converters="clr-namespace:RealtorTool.Desktop.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RealtorTool.Desktop.Views.Pages.ApplicationPages.SellApplicationPageView"
              x:DataType="applicationPages:SellApplicationPageViewModel">
@@ -11,36 +12,49 @@
         <applicationPages:SellApplicationPageViewModel/>
     </Design.DataContext>
     
-    <Grid RowDefinitions="*, Auto, Auto, Auto" ColumnDefinitions="*, *">
-        <Border Grid.Column="0" Grid.Row="0"
-                Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
-        <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
-            <TextBlock Text="Данные о клиенте" Margin="10" FontSize="16"/>
-            <TextBox Watermark="Имя" Text="{Binding NewClient.FirstName}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Фамилия" Text="{Binding NewClient.LastName}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Отчество" Text="{Binding NewClient.MiddleName}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Номер телефона" Text="{Binding NewClient.Phone}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Серия паспорта" Text="{Binding NewClient.PassportSeries}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Номер паспорта" Text="{Binding NewClient.PassportNumber}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Постоянная прописка" Text="{Binding NewClient.RegistrationAddress}" 
-                     AcceptsReturn="True" Margin="5" CornerRadius="5"/>
+    <Grid RowDefinitions="*, Auto, Auto, Auto" ColumnDefinitions="*, *" Margin="5">
+        <!-- Данные клиента -->
+        <Border Grid.Column="0" Grid.Row="0" Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="10">
+            <TextBlock Text="Данные о клиенте" Margin="0,0,0,10" FontSize="16"/>
+            <TextBox Text="{Binding NewClient.FirstName}" Margin="0,0,0,5">
+                <TextBox.Watermark>Имя</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewClient.LastName}" Margin="0,0,0,5">
+                <TextBox.Watermark>Фамилия</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewClient.MiddleName}" Margin="0,0,0,5">
+                <TextBox.Watermark>Отчество</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewClient.Phone}" Margin="0,0,0,5">
+                <TextBox.Watermark>Номер телефона</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewClient.PassportSeries}" Margin="0,0,0,5">
+                <TextBox.Watermark>Серия паспорта</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewClient.PassportNumber}" Margin="0,0,0,5">
+                <TextBox.Watermark>Номер паспорта</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewClient.RegistrationAddress}" AcceptsReturn="True" Margin="0,0,0,5">
+                <TextBox.Watermark>Постоянная прописка</TextBox.Watermark>
+            </TextBox>
         </StackPanel>
         
-        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" 
-                Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
-        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Margin="5">
+        <!-- Фотографии и параметры недвижимости -->
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
+        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Margin="10">
             <!-- Кнопка добавления фото -->
             <Button Content="📷 Добавить фотографии" 
                     Command="{Binding SelectImagesCommand}"
                     HorizontalAlignment="Stretch"
                     Padding="15,10"
                     FontSize="14"
-                    Margin="5"/>
+                    Margin="0,0,0,10"/>
             
             <!-- Список загруженных фотографий -->
             <ItemsControl x:Name="PhotosContainer"
                           ItemsSource="{Binding UploadedPhotos}" 
-                          Margin="5"
+                          Margin="0,0,0,10"
                           MaxHeight="300"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
                 
@@ -56,26 +70,30 @@
                                 BorderThickness="1" 
                                 CornerRadius="8" 
                                 Padding="8"
-                                Background="White">
+                                Background="White"
+                                Margin="0,0,5,5">
                             
-                            <StackPanel Spacing="5">
+                            <StackPanel>
                                 <!-- Превью изображения -->
                                 <Image Source="{Binding Preview}" 
                                        Width="100" 
                                        Height="100" 
-                                       Stretch="UniformToFill"/>
+                                       Stretch="UniformToFill"
+                                       Margin="0,0,0,5"/>
                                 
                                 <!-- Информация о файле -->
                                 <TextBlock Text="{Binding FileName}" 
                                            FontSize="11" 
                                            TextWrapping="Wrap"
                                            MaxWidth="100"
-                                           TextAlignment="Center"/>
+                                           TextAlignment="Center"
+                                           Margin="0,0,0,2"/>
                                 
                                 <TextBlock Text="{Binding FileSizeFormatted}" 
                                            FontSize="10" 
                                            Foreground="#666"
-                                           TextAlignment="Center"/>
+                                           TextAlignment="Center"
+                                           Margin="0,0,0,5"/>
                                 
                                 <!-- Кнопка удаления -->
                                 <Button Content="Удалить" 
@@ -97,7 +115,7 @@
                        FontSize="12" 
                        Foreground="#999" 
                        HorizontalAlignment="Center"
-                       Margin="10"
+                       Margin="0,0,0,10"
                        IsVisible="{Binding !HasPhotos}"/>
             
             <!-- Информация о загруженных фото -->
@@ -105,79 +123,116 @@
                        FontSize="11" 
                        Foreground="#666" 
                        HorizontalAlignment="Center"
-                       Margin="5"
+                       Margin="0,0,0,10"
                        IsVisible="{Binding HasPhotos}"/>
-            <TabControl SelectedIndex="{Binding SelectedPropertyTypeIndex}">
+            
+            <!-- Тип недвижимости -->
+            <TabControl SelectedIndex="{Binding SelectedPropertyTypeIndex}" Margin="0,0,0,10">
                 <TabItem Header="Квартира">
-                    <StackPanel>
-                        <TextBox Watermark="Имя" Text="{Binding NewApartament.Name}" Margin="5" CornerRadius="5"/>
-                        <TextBox Watermark="Этажность" Text="{Binding NewApartament.Floor}" Margin="5" CornerRadius="5"/>
-                        <TextBox Watermark="Кол-во комнат" Text="{Binding NewApartament.RoomsCount}" Margin="5" CornerRadius="5"/>
-                        <TextBox Watermark="Общая площадь" Text="{Binding NewApartament.TotalArea}" Margin="5" CornerRadius="5"/>
-                        <TextBox Watermark="Жилая площадь" Text="{Binding NewApartament.LivingArea}" Margin="5" CornerRadius="5"/>
-                        <TextBox Watermark="Площадь кухни" Text="{Binding NewApartament.KitchenArea}" Margin="5" CornerRadius="5"/>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Балкон: "/>
-                            <CheckBox IsChecked="{Binding NewApartament.HasBalcony}"/>
-                            <TextBlock Text="Лоджия: "/>
-                            <CheckBox IsChecked="{Binding NewApartament.HasLoggia}"/>
+                    <StackPanel Margin="5">
+                        <TextBox Text="{Binding NewApartament.Name}" Margin="0,0,0,5">
+                            <TextBox.Watermark>Название</TextBox.Watermark>
+                        </TextBox>
+                        <TextBox Text="{Binding NewApartament.Floor}" Margin="0,0,0,5">
+                            <TextBox.Watermark>Этаж</TextBox.Watermark>
+                        </TextBox>
+                        <TextBox Text="{Binding NewApartament.RoomsCount}" Margin="0,0,0,5">
+                            <TextBox.Watermark>Кол-во комнат</TextBox.Watermark>
+                        </TextBox>
+                        <TextBox Text="{Binding NewApartament.TotalArea}" Margin="0,0,0,5">
+                            <TextBox.Watermark>Общая площадь</TextBox.Watermark>
+                        </TextBox>
+                        <TextBox Text="{Binding NewApartament.LivingArea}" Margin="0,0,0,5">
+                            <TextBox.Watermark>Жилая площадь</TextBox.Watermark>
+                        </TextBox>
+                        <TextBox Text="{Binding NewApartament.KitchenArea}" Margin="0,0,0,5">
+                            <TextBox.Watermark>Площадь кухни</TextBox.Watermark>
+                        </TextBox>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <CheckBox Content="Балкон" IsChecked="{Binding NewApartament.HasBalcony}" Margin="0,0,10,0"/>
+                            <CheckBox Content="Лоджия" IsChecked="{Binding NewApartament.HasLoggia}"/>
                         </StackPanel>
                         
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock Text="Тип ремонта: " Margin="5" FontSize="14" 
-                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                            <DataGrid ItemsSource="{Binding RenovationTypes}" Margin="5">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Название" Binding="{Binding Value}"/>
-                                    <DataGridCheckBoxColumn Header="☑" IsReadOnly="False" Binding="{Binding IsSelected}"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
+                        <Grid ColumnDefinitions="*,*" Margin="0,0,0,5">
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="Тип ремонта:" Margin="0,0,0,5"/>
+                                <ListBox ItemsSource="{Binding RenovationTypes}" Height="100">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding Value}" IsChecked="{Binding IsSelected}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                <TextBlock Text="Тип санузла:" Margin="0,0,0,5"/>
+                                <ListBox ItemsSource="{Binding BathroomTypes}" Height="100">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding Value}" IsChecked="{Binding IsSelected}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </Grid>
                         
-                            <TextBlock Text="Тип санузла: " Margin="5" FontSize="14" 
-                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                            <DataGrid ItemsSource="{Binding BathroomTypes}" Margin="5">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Название" Binding="{Binding Value}"/>
-                                    <DataGridCheckBoxColumn Header="☑" IsReadOnly="False" Binding="{Binding IsSelected}"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </StackPanel>
-                        <TextBox Watermark="Описание" Text="{Binding NewApartament.Description}" AcceptsReturn="True" Margin="5" CornerRadius="5"/>
+                        <TextBox Text="{Binding NewApartament.Description}" AcceptsReturn="True" Height="60">
+                            <TextBox.Watermark>Описание</TextBox.Watermark>
+                        </TextBox>
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Участок">
-                    <TextBlock>Разметка полей участка</TextBlock>
+                    <TextBlock Text="Разметка полей участка" Margin="5"/>
                 </TabItem>
                 <TabItem Header="Частный дом">
-                    <TextBlock>Разметка полей частного дома</TextBlock>
+                    <TextBlock Text="Разметка полей частного дома" Margin="5"/>
                 </TabItem>
             </TabControl>
         </StackPanel>
         
-        <Border Grid.Column="0" Grid.Row="1"
-                Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
-        <StackPanel Grid.Column="0" Grid.Row="1" Margin="5">
-            <TextBlock Text="Информация по заявке" Margin="10" FontSize="16"/>
-            <TextBox Watermark="Цена" Text="{Binding NewListing.Price}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Дополнительные условия" Text="{Binding NewListing.Terms}"
-                     AcceptsReturn="True" Margin="5" CornerRadius="5"/>
+        <!-- Информация по заявке -->
+        <Border Grid.Column="0" Grid.Row="1" Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="10">
+            <TextBlock Text="Информация по заявке" Margin="0,0,0,10" FontSize="16"/>
+            <TextBox Text="{Binding NewListing.Price}" Margin="0,0,0,5">
+                <TextBox.Watermark>Цена</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewListing.Terms}" AcceptsReturn="True" Height="60" Margin="0,0,0,5">
+                <TextBox.Watermark>Дополнительные условия</TextBox.Watermark>
+            </TextBox>
         </StackPanel>
         
-        <Border Grid.Column="0" Grid.Row="2"
-                Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
-        <StackPanel Grid.Column="0" Grid.Row="2" Margin="5">
-            <TextBlock Text="Информация по заявке" Margin="10" FontSize="16"/>
-            <TextBox Watermark="Город" Text="{Binding NewAddress.City}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Район" Text="{Binding NewAddress.District}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Улица" Text="{Binding NewAddress.Street}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Номер дома" Text="{Binding NewAddress.HouseNumber}" Margin="5" CornerRadius="5"/>
-            <TextBox Watermark="Номер строения" Text="{Binding NewAddress.BuildingNumber}" Margin="5" CornerRadius="5"/>
+        <!-- Адрес недвижимости -->
+        <Border Grid.Column="0" Grid.Row="2" Background="White" Opacity="0.6" Margin="5" CornerRadius="10"/>
+        <StackPanel Grid.Column="0" Grid.Row="2" Margin="10">
+            <TextBlock Text="Адрес недвижимости" Margin="0,0,0,10" FontSize="16"/>
+            <TextBox Text="{Binding NewAddress.City}" Margin="0,0,0,5">
+                <TextBox.Watermark>Город</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewAddress.District}" Margin="0,0,0,5">
+                <TextBox.Watermark>Район</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewAddress.Street}" Margin="0,0,0,5">
+                <TextBox.Watermark>Улица</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewAddress.HouseNumber}" Margin="0,0,0,5">
+                <TextBox.Watermark>Номер дома</TextBox.Watermark>
+            </TextBox>
+            <TextBox Text="{Binding NewAddress.BuildingNumber}" Margin="0,0,0,5">
+                <TextBox.Watermark>Номер строения</TextBox.Watermark>
+            </TextBox>
         </StackPanel>
         
+        <!-- Кнопка создания -->
         <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Margin="5">
             <Button Content="Создать заявку на продажу" 
                     Command="{Binding CreateSellRequest}"
-                    Margin="5"/>
+                    HorizontalAlignment="Center"
+                    Padding="20,10"
+                    Background="#007ACC"
+                    Foreground="White"/>
         </Border>
     </Grid>
 </UserControl>

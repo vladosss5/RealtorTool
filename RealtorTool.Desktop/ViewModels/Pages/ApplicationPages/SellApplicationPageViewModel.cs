@@ -131,6 +131,17 @@ public class SellApplicationPageViewModel : ViewModelBase
             NewListing.StatusId = "listing_active";
 
             _context.Add(NewListing);
+            
+            var sellRequest = new ClientRequest
+            {
+                Type = ApplicationType.Sale,
+                Status = ApplicationStatus.New,
+                ClientId = NewClient.Id,
+                ListingId = NewListing.Id,
+                CreatedDate = DateTime.UtcNow
+            };
+            
+            _context.Add(sellRequest);
             await _context.SaveChangesAsync();
         }
         catch (Exception e)
