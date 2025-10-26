@@ -198,7 +198,7 @@ public class SellApplicationPageViewModel : ViewModelBase
         }
     }
 
-    private void RemovePhoto(UploadedPhoto photo)
+    public void RemovePhoto(UploadedPhoto photo)
     {
         UploadedPhotos.Remove(photo);
         _photoService.DisposeImagePreview(photo);

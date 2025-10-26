@@ -14,6 +14,8 @@ public class BuyApplicationPageViewModel : PageViewModelBase
 {
     private readonly DataContext _context;
 
+    public Employee _authEmploee { get; private set; }
+
     [Reactive] public Client NewClient { get; set; } = new();
     [Reactive] public decimal? MaxPrice { get; set; }
     [Reactive] public int? MinRooms { get; set; }
@@ -22,7 +24,7 @@ public class BuyApplicationPageViewModel : PageViewModelBase
     [Reactive] public string DesiredLocation { get; set; }
     [Reactive] public string AdditionalRequirements { get; set; }
 
-    // Для выбора типа недвижимости
+    
     private int _selectedPropertyTypeIndex;
     public int SelectedPropertyTypeIndex
     {
@@ -43,7 +45,23 @@ public class BuyApplicationPageViewModel : PageViewModelBase
     public BuyApplicationPageViewModel(DataContext context)
     {
         _context = context;
+        GetDataFromMessageBus();
         CreateBuyRequestCommand = ReactiveCommand.CreateFromTask(CreateBuyRequestAsync);
+    }
+    
+    private void GetDataFromMessageBus()
+    {
+        MessageBus.Current
+            .Listen<Employee>("CurrentAuth")
+            .Subscribe(x => 
+            {
+                _authEmploee = x;
+            });
+
+        if (_authEmploee != null)
+            return;
+
+        _authEmploee = _context.Employees.Find("system_empl")!;
     }
 
     private async Task CreateBuyRequestAsync()
@@ -60,7 +78,7 @@ public class BuyApplicationPageViewModel : PageViewModelBase
                 Type = ApplicationType.Purchase,
                 Status = ApplicationStatus.New,
                 ClientId = NewClient.Id,
-                EmployeeId = "temp_employee_id", // TODO: Заменить на ID текущего сотрудника
+                EmployeeId = _authEmploee.Id,
                 MaxPrice = MaxPrice,
                 MinRooms = MinRooms,
                 MinArea = MinArea,

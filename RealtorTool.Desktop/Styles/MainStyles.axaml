@@ -6,7 +6,7 @@
         </Border>
     </Design.PreviewWith>
     
-    <Style Selector="Window">
+    <Style Selector="Window.main-window">
         <Setter Property="Background">
             <Setter.Value>
                 <ImageBrush Stretch="UniformToFill" Source="/Assets/Background.png" />

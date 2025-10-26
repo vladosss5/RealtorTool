@@ -6,6 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RealtorTool.Desktop.Views.Windows.MainWindow"
         x:DataType="windows:MainWindowViewModel"
+        Classes="main-window"
         Icon="/Assets/logo.ico"
         Title="RealtorTool.Desktop">
 
