@@ -2,7 +2,79 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="RealtorTool.Desktop.Views.Pages.ApplicationPages.BuyApplicationPageView">
-    окно покупки
+             xmlns:vm="clr-namespace:RealtorTool.Desktop.ViewModels.Pages.ApplicationPages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1000"
+             x:Class="RealtorTool.Desktop.Views.Pages.ApplicationPages.BuyApplicationPageView"
+             x:DataType="vm:BuyApplicationPageViewModel">
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <Border Padding="15" Background="#f5f5f5" CornerRadius="5">
+                <TextBlock Text="Создание заявки на покупку" FontSize="20" FontWeight="Bold"/>
+            </Border>
+            
+            <!-- Данные клиента -->
+            <Border Padding="15" Background="#f5f5f5" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Данные клиента" FontWeight="Bold"/>
+                    
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <TextBox Grid.Row="0" Grid.Column="0" Watermark="Фамилия" Text="{Binding NewClient.LastName}"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Watermark="Имя" Text="{Binding NewClient.FirstName}"/>
+                        <TextBox Grid.Row="1" Grid.Column="0" Watermark="Отчество" Text="{Binding NewClient.MiddleName}"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Watermark="Телефон" Text="{Binding NewClient.Phone}"/>
+                        <TextBox Grid.Row="2" Grid.Column="0" Watermark="Серия паспорта" Text="{Binding NewClient.PassportSeries}"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Watermark="Номер паспорта" Text="{Binding NewClient.PassportNumber}"/>
+                        <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Watermark="Адрес регистрации" Text="{Binding NewClient.RegistrationAddress}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Параметры поиска -->
+            <Border Padding="15" Background="#f5f5f5" CornerRadius="5" VerticalAlignment="Stretch">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Параметры поиска" FontWeight="Bold"/>
+                    <TabControl SelectedIndex="{Binding SelectedPropertyTypeIndex}">
+                        <TabItem Header="Квартира">
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                <TextBox Grid.Row="0" Grid.Column="0" Watermark="Максимальная цена" 
+                                         Text="{Binding MaxPrice, StringFormat='{}{0:N0}'}"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" Watermark="Минимальное кол-во комнат" 
+                                         Text="{Binding MinRooms}"/>
+                                <TextBox Grid.Row="1" Grid.Column="0" Watermark="Минимальная площадь" 
+                                         Text="{Binding MinArea}"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Watermark="Максимальная площадь" 
+                                         Text="{Binding MaxArea}"/>
+                                <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Watermark="Желаемый район/локация" 
+                                         Text="{Binding DesiredLocation}"/>
+                                <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Watermark="Дополнительные требования" 
+                                         Text="{Binding AdditionalRequirements}" AcceptsReturn="True" Height="60"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Участок">
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                <TextBox Grid.Row="0" Grid.Column="0" Watermark="Максимальная цена" 
+                                         Text="{Binding MaxPrice, StringFormat='{}{0:N0}'}"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" Watermark="Желаемый район/локация" 
+                                         Text="{Binding DesiredLocation}"/>
+                                <TextBox Grid.Row="1" Grid.Column="0" Watermark="Минимальная площадь" 
+                                         Text="{Binding MinArea}"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Watermark="Максимальная площадь" 
+                                         Text="{Binding MaxArea}"/>
+                                <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Watermark="Дополнительные требования" 
+                                         Text="{Binding AdditionalRequirements}" AcceptsReturn="True" Height="60"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Кнопка создания -->
+            <Button Content="Создать заявку на покупку" 
+                    Command="{Binding CreateBuyRequestCommand}"
+                    HorizontalAlignment="Center"
+                    Padding="20,10"
+                    Background="#007ACC"
+                    Foreground="White"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -5,14 +5,12 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
-using RealtorTool.Desktop.Services.Implementations;
 using RealtorTool.Desktop.ViewModels.Items;
 using RealtorTool.Desktop.ViewModels.Windows;
 using RealtorTool.Services.Interfaces;
@@ -28,16 +26,16 @@ public class ApplicationsPageViewModel : PageViewModelBase
     [Reactive] public ListingItemViewModel? SelectedListing { get; set; }
 
     public ApplicationsPageViewModel(
-        DataContext dataContext, 
+        DataContext dataContext,
         IServiceProvider serviceProvider)
     {
         _dataContext = dataContext;
         _serviceProvider = serviceProvider;
-        
+
         this.WhenAnyValue(x => x.SelectedListing)
             .Where(listing => listing != null)
             .Subscribe(async listing => await OpenListingDetailAsync(listing!.Listing));
-        
+
         _ = LoadDataAsync();
     }
 
@@ -50,26 +48,26 @@ public class ApplicationsPageViewModel : PageViewModelBase
             .Include(l => l.ListingType)
             .Include(l => l.Status)
             .ToListAsync();
-        
+
         Listings.Clear();
-    
+
         foreach (var listing in listings)
         {
             Listings.Add(new ListingItemViewModel(listing));
         }
     }
-    
+
     private async Task OpenListingDetailAsync(Listing listing)
     {
         if (listing != null)
         {
             MessageBus.Current.SendMessage(listing);
-            
+
             var detailVm = _serviceProvider.GetRequiredService<ListingDetailViewModel>();
-            
+
             if (detailVm is IParameterReceiver parameterReceiver)
                 parameterReceiver.ReceiveParameter(listing.Id);
-    
+
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
                 var mainWindow = desktopLifetime.MainWindow;
