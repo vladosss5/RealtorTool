@@ -1,6 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
 using RealtorTool.Services.Interfaces;
@@ -23,9 +24,8 @@ public class AccountingService : IAccountingService
         if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             return null;
 
-        var employee = new Employee();
-            // await _context.Employees
-            // .FirstOrDefaultAsync(a => a.Login == login);
+        var employee = await _context.Employees
+            .FirstOrDefaultAsync(a => a.Login == login);
 
         if (employee == null)
             return null;
