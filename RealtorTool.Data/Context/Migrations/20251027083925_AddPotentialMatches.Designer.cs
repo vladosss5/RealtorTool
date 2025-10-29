@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RealtorTool.Data.Context;
@@ -11,9 +12,11 @@ using RealtorTool.Data.Context;
 namespace RealtorTool.Data.Context.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251027083925_AddPotentialMatches")]
+    partial class AddPotentialMatches
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -490,57 +493,72 @@ namespace RealtorTool.Data.Context.Migrations
                 {
                     b.Property<string>("BuyRequestId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("buy_request_id");
 
                     b.Property<int>("BuyType")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("buy_type");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("city");
 
                     b.Property<string>("DesiredLocation")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("desired_location");
 
                     b.Property<string>("District")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("district");
 
                     b.Property<decimal>("ListingPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("listing_price");
 
                     b.Property<decimal?>("MaxArea")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("max_area");
 
                     b.Property<decimal?>("MaxPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("max_price");
 
                     b.Property<decimal?>("MinArea")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("min_area");
 
                     b.Property<int?>("MinRooms")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("min_rooms");
 
                     b.Property<int>("RealtyType")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("realty_type");
 
                     b.Property<int?>("RoomsCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("rooms_count");
 
                     b.Property<string>("SellRequestId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("sell_request_id");
 
                     b.Property<int>("SellType")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("sell_type");
 
                     b.Property<decimal?>("TotalArea")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("total_area");
 
                     b.ToTable((string)null);
 
-                    b.ToView("PotentialMatches", (string)null);
+                    b.ToView("potential_matches", (string)null);
                 });
 
             modelBuilder.Entity("RealtorTool.Core.DbEntities.ClientPhoto", b =>

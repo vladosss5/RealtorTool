@@ -19,20 +19,17 @@ namespace RealtorTool.Desktop.Services.Implementations;
 public class PhotoService : IPhotoService
 {
     private readonly DataContext _context;
-    private readonly IWindowService _windowService;
     
     public PhotoService(
-        DataContext context, 
-        IWindowService windowService)
+        DataContext context)
     {
         _context = context;
-        _windowService = windowService;
     }
     
-    public async Task<List<UploadedPhoto>> SelectImagesAsync()
+    public async Task<List<UploadedPhoto>> SelectImagesAsync(Window ownerWindow = null)
     {
         var uploadedPhotos = new List<UploadedPhoto>();
-        
+    
         try
         {
             var dialog = new OpenFileDialog
@@ -49,7 +46,9 @@ public class PhotoService : IPhotoService
                 }
             };
 
-            var ownerWindow = GetDialogOwnerWindow();
+            // Если окно не передано, пытаемся найти его
+            ownerWindow ??= GetDialogOwnerWindow();
+        
             if (ownerWindow == null)
             {
                 Console.WriteLine("Не удалось определить окно для диалога");
@@ -59,6 +58,7 @@ public class PhotoService : IPhotoService
             var result = await dialog.ShowAsync(ownerWindow);
             if (result != null && result.Any())
             {
+                // Обработка выбранных файлов
                 foreach (var filePath in result)
                 {
                     if (IsImageFile(filePath))
@@ -78,6 +78,24 @@ public class PhotoService : IPhotoService
         }
 
         return uploadedPhotos;
+    }
+
+    private Window? GetDialogOwnerWindow()
+    {
+        try
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                // Возвращаем активное окно или главное окно
+                return desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+            }
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при получении окна: {ex.Message}");
+            return null;
+        }
     }
 
     public async Task<UploadedPhoto?> LoadImageAsync(string filePath)
@@ -223,24 +241,24 @@ public class PhotoService : IPhotoService
         };
     }
 
-    private Window? GetDialogOwnerWindow()
-    {
-        // 1. Через WindowService
-        var window = _windowService.GetMainWindow();
-        if (window != null) return window;
-
-        // 2. Через ApplicationLifetime
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-        {
-            window = desktopLifetime.MainWindow ?? desktopLifetime.Windows.FirstOrDefault();
-            if (window != null) return window;
-        }
-
-        // 3. Через TopLevel
-        window = TopLevel.GetTopLevel(null) as Window;
-        if (window != null) return window;
-
-        Console.WriteLine("Не удалось найти существующее окно для диалога");
-        return null;
-    }
+    // private Window? GetDialogOwnerWindow()
+    // {
+    //     // 1. Через WindowService
+    //     var window = _windowService.GetMainWindow();
+    //     if (window != null) return window;
+    //
+    //     // 2. Через ApplicationLifetime
+    //     if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+    //     {
+    //         window = desktopLifetime.MainWindow ?? desktopLifetime.Windows.FirstOrDefault();
+    //         if (window != null) return window;
+    //     }
+    //
+    //     // 3. Через TopLevel
+    //     window = TopLevel.GetTopLevel(null) as Window;
+    //     if (window != null) return window;
+    //
+    //     Console.WriteLine("Не удалось найти существующее окно для диалога");
+    //     return null;
+    // }
 }

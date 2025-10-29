@@ -18,11 +18,11 @@ public class Apartment : Realty
 
     public bool HasLoggia { get; set; }
 
-    public string RenovationTypeId { get; set; }
+    public string? RenovationTypeId { get; set; }
     
     public DictionaryValue? RenovationType { get; set; }
     
-    public string BathroomTypeId { get; set; }
+    public string? BathroomTypeId { get; set; }
     
     public DictionaryValue? BathroomType { get; set; }
 }

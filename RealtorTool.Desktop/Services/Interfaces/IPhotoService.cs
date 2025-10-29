@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using RealtorTool.Core.Enums;
 using RealtorTool.Desktop.DTOs;
 
@@ -13,7 +14,7 @@ public interface IPhotoService
     /// <summary>
     /// Выбрать изображения через диалоговое окно
     /// </summary>
-    Task<List<UploadedPhoto>> SelectImagesAsync();
+    Task<List<UploadedPhoto>> SelectImagesAsync(Window ownerWindow = null);
     
     /// <summary>
     /// Загрузить изображение из файла

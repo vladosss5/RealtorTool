@@ -20,9 +20,9 @@ public class Deal : BaseIdEntity
     
     public DateTime DealDate { get; set; }
     
-    public string DealTypeId { get; set; } = null!;
+    public string? DealTypeId { get; set; }
     
-    public DictionaryValue? DealType { get; set; } = null!;
+    public DictionaryValue? DealType { get; set; }
     
     public string StatusId { get; set; } = null!;
     

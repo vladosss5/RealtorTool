@@ -12,11 +12,11 @@ public class PrivateHouse : Realty
 
     public bool? HasBasement { get; set; }
 
-    public string HeatingTypeId { get; set; }
+    public string? HeatingTypeId { get; set; }
     
     public DictionaryValue? HeatingType { get; set; }
     
-    public string ConstructionMaterialId { get; set; }
+    public string? ConstructionMaterialId { get; set; }
 
     public DictionaryValue? ConstructionMaterial { get; set; }
 

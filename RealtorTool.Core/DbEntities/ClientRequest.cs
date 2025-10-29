@@ -79,7 +79,6 @@ public class ClientRequest : BaseIdEntity
     /// </summary>
     public string? AdditionalRequirements { get; set; }
     
-    // Ссылка на созданный Listing для запросов на продажу/сдачу
     /// <summary>
     /// Идентификатор объявления (для запросов на продажу/сдачу)
     /// </summary>
@@ -109,6 +108,11 @@ public class ClientRequest : BaseIdEntity
     /// Сделка по запросу
     /// </summary>
     public Deal? Deal { get; set; }
+    
+    /// <summary>
+    /// Желаемый тип недвижимости (для запросов на покупку/аренду)
+    /// </summary>
+    public RealtyType? DesiredRealtyType { get; set; }
     
     [NotMapped] public Realty? Realty => Listing?.Realty;
 }

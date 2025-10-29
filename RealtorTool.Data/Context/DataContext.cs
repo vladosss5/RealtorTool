@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Core.DbEntities.Views;
 
 namespace RealtorTool.Data.Context;
 
@@ -38,6 +39,8 @@ public class DataContext : DbContext
     // Предложения и сделки
     public DbSet<Listing> Listings { get; set; } = null!;
     public DbSet<Deal> Deals { get; set; } = null!;
+    public DbSet<DealParticipant> DealParticipants { get; set; } = null!;
+    public DbSet<PotentialMatch> PotentialMatches { get; set; } = null!;
 
     /// <summary>
     /// Конфигурация модели данных
@@ -432,6 +435,37 @@ public class DataContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(ep => ep.EmployeeId).IsUnique();
+        });
+        
+        modelBuilder.Entity<PotentialMatch>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("PotentialMatches");
+        
+            // Маппинг свойств
+            // entity.Property(e => e.BuyRequestId).HasColumnName("buy_request_id");
+            // entity.Property(e => e.SellRequestId).HasColumnName("sell_request_id");
+            // entity.Property(e => e.BuyType).HasColumnName("buy_type");
+            // entity.Property(e => e.SellType).HasColumnName("sell_type");
+            // entity.Property(e => e.MaxPrice).HasColumnName("max_price");
+            // entity.Property(e => e.ListingPrice).HasColumnName("listing_price");
+            // entity.Property(e => e.RealtyType).HasColumnName("realty_type");
+            // entity.Property(e => e.TotalArea).HasColumnName("total_area");
+            // entity.Property(e => e.RoomsCount).HasColumnName("rooms_count");
+            // entity.Property(e => e.City).HasColumnName("city");
+            // entity.Property(e => e.District).HasColumnName("district");
+            // entity.Property(e => e.MinRooms).HasColumnName("min_rooms");
+            // entity.Property(e => e.MinArea).HasColumnName("min_area");
+            // entity.Property(e => e.MaxArea).HasColumnName("max_area");
+            // entity.Property(e => e.DesiredLocation).HasColumnName("desired_location");
+        
+            // Игнорируем вычисляемые свойства для EF
+            entity.Ignore(e => e.MatchScore);
+            entity.Ignore(e => e.IsGoodMatch);
+            entity.Ignore(e => e.IsPerfectMatch);
+            entity.Ignore(e => e.MatchDescription);
+            entity.Ignore(e => e.PriceDifference);
+            entity.Ignore(e => e.IsWithinBudget);
         });
     }
     

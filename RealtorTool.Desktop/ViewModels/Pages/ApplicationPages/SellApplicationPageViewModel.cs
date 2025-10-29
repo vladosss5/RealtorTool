@@ -28,11 +28,10 @@ public class SellApplicationPageViewModel : ViewModelBase
     [Reactive] public Listing NewListing { get; set; } = new();
     [Reactive] public Client NewClient { get; set; } = new();
     [Reactive] public Area NewArea { get; set; } = new();
+    [Reactive] public PrivateHouse NewPrivateHouse { get; set; } = new();
     [Reactive] public Apartment NewApartament { get; set; } = new();
     [Reactive] public ObservableCollection<UploadedPhoto> UploadedPhotos { get; set; } = new();
     [Reactive] public string PhotosSummary { get; set; } = "Фотографии не добавлены";
-
-    public bool HasPhotos => UploadedPhotos.Any();
 
     // Коллекции.
     public ObservableCollection<DictionaryValue> RenovationTypes { get; set; } = new();
@@ -72,8 +71,8 @@ public class SellApplicationPageViewModel : ViewModelBase
     {
         _context = context;
         _photoService = photoService;
+        
         CreateSellRequest = ReactiveCommand.CreateFromTask(CreateSellRequestAsync);
-
         SelectImagesCommand = ReactiveCommand.CreateFromTask(SelectImagesAsync);
         RemovePhotoCommand = ReactiveCommand.Create<UploadedPhoto>(RemovePhoto);
 
@@ -97,31 +96,47 @@ public class SellApplicationPageViewModel : ViewModelBase
     {
         try
         {
-            await AddClientDataToContextAsync();
-            await AddAddressDataToContextAsync();
-            
-            Realty? createdRealty = null;
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            var employee = await _context.Employees.FirstOrDefaultAsync(); // TODO Подключить MB
+            if (employee == null)
+            {
+                await MessageBoxManager
+                    .GetMessageBoxStandard("Ошибка", "Не найден сотрудник для обработки заявки")
+                    .ShowAsync();
+                return;
+            }
+
+            _context.Clients.Attach(NewClient);
+
+            _context.Addresses.Attach(NewAddress);
+
+            Realty createdRealty = null;
 
             switch (CurrentRealtyType)
             {
                 case RealtyType.Area:
-                    await AddAreaDataToContextAsync();
+                    NewArea.Address = NewAddress;
+                    NewArea.RealtyType = RealtyType.Area;
+                    _context.Areas.Attach(NewArea);
+                    createdRealty = NewArea;
                     break;
+
                 case RealtyType.Apartment:
-                    createdRealty = await AddApartmentDataToContextAsync();
-                    NewListing.Realty = NewApartament;
+                    NewApartament.RenovationType = RenovationTypes.FirstOrDefault(x => x.IsSelected);
+                    NewApartament.BathroomType = BathroomTypes.FirstOrDefault(x => x.IsSelected);
+                    NewApartament.Address = NewAddress;
+                    NewApartament.RealtyType = RealtyType.Apartment;
+                    _context.Apartments.Attach(NewApartament);
+                    createdRealty = NewApartament;
                     break;
+
                 case RealtyType.PrivateHouse:
-                    await AddPrivateHouseDataToContextAsync();
+                    NewPrivateHouse.Address = NewAddress;
+                    NewPrivateHouse.RealtyType = RealtyType.PrivateHouse;
+                    _context.PrivateHouses.Attach(NewPrivateHouse);
+                    createdRealty = NewPrivateHouse;
                     break;
-            }
-            
-            if (createdRealty != null)
-            {
-                await _photoService.SavePhotosToDatabaseAsync(
-                    UploadedPhotos.ToList(), 
-                    createdRealty.Id, 
-                    EntityTypeForPhoto.Realty);
             }
 
             NewListing.Realty = createdRealty;
@@ -129,25 +144,42 @@ public class SellApplicationPageViewModel : ViewModelBase
             NewListing.CurrencyId = "currency_rub";
             NewListing.ListingTypeId = "listing_sale";
             NewListing.StatusId = "listing_active";
+            _context.Listings.Attach(NewListing);
 
-            _context.Add(NewListing);
-            
             var sellRequest = new ClientRequest
             {
                 Type = ApplicationType.Sale,
                 Status = ApplicationStatus.New,
                 ClientId = NewClient.Id,
                 ListingId = NewListing.Id,
+                EmployeeId = employee.Id,
                 CreatedDate = DateTime.UtcNow
             };
-            
-            _context.Add(sellRequest);
+            _context.ClientRequests.Attach(sellRequest);
+
             await _context.SaveChangesAsync();
+
+            if (createdRealty != null && UploadedPhotos.Any())
+            {
+                await _photoService.SavePhotosToDatabaseAsync(
+                    UploadedPhotos.ToList(), 
+                    createdRealty.Id, 
+                    EntityTypeForPhoto.Realty);
+            }
+
+            await transaction.CommitAsync();
+
+            await MessageBoxManager
+                .GetMessageBoxStandard("Успех", "Заявка на продажу успешно создана")
+                .ShowAsync();
+
+            ClearForm();
         }
         catch (Exception e)
         {
+            var exceptionMessage = $"{e.Message}\n{(e.InnerException?.Message ?? "")}";
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка", e.Message)
+                .GetMessageBoxStandard("Ошибка", exceptionMessage)
                 .ShowAsync();
         }
     }
@@ -215,5 +247,27 @@ public class SellApplicationPageViewModel : ViewModelBase
 
         var totalSize = UploadedPhotos.Sum(p => p.FileSize);
         PhotosSummary = $"{UploadedPhotos.Count} фото • {_photoService.FormatFileSize(totalSize)}";
+    }
+    
+    private void ClearForm()
+    {
+        NewAddress = new Address();
+        NewListing = new Listing();
+        NewClient = new Client();
+        NewArea = new Area();
+        NewApartament = new Apartment();
+        NewPrivateHouse = new PrivateHouse();
+        UploadedPhotos.Clear();
+        UpdatePhotosSummary();
+        
+        // Сбрасываем выбранные типы ремонта и санузлов
+        foreach (var item in RenovationTypes)
+        {
+            item.IsSelected = false;
+        }
+        foreach (var item in BathroomTypes)
+        {
+            item.IsSelected = false;
+        }
     }
 }

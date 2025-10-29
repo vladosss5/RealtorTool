@@ -28,4 +28,13 @@
       <ProjectReference Include="..\RealtorTool.Core\RealtorTool.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Context\Migrations\Scripts\CreatePotentialMatchesView.sql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Context\Migrations\Scripts\DropPotentialMatchesView.sql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

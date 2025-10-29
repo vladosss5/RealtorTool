@@ -67,6 +67,7 @@ sealed class Program
         services.AddSingleton<IAccountingService, AccountingService>();
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IPhotoService, PhotoService>();
+        services.AddSingleton<IMatchingService, MatchingService>();
     
         // Регистрация ViewModels
         services.AddTransient<AuthorizationWindowViewModel>();

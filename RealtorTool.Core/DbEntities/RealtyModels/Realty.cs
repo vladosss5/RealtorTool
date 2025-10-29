@@ -21,14 +21,10 @@ public class Realty : BaseIdEntity
     public bool IsActive { get; set; } = true;
     
     public RealtyType RealtyType { get; set; }
-    
-    public string? RealtyId { get; set; }
 
     public ICollection<Realty>? ChildRealties { get; set; } = new List<Realty>();
     
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
 
     public ICollection<RealtyPhoto> Photos { get; set; } = new List<RealtyPhoto>();
-    
-    public ICollection<ClientRequest> Applications { get; set; } = new List<ClientRequest>();
 }

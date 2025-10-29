@@ -14,13 +14,14 @@
     
 <ScrollViewer>
     <Grid ColumnDefinitions="*, *" Margin="5">
+        <!-- Левая колонка -->
         <StackPanel Grid.Column="0">
             <Border Margin="5" Padding="15" Background="#f5f5f5" CornerRadius="5">
                 <TextBlock Text="Создание заявки на продажу" FontSize="20" FontWeight="Bold"/>
             </Border>
         
             <!-- Данные клиента -->
-            <Border Background="White" Opacity="0.7" Margin="5" CornerRadius="10">
+            <Border Background="#B3FFFFFF" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <TextBlock Text="Данные о клиенте" Margin="10" FontSize="16"/>
                     <TextBox Text="{Binding NewClient.FirstName}" Margin="5">
@@ -48,7 +49,7 @@
             </Border>
             
             <!-- Информация по заявке -->
-            <Border Background="White" Opacity="0.7" Margin="5" CornerRadius="10">
+            <Border Background="#B3FFFFFF" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <TextBlock Text="Информация по заявке" Margin="0,0,0,10" FontSize="16"/>
                     <TextBox Text="{Binding NewListing.Price}" Margin="0,0,0,5">
@@ -61,7 +62,7 @@
             </Border>
         
             <!-- Адрес недвижимости -->
-            <Border Background="White" Opacity="0.7" Margin="5" CornerRadius="10">
+            <Border Background="#B3FFFFFF" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <TextBlock Text="Адрес недвижимости" Margin="0,0,0,10" FontSize="16"/>
                     <TextBox Text="{Binding NewAddress.City}" Margin="0,0,0,5">
@@ -83,9 +84,10 @@
             </Border>
         </StackPanel>
         
+        <!-- Парвая колонка -->
         <StackPanel Grid.Column="1">
             <!-- Параметры недвижимости -->
-            <Border Background="White" Opacity="0.7" Margin="5" CornerRadius="10">
+            <Border Background="#B3FFFFFF" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <!-- Тип недвижимости -->
                     <TabControl SelectedIndex="{Binding SelectedPropertyTypeIndex}" Margin="0,0,0,10">
@@ -154,18 +156,21 @@
                 </StackPanel>
             </Border>
             
-            
             <!-- Панель добавления фото -->
-            <Border Background="White" Opacity="0.7" Margin="5" CornerRadius="10">
+            <Border Background="#B3FFFFFF" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
-                    <TextBlock Text="Фотографии объекта" Margin="10" FontSize="16"/>
-                    <!-- Кнопка добавления фото -->
-                    <Button Content="📷 Добавить фотографии" 
-                            Command="{Binding SelectImagesCommand}"
-                            HorizontalAlignment="Stretch"
-                            Padding="15,10"
-                            FontSize="14"
-                            Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*, *">
+                        <TextBlock Grid.Column="0" Text="Фотографии объекта" 
+                                   HorizontalAlignment="Left" Margin="10" FontSize="16"/>
+                        
+                        <Button Grid.Column="1" Content="📷 Добавить фотографии" 
+                                Command="{Binding SelectImagesCommand}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Padding="5"
+                                FontSize="14"
+                                Margin="5"/>
+                    </Grid>
                     
                     <!-- Список загруженных фотографий -->
                     <ItemsControl x:Name="PhotosContainer"
@@ -212,23 +217,22 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     
-                    <!-- Сообщение если нет фото -->
-                    <TextBlock Text="Фотографии не добавлены" 
-                               FontSize="12" 
-                               Foreground="#999" 
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,10"
-                               IsVisible="{Binding !HasPhotos}"/>
-                    
                     <!-- Информация о загруженных фото -->
                     <TextBlock Text="{Binding PhotosSummary}" 
                                FontSize="11" 
                                Foreground="#666" 
                                HorizontalAlignment="Center"
-                               Margin="0,0,0,10"
-                               IsVisible="{Binding HasPhotos}"/>
+                               Margin="5"/>
                 </StackPanel>
             </Border>
+            
+            <!-- Кнопка создания -->
+            <Button Content="Создать заявку на продажу" 
+                    Command="{Binding CreateSellRequest}"
+                    HorizontalAlignment="Center"
+                    Padding="20,10"
+                    Background="#007ACC"
+                    Foreground="White"/>
         </StackPanel>
     </Grid>
 </ScrollViewer>
