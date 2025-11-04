@@ -7,7 +7,6 @@ using System.Windows.Input;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
@@ -28,6 +27,8 @@ public class EmployeesPageViewModel : PageViewModelBase
     [Reactive] public ObservableCollection<Employee> Employees { get; set; } = new();
     [Reactive] public Employee NewEmployee { get; set; } = new();
     [Reactive] public string Password { get; set; } = string.Empty;
+    [Reactive] public List<DictionaryValue> Roles { get; set; } = new();
+    [Reactive] public DictionaryValue SelectedRole { get; set; } = new();
     
     // Заменяем коллекцию на одно свойство для фотографии
     [Reactive] public UploadedPhoto? CurrentPhoto { get; set; }
@@ -61,15 +62,25 @@ public class EmployeesPageViewModel : PageViewModelBase
         {
             var employees = await _context.Employees
                 .Include(x => x.Photo)
+                .Include(x => x.Role)
                 .ToListAsync();
                 
             Employees.Clear();
             Employees.AddRange(employees);
+
+            if (!Roles.Any())
+            {
+                var roles = await _context.DictionaryValues
+                    .Where(x => x.DictionaryId == "employee_role")
+                    .ToListAsync();
+                
+                Roles.AddRange(roles);
+            }
         }
         catch (System.Exception ex)
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка", $"Не удалось загрузить список сотрудников: {ex.Message}", ButtonEnum.Ok)
+                .GetMessageBoxStandard("Ошибка", $"Не удалось загрузить список сотрудников: {ex.Message}")
                 .ShowAsync();
         }
     }
@@ -79,7 +90,7 @@ public class EmployeesPageViewModel : PageViewModelBase
         if (string.IsNullOrWhiteSpace(NewEmployee.FirstName) || string.IsNullOrWhiteSpace(NewEmployee.LastName))
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка", "Заполните имя и фамилию сотрудника", ButtonEnum.Ok)
+                .GetMessageBoxStandard("Ошибка", "Заполните имя и фамилию сотрудника")
                 .ShowAsync();
             return;
         }
@@ -87,7 +98,7 @@ public class EmployeesPageViewModel : PageViewModelBase
         if (string.IsNullOrWhiteSpace(NewEmployee.Login) || string.IsNullOrWhiteSpace(Password))
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка", "Заполните логин и пароль", ButtonEnum.Ok)
+                .GetMessageBoxStandard("Ошибка", "Заполните логин и пароль")
                 .ShowAsync();
             return;
         }
@@ -99,24 +110,27 @@ public class EmployeesPageViewModel : PageViewModelBase
             var passwordHashAndSalt = _accountingService.HashPassword(Password);
             NewEmployee.PasswordHash = passwordHashAndSalt.Hash;
             NewEmployee.Salt = passwordHashAndSalt.Salt;
+            NewEmployee.RoleId = SelectedRole.Id;
             
             await _context.Employees.AddAsync(NewEmployee);
             await _context.SaveChangesAsync();
 
-            // Сохраняем фотографию если есть
             if (CurrentPhoto != null)
             {
-                // Исправлено: создаем список вместо массива
-                await _photoService.SavePhotosToDatabaseAsync(
+                var photoIds = await _photoService.SavePhotosToDatabaseAsync(
                     new List<UploadedPhoto> { CurrentPhoto }, 
                     NewEmployee.Id, 
                     EntityTypeForPhoto.Employee);
+
+                NewEmployee.PhotoId = photoIds![0];
             }
 
+            _context.Attach(NewEmployee);
+            await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
             await MessageBoxManager
-                .GetMessageBoxStandard("Успех", "Сотрудник успешно создан", ButtonEnum.Ok)
+                .GetMessageBoxStandard("Успех", "Сотрудник успешно создан")
                 .ShowAsync();
 
             ClearForm();
@@ -125,13 +139,13 @@ public class EmployeesPageViewModel : PageViewModelBase
         catch (DbUpdateException dbEx)
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка базы данных", dbEx.InnerException?.Message ?? dbEx.Message, ButtonEnum.Ok)
+                .GetMessageBoxStandard("Ошибка базы данных", dbEx.InnerException?.Message ?? dbEx.Message)
                 .ShowAsync();
         }
         catch (System.Exception ex)
         {
             await MessageBoxManager
-                .GetMessageBoxStandard("Ошибка", $"Не удалось создать сотрудника: {ex.Message}", ButtonEnum.Ok)
+                .GetMessageBoxStandard("Ошибка", $"Не удалось создать сотрудника: {ex.Message}")
                 .ShowAsync();
         }
     }
@@ -141,7 +155,6 @@ public class EmployeesPageViewModel : PageViewModelBase
         var newPhotos = await _photoService.SelectImagesAsync();
         if (newPhotos.Any())
         {
-            // Для сотрудника разрешаем только одну фотографию
             CurrentPhoto = newPhotos.First();
             UpdatePhotosSummary();
             this.RaisePropertyChanged(nameof(HasPhoto));

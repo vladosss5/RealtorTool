@@ -142,24 +142,34 @@ public class PhotoService : IPhotoService
         photo.Preview?.Dispose();
     }
 
-    public async Task SavePhotosToDatabaseAsync(List<UploadedPhoto> uploadedPhotos, string entityId, EntityTypeForPhoto entityType)
+    public async Task<string[]?> SavePhotosToDatabaseAsync(List<UploadedPhoto> uploadedPhotos, string entityId, EntityTypeForPhoto entityType)
     {
-        if (!uploadedPhotos.Any()) return;
+        if (uploadedPhotos == null || !uploadedPhotos.Any()) 
+            return null;
+
+        bool entityExists = await CheckEntityExistsAsync(entityId, entityType);
+        if (!entityExists)
+            throw new ArgumentException($"Entity with ID {entityId} and type {entityType} does not exist");
 
         var photos = uploadedPhotos.Select((uploaded, index) => new Photo
         {
+            Id = Guid.NewGuid().ToString(),
             EntityType = entityType,
             EntityId = entityId,
-            FileName = uploaded.FileName,
+            FileName = Path.GetFileName(uploaded.FileName),
             ContentType = uploaded.ContentType,
-            FileData = uploaded.FileData,
+            FileData = uploaded.FileData ?? throw new ArgumentException("File data cannot be null"),
             SortOrder = index,
-            IsMain = index == 0, // Первое фото - главное
+            IsMain = index == 0,
             CreatedDate = DateTime.UtcNow
         }).ToList();
 
-        _context.Photos.AddRange(photos);
+        await RemoveExistingPhotosAsync(entityId, entityType);
+
+        await _context.Photos.AddRangeAsync(photos);
         await _context.SaveChangesAsync();
+
+        return photos.Select(x => x.Id).ToArray();
     }
 
     public async Task<List<UploadedPhoto>> LoadPhotosFromDatabaseAsync(string entityId, EntityTypeForPhoto entityType)
@@ -208,6 +218,27 @@ public class PhotoService : IPhotoService
             await _context.SaveChangesAsync();
         }
     }
+    
+    private async Task<bool> CheckEntityExistsAsync(string entityId, EntityTypeForPhoto entityType)
+    {
+        return entityType switch
+        {
+            EntityTypeForPhoto.Realty => await _context.Realties.AnyAsync(r => r.Id == entityId),
+            EntityTypeForPhoto.Client => await _context.Clients.AnyAsync(c => c.Id == entityId),
+            EntityTypeForPhoto.Employee => await _context.Employees.AnyAsync(e => e.Id == entityId),
+            _ => false
+        };
+    }
+    
+    private async Task RemoveExistingPhotosAsync(string entityId, EntityTypeForPhoto entityType)
+    {
+        var existingPhotos = await _context.Photos
+            .Where(p => p.EntityId == entityId && p.EntityType == entityType)
+            .ToListAsync();
+            
+        _context.Photos.RemoveRange(existingPhotos);
+        await _context.SaveChangesAsync();
+    }
 
     public string FormatFileSize(long bytes)
     {
@@ -240,25 +271,4 @@ public class PhotoService : IPhotoService
             _ => "application/octet-stream"
         };
     }
-
-    // private Window? GetDialogOwnerWindow()
-    // {
-    //     // 1. Через WindowService
-    //     var window = _windowService.GetMainWindow();
-    //     if (window != null) return window;
-    //
-    //     // 2. Через ApplicationLifetime
-    //     if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-    //     {
-    //         window = desktopLifetime.MainWindow ?? desktopLifetime.Windows.FirstOrDefault();
-    //         if (window != null) return window;
-    //     }
-    //
-    //     // 3. Через TopLevel
-    //     window = TopLevel.GetTopLevel(null) as Window;
-    //     if (window != null) return window;
-    //
-    //     Console.WriteLine("Не удалось найти существующее окно для диалога");
-    //     return null;
-    // }
 }

@@ -15,13 +15,9 @@ public class DataContext : DbContext
     {
     }
     
-    /// <summary>
-    /// Конфигурация подключения к PostgreSQL
-    /// </summary>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=RT;");
 
-    // Основные DbSet
     public DbSet<Address> Addresses { get; set; } = null!;
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Employee> Employees { get; set; } = null!;
@@ -54,13 +50,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<Apartment>().ToTable("Apartments");
         modelBuilder.Entity<PrivateHouse>().ToTable("PrivateHouses");
         modelBuilder.Entity<Area>().ToTable("Areas");
-
-        // Table Per Type (TPT) для наследования Photo
-        modelBuilder.Entity<Photo>().ToTable("Photos");
-        modelBuilder.Entity<RealtyPhoto>().ToTable("RealtyPhotos");
-        modelBuilder.Entity<ClientPhoto>().ToTable("ClientPhotos");
-        modelBuilder.Entity<EmployeePhoto>().ToTable("EmployeePhotos");
-
+        
         // Конфигурация Address
         modelBuilder.Entity<Address>(entity =>
         {
@@ -79,32 +69,25 @@ public class DataContext : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.HasIndex(c => c.Phone).IsUnique();
-            
-            // Связь с ClientPhoto
             entity.HasOne(c => c.Photo)
-                .WithOne(cp => cp.Client)
-                .HasForeignKey<ClientPhoto>(cp => cp.ClientId)
+                .WithOne()
+                .HasForeignKey<Client>(c => c.PhotoId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(c => c.PhotoId);
         });
 
         // Конфигурация Employee
-        modelBuilder.Entity<Employee>(entity =>
+        modelBuilder.Entity<Client>(entity =>
         {
-            entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Login).IsUnique();
-            
-            // Связь с EmployeePhoto
-            entity.HasOne(e => e.Photo)
-                .WithOne(ep => ep.Employee)
-                .HasForeignKey<EmployeePhoto>(ep => ep.EmployeeId)
+            entity.HasKey(c => c.Id);
+            entity.HasIndex(c => c.Phone).IsUnique();
+            entity.HasOne(c => c.Photo)
+                .WithOne()
+                .HasForeignKey<Client>(c => c.PhotoId)
                 .OnDelete(DeleteBehavior.SetNull);
-            
-            entity.HasOne(e => e.Role)
-                .WithMany()
-                .HasForeignKey(e => e.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasIndex(e => e.RoleId);
+            entity.HasIndex(c => c.PhotoId);
         });
 
         // Конфигурация Realty
@@ -124,10 +107,9 @@ public class DataContext : DbContext
                 .HasForeignKey(r => r.ParentRealtyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с RealtyPhoto
             entity.HasMany(r => r.Photos)
-                .WithOne(rp => rp.Realty)
-                .HasForeignKey(rp => rp.RealtyId)
+                .WithOne()
+                .HasForeignKey(p => p.EntityId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Индексы
@@ -402,71 +384,19 @@ public class DataContext : DbContext
             entity.HasIndex(p => p.IsMain);
             entity.HasIndex(p => p.SortOrder);
             entity.HasIndex(p => p.CreatedDate);
+            entity.HasIndex(p => p.EntityType);
+            entity.HasIndex(p => p.EntityId);
 
             // Ограничение на размер файла (20MB максимум)
             entity.Property(p => p.FileData)
                 .HasMaxLength(20 * 1024 * 1024);
-        });
-
-        // Конфигурация RealtyPhoto
-        modelBuilder.Entity<RealtyPhoto>(entity =>
-        {
-            // Связь с Realty
-            entity.HasOne(rp => rp.Realty)
-                .WithMany(r => r.Photos)
-                .HasForeignKey(rp => rp.RealtyId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(rp => rp.RealtyId);
-        });
-
-        // Конфигурация ClientPhoto
-        modelBuilder.Entity<ClientPhoto>(entity =>
-        {
-            // Связь с Client
-            entity.HasOne(cp => cp.Client)
-                .WithOne(c => c.Photo)
-                .HasForeignKey<ClientPhoto>(cp => cp.ClientId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(cp => cp.ClientId).IsUnique();
-        });
-
-        // Конфигурация EmployeePhoto
-        modelBuilder.Entity<EmployeePhoto>(entity =>
-        {
-            // Связь с Employee
-            entity.HasOne(ep => ep.Employee)
-                .WithOne(e => e.Photo)
-                .HasForeignKey<EmployeePhoto>(ep => ep.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(ep => ep.EmployeeId).IsUnique();
         });
         
         modelBuilder.Entity<PotentialMatch>(entity =>
         {
             entity.HasNoKey();
             entity.ToView("PotentialMatches");
-        
-            // Маппинг свойств
-            // entity.Property(e => e.BuyRequestId).HasColumnName("buy_request_id");
-            // entity.Property(e => e.SellRequestId).HasColumnName("sell_request_id");
-            // entity.Property(e => e.BuyType).HasColumnName("buy_type");
-            // entity.Property(e => e.SellType).HasColumnName("sell_type");
-            // entity.Property(e => e.MaxPrice).HasColumnName("max_price");
-            // entity.Property(e => e.ListingPrice).HasColumnName("listing_price");
-            // entity.Property(e => e.RealtyType).HasColumnName("realty_type");
-            // entity.Property(e => e.TotalArea).HasColumnName("total_area");
-            // entity.Property(e => e.RoomsCount).HasColumnName("rooms_count");
-            // entity.Property(e => e.City).HasColumnName("city");
-            // entity.Property(e => e.District).HasColumnName("district");
-            // entity.Property(e => e.MinRooms).HasColumnName("min_rooms");
-            // entity.Property(e => e.MinArea).HasColumnName("min_area");
-            // entity.Property(e => e.MaxArea).HasColumnName("max_area");
-            // entity.Property(e => e.DesiredLocation).HasColumnName("desired_location");
-        
-            // Игнорируем вычисляемые свойства для EF
+            
             entity.Ignore(e => e.MatchScore);
             entity.Ignore(e => e.IsGoodMatch);
             entity.Ignore(e => e.IsPerfectMatch);

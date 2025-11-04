@@ -24,7 +24,7 @@ public class Employee : BaseIdEntity
     
     public string? PhotoId { get; set; }
     
-    public EmployeePhoto? Photo { get; set; }
+    public Photo? Photo { get; set; }
     
     [NotMapped]
     public bool HasPhoto => Photo != null;

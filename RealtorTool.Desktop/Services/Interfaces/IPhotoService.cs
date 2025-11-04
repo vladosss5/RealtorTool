@@ -29,7 +29,7 @@ public interface IPhotoService
     /// <summary>
     /// Сохранить фотографии в базу данных для указанной сущности
     /// </summary>
-    Task SavePhotosToDatabaseAsync(List<UploadedPhoto> uploadedPhotos, string entityId, EntityTypeForPhoto entityType);
+    Task<string[]?> SavePhotosToDatabaseAsync(List<UploadedPhoto> uploadedPhotos, string entityId, EntityTypeForPhoto entityType);
     
     /// <summary>
     /// Загрузить фотографии из базы данных для указанной сущности
