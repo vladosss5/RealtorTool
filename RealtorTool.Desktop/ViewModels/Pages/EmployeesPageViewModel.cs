@@ -1,5 +1,8 @@
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
@@ -12,9 +15,9 @@ public class EmployeesPageViewModel : PageViewModelBase
 {
     private readonly DataContext _context;
     private readonly IAccountingService _accountingService;
-
-    [Reactive] public Employee NewEmployee { get; set; } = new();
     
+    [Reactive] public ObservableCollection<Employee> Employees { get; set; }
+    [Reactive] public Employee NewEmployee { get; set; } = new();
     [Reactive] public string Password { get; set; }
     
     public ICommand CreateEmployee { get; }
@@ -25,7 +28,19 @@ public class EmployeesPageViewModel : PageViewModelBase
     {
         _context = context;
         _accountingService = accountingService;
+
+        LoadData();
+        
         CreateEmployee = ReactiveCommand.CreateFromTask(CreateEmployeeAsync);
+    }
+
+    private void LoadData()
+    {
+        Employees = new ObservableCollection<Employee>(
+            _context.Employees
+                .Include(x => x.Role)
+                .Include(x => x.Photo)
+                .ToList());
     }
 
     private async Task CreateEmployeeAsync()

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RealtorTool.Core.DbEntities;
 
 public class Employee : BaseIdEntity
@@ -14,7 +16,19 @@ public class Employee : BaseIdEntity
 
     public string? MiddleName { get; set; }
     
+    public DateTime? LastAuthentication { get; set; }
+    
+    public string? RoleId { get; set; }
+    
+    public DictionaryValue? Role { get; set; }
+    
     public string? PhotoId { get; set; }
     
     public EmployeePhoto? Photo { get; set; }
+    
+    [NotMapped]
+    public bool HasPhoto => Photo != null;
+    
+    [NotMapped]
+    public string FullName => $"{LastName} {FirstName} {MiddleName}";
 }

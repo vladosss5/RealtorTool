@@ -63,7 +63,15 @@ sealed class Program
             options.UseNpgsql(connectionString));
         
         // Регистрация сервисов
+        services.AddSingleton<DateTimeFormatConverter>();
         services.AddSingleton<StatusToColorConverter>();
+        services.AddSingleton<MatchScoreToColorConverter>();
+        services.AddSingleton<MatchScoreToBackgroundConverter>();
+        services.AddSingleton<ByteArrayToImageConverter>();
+        services.AddSingleton<BooleanToColorConverter>();
+        services.AddSingleton<MatchesCountToColorConverter>();
+        services.AddSingleton<TrueToFalseConverter>();
+        services.AddSingleton<ObjectIsNotNullConverter>();
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IAccountingService, AccountingService>();
         services.AddSingleton<INavigationService, NavigationService>();

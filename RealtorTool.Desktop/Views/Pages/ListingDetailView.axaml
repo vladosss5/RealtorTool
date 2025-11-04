@@ -2,48 +2,158 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:RealtorTool.Desktop.Converters"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="RealtorTool.Desktop.Views.Pages.ListingDetailView"
-             x:DataType="pages:ListingDetailViewModel">
+             x:DataType="pages:ListingDetailViewModel"
+             x:Name="ThisPage">
+    
+    <Design.DataContext>
+        <pages:ListingDetailViewModel/>
+    </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="20" FontWeight="Bold" />
+    <UserControl.Resources>
+        <converters:MatchScoreToColorConverter x:Key="MatchScoreToColorConverter"/>
+        <converters:MatchScoreToBackgroundConverter x:Key="MatchScoreToBackgroundConverter"/>
+        <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+        <converters:MatchesCountToColorConverter x:Key="MatchesCountToColorConverter"/>
+        <converters:TrueToFalseConverter x:Key="TrueToFalseConverter"/>
+    </UserControl.Resources>
 
-        <!-- Информация о заявке -->
-        <StackPanel Grid.Row="1" Orientation="Vertical" Spacing="6">
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <TextBlock Text="ID:"/>
-                <TextBlock Text="{Binding Listing.Id}"/>
-                <TextBlock Text="Тип сделки:" Margin="20,0,0,0"/>
-                <TextBlock Text="{Binding Listing.ListingType.Value}"/>
-                <TextBlock Text="Статус:" Margin="20,0,0,0"/>
-                <TextBlock Text="{Binding Listing.Status.Value}"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="12" Margin="16">
+            
+            <!-- Заголовок и кнопка обновления -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button Content="Обновить" 
+                        Command="{Binding RefreshListingCommand}"
+                        VerticalAlignment="Center"/>
             </StackPanel>
+            
+            <!-- Информация о заявке -->
+            <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="1" Padding="12" CornerRadius="4">
+                <StackPanel Orientation="Vertical" Spacing="8">
+                    <TextBlock Text="Информация о заявке" FontSize="16" FontWeight="SemiBold"/>
+                    
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Spacing="4">
+                            <TextBlock Text="Основная информация" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="ID:" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding Listing.Id}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Тип:" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding Listing.ListingType.Value}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Статус:" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding ListingStatusDescription}"/>
+                            </StackPanel>
+                        </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <TextBlock Text="Владелец:"/>
-                <TextBlock Text="{Binding Listing.Owner.FirstName}"/>
-                <TextBlock Text="{Binding Listing.Owner.LastName}" Margin="6,0,0,0"/>
-                <TextBlock Text="Телефон:" Margin="20,0,0,0"/>
-                <TextBlock Text="{Binding Listing.Owner.Phone}"/>
-            </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" Spacing="4">
+                            <TextBlock Text="Владелец" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding OwnerFullName}"/>
+                            <TextBlock Text="{Binding Listing.Owner.Phone}"/>
+                        </StackPanel>
 
-            <!-- <StackPanel Orientation="Horizontal" Spacing="12"> -->
-            <!--     <TextBlock Text="Итоговая цена:"/> -->
-            <!--     <TextBlock Text="{Binding Listing.FinalPrice, StringFormat='{}{0:C}'}"/> -->
-            <!--     <TextBlock Text="Комиссия:" Margin="20,0,0,0"/> -->
-            <!--     <TextBlock Text="{Binding Listing.Commission, StringFormat='{}{0:C}'}"/> -->
-            <!--     <TextBlock Text="Дата сделки:" Margin="20,0,0,0"/> -->
-            <!--     <TextBlock Text="{Binding Listing.DealDate, StringFormat='{}{0:dd.MM.yyyy}'}"/> -->
-            <!-- </StackPanel> -->
-        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical" Spacing="4">
+                            <TextBlock Text="Финансы" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Цена:" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding Listing.Price, StringFormat='{}{0:N0}'}"/>
+                                <TextBlock Text="{Binding Listing.Currency.Value}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Ответственный:" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding EmployeeFullName}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
 
-        <Separator Grid.Row="2" Margin="0,6"/>
+            <!-- Поиск совпадений -->
+            <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="1" Padding="12" CornerRadius="4">
+                <StackPanel Orientation="Vertical" Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                        <TextBlock Text="Поиск подходящих вариантов" FontSize="16" FontWeight="SemiBold"/>
+                        <Button Content="{Binding IsSearching, Converter={StaticResource TrueToFalseConverter}}" 
+                                Command="{Binding SearchMatchesCommand}"
+                                IsEnabled="{Binding !IsSearching}"/>
+                        <ProgressBar IsIndeterminate="True" 
+                                     IsVisible="{Binding IsSearching}" 
+                                     Width="100" 
+                                     Height="10"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <TextBlock Text="{Binding MatchesSummary}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding MatchQualityDescription}" 
+                                   Foreground="{Binding PerfectMatchesCount, Converter={StaticResource MatchesCountToColorConverter}}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
-        <!-- Контейнер для конкретного представления недвижимости -->
-        <ContentControl Grid.Row="2"
-                        Content="{Binding RealtyViewModel}"
-                        Margin="0,12,0,0"/>
-    </Grid>
+            <!-- Список совпадений -->
+            <Border Grid.Row="3" BorderBrush="LightGray" BorderThickness="1" Padding="12" CornerRadius="4"
+                    IsVisible="{Binding HasMatches}">
+                <StackPanel Orientation="Vertical" Spacing="8">
+                    <TextBlock Text="Найденные совпадения" FontSize="16" FontWeight="SemiBold"/>
+                    
+                    <ItemsControl ItemsSource="{Binding FoundMatches}" MaxHeight="300">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Margin="0,4"
+                                        Background="{Binding MatchScore, Converter={StaticResource MatchScoreToBackgroundConverter}}">
+                                    <Grid Margin="8" ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                        <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="4">
+                                            <TextBlock Text="{Binding RealtyName}" FontWeight="Bold"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding RealtyTypeDisplayName}"/>
+                                                <TextBlock Text="•"/>
+                                                <TextBlock Text="{Binding District}"/>
+                                                <TextBlock Text="•"/>
+                                                <TextBlock Text="{Binding ListingPrice, StringFormat='{}{0:N0} руб.'}"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding MatchDescription}" 
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{Binding MatchScore, Converter={StaticResource MatchScoreToColorConverter}}"/>
+                                                <TextBlock Text="{Binding MatchScore, StringFormat='({0}%)'}"/>
+                                                <TextBlock Text="•"/>
+                                                <TextBlock Text="{Binding PriceDifference, StringFormat='Разница: {0:N0} руб.'}" 
+                                                           Foreground="{Binding IsWithinBudget, Converter={StaticResource BooleanToColorConverter}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <Button Grid.Column="1" 
+                                                Content="Создать сделку" 
+                                                Command="{Binding ElementName=ThisPage, Path=CreateDeal}"
+                                                CommandParameter="{Binding}"
+                                                IsEnabled="{Binding ElementName=ThisPage, Path=CanCreateDeals}"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Background="#007ACC"
+                                                Foreground="White"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Детали недвижимости -->
+            <Border Grid.Row="4" BorderBrush="LightGray" BorderThickness="1" Padding="12" CornerRadius="4">
+                <StackPanel Orientation="Vertical" Spacing="8">
+                    <TextBlock Text="Детали недвижимости" FontSize="16" FontWeight="SemiBold"/>
+                    <ContentControl Content="{Binding RealtyViewModel}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

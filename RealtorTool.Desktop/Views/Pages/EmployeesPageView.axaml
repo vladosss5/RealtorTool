@@ -3,15 +3,79 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
+             xmlns:converters="clr-namespace:RealtorTool.Desktop.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RealtorTool.Desktop.Views.Pages.EmployeesPageView"
              x:DataType="pages:EmployeesPageViewModel">
 
-    <Design.DataContext>
-        <pages:EmployeesPageViewModel />
-    </Design.DataContext>
-
+    <UserControl.Resources>
+        <converters:DateTimeFormatConverter x:Key="DateTimeFormatConverter"/>
+    </UserControl.Resources>
+    
     <Grid ColumnDefinitions="*, *">
+        <ListBox Grid.Column="0" 
+                 ItemsSource="{Binding Employees}" 
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Margin="10">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="White" CornerRadius="5">
+                        <Grid ColumnDefinitions="80,Auto,Auto" 
+                              RowDefinitions="Auto,Auto,Auto" 
+                              ColumnSpacing="15">
+                            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
+                                    Width="70" Height="70" Background="#F5F5F5"
+                                    CornerRadius="6">
+                                <Panel>
+                                    <Border Background="Gray"
+                                            CornerRadius="50" Margin="2">
+                                        <TextBlock Text="👱‍♂️"
+                                                   FontSize="24"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Opacity="0.3"/>
+                                    </Border>
+                                
+                                    <Image Source="{Binding Photo}"
+                                           Stretch="UniformToFill"
+                                           IsVisible="{Binding HasPhoto}"/>
+                                </Panel>
+                            </Border>
+                            
+                            <TextBlock Grid.Column="2" Grid.Row="0" 
+                                       Text="{Binding FullName}"
+                                       HorizontalAlignment="Left" 
+                                       Margin="5"
+                                       FontSize="16"/>
+                            
+                            <StackPanel Grid.Column="2" Grid.Row="1" 
+                                        Orientation="Horizontal">
+                                <TextBlock Text="Роль: "
+                                           HorizontalAlignment="Left" 
+                                           Margin="5,0,0,0"
+                                           FontSize="14"/>
+                                <TextBlock Text="{Binding Role.Value}"
+                                           HorizontalAlignment="Left" 
+                                           FontSize="14"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="2" Grid.Row="2" 
+                                        Orientation="Horizontal">
+                                <TextBlock Text="Последний вход: "
+                                           HorizontalAlignment="Left" 
+                                           Margin="5,0,0,0"
+                                           FontSize="14"/>
+                                <TextBlock Text="{Binding LastAuthentication, Converter={StaticResource DateTimeFormatConverter}}"
+                                           HorizontalAlignment="Left" 
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Border Grid.Column="1">
             <StackPanel>
                 <TextBox Text="{Binding NewEmployee.FirstName}" Watermark="Имя" Margin="5" CornerRadius="5" />

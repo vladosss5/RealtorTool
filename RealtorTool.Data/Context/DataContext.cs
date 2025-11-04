@@ -98,6 +98,13 @@ public class DataContext : DbContext
                 .WithOne(ep => ep.Employee)
                 .HasForeignKey<EmployeePhoto>(ep => ep.EmployeeId)
                 .OnDelete(DeleteBehavior.SetNull);
+            
+            entity.HasOne(e => e.Role)
+                .WithMany()
+                .HasForeignKey(e => e.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(e => e.RoleId);
         });
 
         // Конфигурация Realty
