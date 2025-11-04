@@ -10,80 +10,169 @@
 
     <UserControl.Resources>
         <converters:DateTimeFormatConverter x:Key="DateTimeFormatConverter"/>
+        <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
     </UserControl.Resources>
     
     <Grid ColumnDefinitions="*, *">
-        <ListBox Grid.Column="0" 
-                 ItemsSource="{Binding Employees}" 
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 Margin="10">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="White" CornerRadius="5">
-                        <Grid ColumnDefinitions="80,Auto,Auto" 
-                              RowDefinitions="Auto,Auto,Auto" 
-                              ColumnSpacing="15">
-                            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
-                                    Width="70" Height="70" Background="#F5F5F5"
-                                    CornerRadius="6">
-                                <Panel>
-                                    <Border Background="Gray"
-                                            CornerRadius="50" Margin="2">
-                                        <TextBlock Text="👱‍♂️"
-                                                   FontSize="24"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Opacity="0.3"/>
-                                    </Border>
+        <!-- Список сотрудников -->
+        <Border Grid.Column="0" Background="#B3FFFFFF" Margin="10" Padding="20" CornerRadius="10">
+            <ListBox ItemsSource="{Binding Employees}" 
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Background="Transparent"
+                     BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="White" CornerRadius="5">
+                            <Grid ColumnDefinitions="80,Auto,Auto" 
+                                  RowDefinitions="Auto,Auto,Auto" 
+                                  ColumnSpacing="15" Margin="10">
+                                <!-- Аватар сотрудника -->
+                                <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
+                                        Width="70" Height="70" Background="#F5F5F5"
+                                        CornerRadius="35">
+                                    <Panel>
+                                        <Border Background="LightGray"
+                                                CornerRadius="50" Margin="2">
+                                            <TextBlock Text="👱‍♂️"
+                                                       FontSize="24"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    
+                                        <!-- Реальное фото -->
+                                        <Image Source="{Binding Photo.FileData, Converter={StaticResource ByteArrayToImageConverter}}"
+                                               Stretch="UniformToFill"
+                                               IsVisible="{Binding HasPhoto}"/>
+                                    </Panel>
+                                </Border>
                                 
-                                    <Image Source="{Binding Photo}"
-                                           Stretch="UniformToFill"
-                                           IsVisible="{Binding HasPhoto}"/>
-                                </Panel>
-                            </Border>
+                                <TextBlock Grid.Column="2" Grid.Row="0" 
+                                           Text="{Binding FullName}"
+                                           HorizontalAlignment="Left" 
+                                           Margin="5"
+                                           FontSize="16"/>
+                                
+                                <StackPanel Grid.Column="2" Grid.Row="1" 
+                                            Orientation="Horizontal">
+                                    <TextBlock Text="Роль: "
+                                               HorizontalAlignment="Left" 
+                                               Margin="5,0,0,0"
+                                               FontSize="14"/>
+                                    <TextBlock Text="{Binding Role.Value}"
+                                               HorizontalAlignment="Left" 
+                                               FontSize="14"/>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="2" Grid.Row="2" 
+                                            Orientation="Horizontal">
+                                    <TextBlock Text="Последний вход: "
+                                               HorizontalAlignment="Left" 
+                                               Margin="5,0,0,0"
+                                               FontSize="14"/>
+                                    <TextBlock Text="{Binding LastAuthentication, Converter={StaticResource DateTimeFormatConverter}}"
+                                               HorizontalAlignment="Left" 
+                                               FontSize="14"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- Форма добавления сотрудника -->
+        <Border Grid.Column="1" Background="#B3FFFFFF" Margin="10" Padding="20" CornerRadius="10">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Добавление сотрудника" 
+                           FontSize="18" 
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"/>
+                
+                <!-- Блок для фотографии -->
+                <Border BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Margin="0,10"
+                        Background="White">
+                    <StackPanel Spacing="10" Margin="15">
+                        <TextBlock Text="Фотография сотрудника" 
+                                   FontSize="14" 
+                                   FontWeight="SemiBold"/>
+                        
+                        <TextBlock Text="{Binding PhotosSummary}" 
+                                   FontSize="12"
+                                   Foreground="Gray"
+                                   HorizontalAlignment="Center"/>
+                        
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center" 
+                                    Spacing="10">
+                            <Button Content="Выбрать фото" 
+                                    Command="{Binding SelectImageCommand}"
+                                    Padding="15,8"
+                                    FontSize="12"/>
                             
-                            <TextBlock Grid.Column="2" Grid.Row="0" 
-                                       Text="{Binding FullName}"
-                                       HorizontalAlignment="Left" 
-                                       Margin="5"
-                                       FontSize="16"/>
-                            
-                            <StackPanel Grid.Column="2" Grid.Row="1" 
-                                        Orientation="Horizontal">
-                                <TextBlock Text="Роль: "
-                                           HorizontalAlignment="Left" 
-                                           Margin="5,0,0,0"
-                                           FontSize="14"/>
-                                <TextBlock Text="{Binding Role.Value}"
-                                           HorizontalAlignment="Left" 
-                                           FontSize="14"/>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="2" Grid.Row="2" 
-                                        Orientation="Horizontal">
-                                <TextBlock Text="Последний вход: "
-                                           HorizontalAlignment="Left" 
-                                           Margin="5,0,0,0"
-                                           FontSize="14"/>
-                                <TextBlock Text="{Binding LastAuthentication, Converter={StaticResource DateTimeFormatConverter}}"
-                                           HorizontalAlignment="Left" 
-                                           FontSize="14"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Border Grid.Column="1">
-            <StackPanel>
-                <TextBox Text="{Binding NewEmployee.FirstName}" Watermark="Имя" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.LastName}" Watermark="Фамилия" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.MiddleName}" Watermark="Отчество" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding NewEmployee.Login}" Watermark="Логин" Margin="5" CornerRadius="5" />
-                <TextBox Text="{Binding Password}" Watermark="Пароль" Margin="5" CornerRadius="5" />
-                <Button Content="Добавить сотрудника" Command="{Binding CreateEmployee}"/>
+                            <Button Content="Удалить фото" 
+                                    Command="{Binding RemovePhotoCommand}"
+                                    CommandParameter="{Binding CurrentPhoto}"
+                                    IsEnabled="{Binding HasPhoto}"
+                                    Padding="15,8"
+                                    FontSize="12"
+                                    Background="LightCoral"
+                                    Foreground="White"/>
+                        </StackPanel>
+                        
+                        <!-- Предпросмотр фотографии -->
+                        <Image Source="{Binding CurrentPhoto.Preview}" 
+                               MaxWidth="150" 
+                               MaxHeight="150" 
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               Margin="0,5"
+                               IsVisible="{Binding HasPhoto}"/>
+                    </StackPanel>
+                </Border>
+                
+                <TextBox Text="{Binding NewEmployee.FirstName}" 
+                         Watermark="Имя" 
+                         Margin="0,5"
+                         Padding="12,8"
+                         FontSize="14"/>
+                
+                <TextBox Text="{Binding NewEmployee.LastName}" 
+                         Watermark="Фамилия" 
+                         Margin="0,5"
+                         Padding="12,8"
+                         FontSize="14"/>
+                
+                <TextBox Text="{Binding NewEmployee.MiddleName}" 
+                         Watermark="Отчество" 
+                         Margin="0,5"
+                         Padding="12,8"
+                         FontSize="14"/>
+                
+                <TextBox Text="{Binding NewEmployee.Login}" 
+                         Watermark="Логин" 
+                         Margin="0,5"
+                         Padding="12,8"
+                         FontSize="14"/>
+                
+                <TextBox Text="{Binding Password}" 
+                         Watermark="Пароль" 
+                         Margin="0,5"
+                         Padding="12,8"
+                         FontSize="14"
+                         PasswordChar="*"/>
+                
+                <Button Content="Добавить сотрудника" 
+                        Command="{Binding CreateEmployeeCommand}"
+                        Background="#007ACC"
+                        Foreground="White"
+                        Padding="20,12"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Margin="0,10"
+                        CornerRadius="8"/>
             </StackPanel>
         </Border>
     </Grid>
