@@ -1,6 +1,5 @@
 using System;
-using System.Reactive;
-using System.Reactive.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -8,7 +7,6 @@ using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
 using RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Pages;
 
@@ -30,14 +28,14 @@ public class ListingDetailViewModel : PageViewModelBase
         _context = context;
         
         MessageBus.Current
-            .Listen<Listing>()
-            .Take(1)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(listing =>
+            .Listen<string>("ListingDetailsId")
+            .Subscribe(listingId =>
             {
-                Listing = listing;
-                Title = $"Заявка №{listing.Id}";
-                LoadRealtyView(listing.Realty);
+                Listing = _context.Listings
+                    .Include(x => x.Realty)
+                    .FirstOrDefault(x => x.Id == listingId);
+                Title = $"Заявка №{listingId}";
+                LoadRealtyView();
             });
     }
 
@@ -61,8 +59,10 @@ public class ListingDetailViewModel : PageViewModelBase
             .FirstOrDefaultAsync(l => l.Id == listingId);
     }
     
-    private void LoadRealtyView(Realty realty)
+    private void LoadRealtyView()
     {
+        var realty = Listing.Realty;
+        
         if (realty == null)
         {
             RealtyViewModel = null;

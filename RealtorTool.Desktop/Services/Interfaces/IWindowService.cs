@@ -44,4 +44,6 @@ public interface IWindowService
     public Window? GetMainWindow();
     
     public Window? GetActiveWindow();
+    
+    void Logout();
 }

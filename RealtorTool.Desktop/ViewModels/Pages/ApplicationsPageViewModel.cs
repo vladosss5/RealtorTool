@@ -1,16 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MsBox.Avalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
+using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Items;
 using RealtorTool.Desktop.ViewModels.Windows;
 using RealtorTool.Services.Interfaces;
@@ -21,20 +19,36 @@ public class ApplicationsPageViewModel : PageViewModelBase
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly DataContext _dataContext;
+    private readonly INavigationService _navigationService;
+
+    private ListingItemViewModel? _selectedListing;
 
     [Reactive] public ObservableCollection<ListingItemViewModel> Listings { get; set; } = new();
-    [Reactive] public ListingItemViewModel? SelectedListing { get; set; }
+
+    public ListingItemViewModel? SelectedListing
+    {
+        get => _selectedListing;
+        set
+        {
+            if (string.IsNullOrEmpty(value?.Listing.Id))
+                MessageBoxManager
+                    .GetMessageBoxStandard("Ошибка", "Id заявки не найден")
+                    .ShowAsync();
+            
+            this.RaiseAndSetIfChanged(ref _selectedListing, value);
+            
+            OpenListingDetailAsync(value?.Listing.Id!);
+        }
+    }
 
     public ApplicationsPageViewModel(
         DataContext dataContext,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, 
+        INavigationService navigationService)
     {
         _dataContext = dataContext;
         _serviceProvider = serviceProvider;
-
-        this.WhenAnyValue(x => x.SelectedListing)
-            .Where(listing => listing != null)
-            .Subscribe(async listing => await OpenListingDetailAsync(listing!.Listing));
+        _navigationService = navigationService;
 
         _ = LoadDataAsync();
     }
@@ -57,25 +71,19 @@ public class ApplicationsPageViewModel : PageViewModelBase
         }
     }
 
-    private async Task OpenListingDetailAsync(Listing listing)
+    private void OpenListingDetailAsync(string listingId)
     {
-        if (listing != null)
-        {
-            MessageBus.Current.SendMessage(listing);
+        var detailVm = _serviceProvider.GetRequiredService<ListingDetailViewModel>();
 
-            var detailVm = _serviceProvider.GetRequiredService<ListingDetailViewModel>();
+        if (detailVm is IParameterReceiver parameterReceiver)
+            parameterReceiver.ReceiveParameter(listingId);
 
-            if (detailVm is IParameterReceiver parameterReceiver)
-                parameterReceiver.ReceiveParameter(listing.Id);
+        // Отправляем через MessageBus с правильным токеном
+        MessageBus.Current.SendMessage(detailVm, "NavigateToPage");
 
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-                var mainWindow = desktopLifetime.MainWindow;
-                if (mainWindow?.DataContext is MainWindowViewModel mainVm)
-                {
-                    mainVm.SelectedPageItem = detailVm;
-                }
-            }
-        }
+        // Используем сервис навигации
+        _navigationService.NavigateTo(detailVm);
+        
+        MessageBus.Current.SendMessage(listingId, "ListingDetailsId");
     }
 }

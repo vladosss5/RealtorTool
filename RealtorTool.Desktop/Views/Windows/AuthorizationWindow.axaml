@@ -3,33 +3,35 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:RealtorTool.Desktop.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
         x:Class="RealtorTool.Desktop.Views.Windows.AuthorizationWindow"
         x:DataType="viewModels:AuthorizationWindowViewModel"
         x:Name="ThisWindow"
         Icon="/Assets/logo.ico"
-        Title="AuthorizationWindow">
+        Title="Окно авторизации">
 
-    <Design.DataContext>
-        <viewModels:AuthorizationWindowViewModel />
-    </Design.DataContext>
-    
     <Window.Styles>
         <StyleInclude Source="/Styles/MainStyles.axaml" />
     </Window.Styles>
 
     <Panel>
         <Border MinWidth="200" MaxWidth="500"
-                Margin="15" Padding="30" CornerRadius="25">
+                Margin="15" Padding="20" CornerRadius="25"
+                Background="WhiteSmoke"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch">
             <StackPanel>
-                <TextBlock>Авторизация</TextBlock>
-                <TextBox Watermark="Логин" Text="{Binding Login}"></TextBox>
-                <TextBox Watermark="Пароль" Text="{Binding Password}">
-                </TextBox>
+                <TextBlock FontWeight="Bold" FontSize="24" Text="Авторизация" Margin="5"/>
+
+                <TextBox Watermark="Логин" Text="{Binding Login}" Margin="5"/>
+                <TextBox Watermark="Пароль" Text="{Binding Password}" PasswordChar="*" Margin="5"/>
+
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Войти" Command="{Binding Auth}"
-                            CommandParameter="{Binding ElementName=ThisWindow}" />
-                    <Button Content="Подать заявку на регистрацию" />
+                            CommandParameter="{Binding ElementName=ThisWindow}"
+                            Background="#007ACC"
+                            Foreground="White" Margin="5"/>
+                    <Button Content="Подать заявку на регистрацию" Margin="5"/>
                 </StackPanel>
             </StackPanel>
         </Border>

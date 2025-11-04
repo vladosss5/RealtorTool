@@ -7,10 +7,6 @@
              x:Class="RealtorTool.Desktop.Views.Pages.MyProfilePageView"
              x:DataType="pages:MyProfilePageViewModel">
     
-    <Design.DataContext>
-        <pages:MyProfilePageViewModel/>
-    </Design.DataContext>
-    
     <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto, *">
         <Border Grid.Column="1" Grid.Row="1">
             <StackPanel>

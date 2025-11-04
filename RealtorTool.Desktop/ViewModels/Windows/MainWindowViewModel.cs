@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Pages;
+using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Windows;
 
@@ -13,17 +16,21 @@ namespace RealtorTool.Desktop.ViewModels.Windows;
 /// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
+    private readonly INavigationService _navigationService;
+    private readonly IWindowService _windowService;
+
     private Employee CurrentAuth { get; set; }
-    
+
     public ObservableCollection<PageViewModelBase> PaneItems { get; set; }
-    
+
     [Reactive] public PageViewModelBase SelectedPageItem { get; set; }
-    
+
     public ICommand OpenMyProfilePage { get; private set; }
     public ICommand OpenHomePage { get; private set; }
     public ICommand OpenCreatingApplicationPage { get; private set; }
     public ICommand OpenEmployeesPage { get; private set; }
     public ICommand OpenApplicationsPage { get; private set; }
+    public ICommand LogoutCommand { get; private set; }
 
     /// <summary>
     /// Конструктор.
@@ -34,18 +41,24 @@ public class MainWindowViewModel : ViewModelBase
         HomePageViewModel homePageViewModel,
         CreatingApplicationPageViewModel creatingApplicationPageViewModel,
         EmployeesPageViewModel employeesPageViewModel,
-        ApplicationsPageViewModel applicationsPageViewModel)
+        ApplicationsPageViewModel applicationsPageViewModel,
+        INavigationService navigationService, IWindowService windowService)
     {
-        PaneItems = 
+        _navigationService = navigationService;
+        _windowService = windowService;
+
+        PaneItems =
         [
-            myProfilePageViewModel, 
-            personProfilePageViewModel, 
+            myProfilePageViewModel,
+            personProfilePageViewModel,
             homePageViewModel,
             creatingApplicationPageViewModel,
             employeesPageViewModel,
             applicationsPageViewModel
         ];
         SelectedPageItem = PaneItems[2];
+        
+        _navigationService.OnNavigationRequested += OnNavigationRequested;
         
         InitialButtons();
         GetDataFromMessageBus();
@@ -58,6 +71,23 @@ public class MainWindowViewModel : ViewModelBase
         OpenCreatingApplicationPage = ReactiveCommand.Create(OpenCreatingApplicationPageImpl);
         OpenEmployeesPage = ReactiveCommand.Create(OpenEmployeesPageImpl);
         OpenApplicationsPage = ReactiveCommand.Create(OpenApplicationsPageImpl);
+        LogoutCommand = ReactiveCommand.Create(LogoutImpl);
+    }
+    
+    private void OnNavigationRequested(PageViewModelBase page)
+    {
+        if (page != null)
+        {
+            SelectedPageItem = page;
+        }
+    }
+
+    private void LogoutImpl()
+    {
+        CurrentAuth = null;
+        MessageBus.Current.SendMessage<Employee?>(null, "CurrentAuth");
+        
+        _windowService.Logout();
     }
 
     private void OpenHomePageImpl() => SelectedPageItem = PaneItems[2];
@@ -70,9 +100,22 @@ public class MainWindowViewModel : ViewModelBase
     {
         MessageBus.Current
             .Listen<Employee>("CurrentAuth")
-            .Subscribe(x => 
+            .Subscribe(x => { CurrentAuth = x; });
+        
+        MessageBus.Current
+            .Listen<PageViewModelBase>("NavigateToPage")
+            .ObserveOn(RxApp.MainThreadScheduler) // Важно для UI
+            .Subscribe(page => 
             {
-                CurrentAuth = x;
+                if (page != null)
+                {
+                    SelectedPageItem = page;
+                }
             });
+    }
+    
+    public void Dispose()
+    {
+        _navigationService.OnNavigationRequested -= OnNavigationRequested;
     }
 }

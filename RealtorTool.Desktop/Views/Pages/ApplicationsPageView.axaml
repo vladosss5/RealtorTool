@@ -8,13 +8,8 @@
              x:Class="RealtorTool.Desktop.Views.Pages.ApplicationsPageView"
              x:DataType="pages:ApplicationsPageViewModel">
     
-    <Design.DataContext>
-        <pages:ApplicationsPageViewModel/>
-    </Design.DataContext>
-    
     <UserControl.Resources>
         <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
-        <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
         <converters:ObjectIsNotNullConverter x:Key="ObjectIsNotNullConverter"/>
     </UserControl.Resources>
     
@@ -43,10 +38,10 @@
                 <Setter Property="Cursor" Value="Hand"/>
             </Style>
             <Style Selector="ListBoxItem:pointerover">
-                <Setter Property="Background" Value="#F5F5F5"/>
+                <Setter Property="Background" Value="BlueViolet"/>
             </Style>
             <Style Selector="ListBoxItem:selected">
-                <Setter Property="Background" Value="#E3F2FD"/>
+                <Setter Property="Background" Value="BlueViolet"/>
             </Style>
         </ListBox.Styles>
     

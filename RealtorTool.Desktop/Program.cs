@@ -2,6 +2,7 @@
 using Avalonia.ReactiveUI;
 using System;
 using System.IO;
+using HotAvalonia;
 using RealtorTool.Desktop.ViewModels;
 using RealtorTool.Desktop.ViewModels.Pages;
 using RealtorTool.Desktop.Views.Pages;

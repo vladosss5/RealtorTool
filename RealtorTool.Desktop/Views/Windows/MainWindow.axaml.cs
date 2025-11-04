@@ -6,11 +6,15 @@ namespace RealtorTool.Desktop.Views.Windows;
 
 public partial class MainWindow : Window
 {
-    public MainWindow(
-        IWindowService windowService, 
-        MainWindowViewModel viewModel)
+    public MainWindow()
     {
         InitializeComponent();
+    }
+
+    public MainWindow(
+        IWindowService windowService, 
+        MainWindowViewModel viewModel) : this()
+    {
         DataContext = viewModel;
         windowService.SetCurrentWindow(this);
     }

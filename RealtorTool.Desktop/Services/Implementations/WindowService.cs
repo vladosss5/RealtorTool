@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.DependencyInjection;
 using RealtorTool.Desktop.Services.Interfaces;
+using RealtorTool.Desktop.Views.Windows;
 using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.Services.Implementations;
@@ -59,25 +60,21 @@ public class WindowService : IWindowService
     
     public Window? GetMainWindow()
     {
-        // Для Classic Desktop приложений
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
             return desktopLifetime.MainWindow ?? desktopLifetime.Windows.FirstOrDefault();
         }
 
-        // Для Single View приложений
         if (Application.Current?.ApplicationLifetime is ISingleViewApplicationLifetime singleViewLifetime)
         {
             return singleViewLifetime.MainView as Window;
         }
 
-        // Универсальный способ через TopLevel
         return TopLevel.GetTopLevel(null) as Window;
     }
 
     public Window? GetActiveWindow()
     {
-        // Для Classic Desktop приложений
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
             return desktopLifetime.Windows.FirstOrDefault(w => w.IsActive) 
@@ -85,7 +82,35 @@ public class WindowService : IWindowService
                    ?? desktopLifetime.Windows.FirstOrDefault();
         }
 
-        // Для других типов приложений
         return GetMainWindow();
+    }
+
+    public void Logout()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            // Скрываем все окна кроме авторизации
+            foreach (var window in desktopLifetime.Windows.ToList())
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    // Скрываем вместо закрытия
+                    mainWindow.Hide();
+                }
+                else if (window is not AuthorizationWindow)
+                {
+                    window.Close();
+                }
+            }
+        
+            // Показываем окно авторизации
+            var authWindow = _serviceProvider.GetRequiredService<AuthorizationWindow>();
+            authWindow.Show();
+        
+            // Устанавливаем как главное окно
+            desktopLifetime.MainWindow = authWindow;
+        
+            _currentWindow = authWindow;
+        }
     }
 }

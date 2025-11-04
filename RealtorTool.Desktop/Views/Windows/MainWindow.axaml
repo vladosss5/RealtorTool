@@ -9,10 +9,6 @@
         Classes="main-window"
         Icon="/Assets/logo.ico"
         Title="RealtorTool.Desktop">
-
-    <Design.DataContext>
-        <windows:MainWindowViewModel/>
-    </Design.DataContext>
     
     <Window.Styles>
         <StyleInclude Source="/Styles/MainStyles.axaml" />
@@ -21,41 +17,44 @@
     <Grid RowDefinitions="Auto, *">
         <Border Grid.Column="0" Background="WhiteSmoke"
                 Margin="5" CornerRadius="10">
-            <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding OpenHomePage}" 
-                        HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Background="Transparent"
-                        Height="30" Margin="5" Padding="2">
-                    <Image Width="25" Height="25"
-                           Source="/Assets/home.png"/>
-                </Button>
-                <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Height="30" Margin="5"
-                        Background="NavajoWhite"
-                        Command="{Binding OpenMyProfilePage}"/>
-                <Button Content="Сотрудники" HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Height="30" Margin="5"
-                        Background="NavajoWhite"
-                        Command="{Binding OpenEmployeesPage}"/>
-                <Button Content="Создать заявку" HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Height="30" Margin="5"
-                        Background="NavajoWhite"
-                        Command="{Binding OpenCreatingApplicationPage}"/>
-                <Button Content="Заявки" HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Height="30" Margin="5"
-                        Background="NavajoWhite"
-                        Command="{Binding OpenApplicationsPage}"/>
-            </StackPanel>
+            <Grid ColumnDefinitions="*, *">
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button Command="{Binding OpenHomePage}" 
+                            HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Background="Transparent"
+                            Height="30" Margin="5" Padding="2">
+                        <Image Width="25" Height="25"
+                               Source="/Assets/home.png"/>
+                    </Button>
+                    <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Height="30" Margin="5"
+                            Background="NavajoWhite"
+                            Command="{Binding OpenMyProfilePage}"/>
+                    <Button Content="Сотрудники" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Height="30" Margin="5"
+                            Background="NavajoWhite"
+                            Command="{Binding OpenEmployeesPage}"/>
+                    <Button Content="Создать заявку" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Height="30" Margin="5"
+                            Background="NavajoWhite"
+                            Command="{Binding OpenCreatingApplicationPage}"/>
+                    <Button Content="Заявки" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Height="30" Margin="5"
+                            Background="NavajoWhite"
+                            Command="{Binding OpenApplicationsPage}"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="Выйти" Command="{Binding LogoutCommand}"/>
+            </Grid>
         </Border>
         
         <Border Grid.Row="1" Margin="5" CornerRadius="10"

@@ -9,11 +9,14 @@ namespace RealtorTool.Desktop.Views.Windows;
 
 public partial class AuthorizationWindow : Window
 {
-    public AuthorizationWindow(
-        AuthorizationWindowViewModel viewModel,
-        IWindowService windowService)
+    public AuthorizationWindow()
     {
         InitializeComponent();
+    }
+
+    public AuthorizationWindow(AuthorizationWindowViewModel viewModel,
+        IWindowService windowService) : this()
+    {
         DataContext = viewModel;
         windowService.SetCurrentWindow(this);
     }

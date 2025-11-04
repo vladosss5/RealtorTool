@@ -57,4 +57,11 @@ public class NavigationService : INavigationService
         }
         await Task.CompletedTask;
     }
+    
+    public event Action<PageViewModelBase> OnNavigationRequested;
+
+    public void NavigateTo(PageViewModelBase page)
+    {
+        OnNavigationRequested?.Invoke(page);
+    }
 }
