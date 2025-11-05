@@ -92,6 +92,7 @@ sealed class Program
         services.AddTransient<AreaDetailPageViewModel>();
         services.AddTransient<PrivateHouseDetailPageViewModel>();
         services.AddTransient<ListingItemViewModel>();
+        services.AddTransient<EmployeeDetailViewModel>();
         
         // Регистрация страниц с ленивой загрузкой
         services.AddTransient<BuyApplicationPageViewModel>();
@@ -127,5 +128,6 @@ sealed class Program
         services.AddTransient<ApartmentDetailPageView>();
         services.AddTransient<AreaDetailPageView>();
         services.AddTransient<PrivateHouseDetailPageView>();
+        services.AddTransient<EmployeeDetailView>();
     }
 }

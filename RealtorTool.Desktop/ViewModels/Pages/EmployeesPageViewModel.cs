@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -23,6 +25,10 @@ public class EmployeesPageViewModel : PageViewModelBase
     private readonly DataContext _context;
     private readonly IAccountingService _accountingService;
     private readonly IPhotoService _photoService;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly INavigationService _navigationService;
+    
+    private Employee? _selectedEmployee;
     
     [Reactive] public ObservableCollection<Employee> Employees { get; set; } = new();
     [Reactive] public Employee NewEmployee { get; set; } = new();
@@ -34,6 +40,17 @@ public class EmployeesPageViewModel : PageViewModelBase
     [Reactive] public UploadedPhoto? CurrentPhoto { get; set; }
     [Reactive] public string PhotosSummary { get; set; } = "Фотография не добавлена";
     
+    public Employee SelectedEmployee
+    {
+        get => _selectedEmployee;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedEmployee, value);
+            OpenEmployeeDetailAsync(_selectedEmployee.Id);
+            _selectedEmployee = null;
+        }
+    }
+
     public bool HasPhoto => CurrentPhoto != null;
     
     public ICommand CreateEmployeeCommand { get; }
@@ -43,11 +60,13 @@ public class EmployeesPageViewModel : PageViewModelBase
     public EmployeesPageViewModel(
         DataContext context, 
         IAccountingService accountingService,
-        IPhotoService photoService)
+        IPhotoService photoService, IServiceProvider serviceProvider, INavigationService navigationService)
     {
         _context = context;
         _accountingService = accountingService;
         _photoService = photoService;
+        _serviceProvider = serviceProvider;
+        _navigationService = navigationService;
 
         LoadData();
         
@@ -190,5 +209,19 @@ public class EmployeesPageViewModel : PageViewModelBase
         CurrentPhoto = null;
         UpdatePhotosSummary();
         this.RaisePropertyChanged(nameof(HasPhoto));
+    }
+    
+    private void OpenEmployeeDetailAsync(string selectedEmployeeId)
+    {
+        var detailVm = _serviceProvider.GetRequiredService<EmployeeDetailViewModel>();
+        
+        if (detailVm is IParameterReceiver parameterReceiver)
+            parameterReceiver.ReceiveParameter(selectedEmployeeId);
+        
+        MessageBus.Current.SendMessage(detailVm, "NavigateToPage");
+
+        _navigationService.NavigateTo(detailVm);
+        
+        MessageBus.Current.SendMessage(selectedEmployeeId, "SelectedEmployeeId");
     }
 }
