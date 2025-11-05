@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Core.DbEntities.RealtyModels;
 
 namespace RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages;
 

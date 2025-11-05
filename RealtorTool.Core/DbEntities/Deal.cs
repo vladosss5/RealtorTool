@@ -1,6 +1,6 @@
 namespace RealtorTool.Core.DbEntities;
 
-public class Deal : BaseIdEntity
+public class Deal : BaseIdEntity, ISoftDelete
 {
     public string ListingId { get; set; } = null!;
     
@@ -29,4 +29,6 @@ public class Deal : BaseIdEntity
     public DictionaryValue Status { get; set; }
     
     public ICollection<DealParticipant> Participants { get; set; } = new List<DealParticipant>();
+    
+    public bool IsDeleted { get; set; }
 }

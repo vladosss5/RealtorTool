@@ -11,6 +11,7 @@ using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Core.DbEntities.RealtyModels;
 using RealtorTool.Core.DbEntities.Views;
 using RealtorTool.Core.Enums;
 using RealtorTool.Data.Context;

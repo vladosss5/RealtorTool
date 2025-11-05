@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RealtorTool.Core.DbEntities;
 
-public class Employee : BaseIdEntity
+public class Employee : BaseIdEntity, ISoftDelete
 {
     public string Login { get; set; } = null!;
     
@@ -25,6 +25,10 @@ public class Employee : BaseIdEntity
     public string? PhotoId { get; set; }
     
     public Photo? Photo { get; set; }
+    
+    public bool IsDeleted { get; set; }
+    
+    public bool Fired { get; set; }
     
     [NotMapped]
     public bool HasPhoto => Photo != null;

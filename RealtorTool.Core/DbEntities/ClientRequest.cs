@@ -6,7 +6,7 @@ namespace RealtorTool.Core.DbEntities;
 /// <summary>
 /// Запрос клиента на операции с недвижимостью
 /// </summary>
-public class ClientRequest : BaseIdEntity
+public class ClientRequest : BaseIdEntity, ISoftDelete
 {
     /// <summary>
     /// Тип запроса (аренда, сдача, покупка, продажа)
@@ -113,6 +113,8 @@ public class ClientRequest : BaseIdEntity
     /// Желаемый тип недвижимости (для запросов на покупку/аренду)
     /// </summary>
     public RealtyType? DesiredRealtyType { get; set; }
+    
+    public bool IsDeleted { get; set; }
     
     [NotMapped] public Realty? Realty => Listing?.Realty;
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Core.DbEntities.RealtyModels;
 using RealtorTool.Core.DbEntities.Views;
 
 namespace RealtorTool.Data.Context;

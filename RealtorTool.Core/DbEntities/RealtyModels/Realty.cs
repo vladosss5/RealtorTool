@@ -2,7 +2,7 @@ using RealtorTool.Core.Enums;
 
 namespace RealtorTool.Core.DbEntities;
 
-public class Realty : BaseIdEntity
+public class Realty : BaseIdEntity, ISoftDelete
 {
     public string Name { get; set; } = null!;
     
@@ -27,4 +27,6 @@ public class Realty : BaseIdEntity
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
 
     public ICollection<Photo> Photos { get; set; } = new List<Photo>();
+    
+    public bool IsDeleted { get; set; }
 }

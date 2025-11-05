@@ -1,6 +1,6 @@
 namespace RealtorTool.Core.DbEntities;
 
-public class Address : BaseIdEntity
+public class Address : BaseIdEntity, ISoftDelete
 {
     public string? City { get; set; }
 
@@ -13,4 +13,6 @@ public class Address : BaseIdEntity
     public string? BuildingNumber { get; set; }
 
     public string? PostalCode { get; set; }
+    
+    public bool IsDeleted { get; set; }
 }

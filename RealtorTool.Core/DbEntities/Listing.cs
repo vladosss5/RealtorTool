@@ -1,6 +1,6 @@
 namespace RealtorTool.Core.DbEntities;
 
-public class Listing : BaseIdEntity
+public class Listing : BaseIdEntity, ISoftDelete
 {
     public string RealtyId { get; set; } = null!;
     
@@ -33,4 +33,6 @@ public class Listing : BaseIdEntity
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     
     public ICollection<ClientRequest> ClientRequests { get; set; } = new List<ClientRequest>();
+    
+    public bool IsDeleted { get; set; }
 }

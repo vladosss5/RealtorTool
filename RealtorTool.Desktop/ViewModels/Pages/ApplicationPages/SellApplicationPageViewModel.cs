@@ -10,6 +10,7 @@ using MsBox.Avalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Core.DbEntities.RealtyModels;
 using RealtorTool.Core.Enums;
 using RealtorTool.Data.Context;
 using RealtorTool.Desktop.DTOs;

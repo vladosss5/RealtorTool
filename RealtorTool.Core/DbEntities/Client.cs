@@ -1,6 +1,6 @@
 namespace RealtorTool.Core.DbEntities;
 
-public class Client : BaseIdEntity
+public class Client : BaseIdEntity, ISoftDelete
 {
     public string FirstName { get; set; } = null!;
 
@@ -19,4 +19,6 @@ public class Client : BaseIdEntity
     public string? PhotoId { get; set; }
     
     public Photo? Photo { get; set; }
+    
+    public bool IsDeleted { get; set; }
 }

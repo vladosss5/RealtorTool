@@ -1,4 +1,4 @@
-namespace RealtorTool.Core.DbEntities;
+namespace RealtorTool.Core.DbEntities.RealtyModels;
 
 public class Area : Realty
 {

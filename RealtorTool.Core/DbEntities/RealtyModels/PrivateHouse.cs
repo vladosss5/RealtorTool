@@ -1,6 +1,6 @@
-namespace RealtorTool.Core.DbEntities;
+namespace RealtorTool.Core.DbEntities.RealtyModels;
 
-public class PrivateHouse : Realty
+public class PrivateHouse : Realty, ISoftDelete
 {
     public int? RoomsCount { get; set; }
 
