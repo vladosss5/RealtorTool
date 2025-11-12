@@ -16,11 +16,10 @@ using RealtorTool.Core.Enums;
 using RealtorTool.Data.Context;
 using RealtorTool.Desktop.DTOs;
 using RealtorTool.Desktop.Services.Interfaces;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Pages;
 
-public class EmployeesPageViewModel : PageViewModelBase
+public class EmployeesPageViewModel : AccountViewModelBase
 {
     private readonly DataContext _context;
     private readonly IAccountingService _accountingService;
@@ -58,9 +57,12 @@ public class EmployeesPageViewModel : PageViewModelBase
     public ReactiveCommand<UploadedPhoto?, Unit> RemovePhotoCommand { get; }
 
     public EmployeesPageViewModel(
-        DataContext context, 
-        IAccountingService accountingService,
-        IPhotoService photoService, IServiceProvider serviceProvider, INavigationService navigationService)
+        DataContext context,
+        IPhotoService photoService, 
+        IServiceProvider serviceProvider, 
+        INavigationService navigationService, 
+        IAccountingService accountingService) 
+        : base(accountingService)
     {
         _context = context;
         _accountingService = accountingService;

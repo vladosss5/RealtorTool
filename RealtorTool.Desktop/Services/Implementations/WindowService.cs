@@ -6,7 +6,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.DependencyInjection;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.Views.Windows;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.Services.Implementations;
 

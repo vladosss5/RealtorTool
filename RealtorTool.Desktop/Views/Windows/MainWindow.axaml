@@ -52,6 +52,12 @@
                             Height="30" Margin="5"
                             Background="NavajoWhite"
                             Command="{Binding OpenApplicationsPage}"/>
+                    <Button Content="Сделки" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Height="30" Margin="5"
+                            Background="NavajoWhite"
+                            Command="{Binding OpenDealListPage}"/>
                 </StackPanel>
                 <Button Grid.Column="1" Content="Выйти" 
                         Command="{Binding LogoutCommand}" 

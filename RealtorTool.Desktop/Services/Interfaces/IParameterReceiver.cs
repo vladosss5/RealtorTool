@@ -1,4 +1,4 @@
-namespace RealtorTool.Services.Interfaces;
+namespace RealtorTool.Desktop.Services.Interfaces;
 
 public interface IParameterReceiver
 {

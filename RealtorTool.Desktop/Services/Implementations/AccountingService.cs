@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RealtorTool.Core.DbEntities;
+using RealtorTool.Core.Enums;
 using RealtorTool.Data.Context;
-using RealtorTool.Services.Interfaces;
+using RealtorTool.Desktop.Services.Interfaces;
 
 namespace RealtorTool.Desktop.Services.Implementations;
 
@@ -12,11 +14,48 @@ public class AccountingService : IAccountingService
 {
     private readonly DataContext _context;
     
+    public Employee? CurrentUser { get; private set; }
+    public UserRole? CurrentRole { get; private set; }
+    public bool IsAuthenticated => CurrentUser != null;
+    
     public AccountingService(DataContext context)
     {
         _context = context;
     }
+    
+    public bool HasRole(UserRole role)
+    {
+        return CurrentRole == role;
+    }
 
+    public bool HasAnyRole(params UserRole[] roles)
+    {
+        return CurrentRole.HasValue && roles.Contains(CurrentRole.Value);
+    }
+    
+    public void SetCurrentUser(Employee employee)
+    {
+        CurrentUser = employee;
+        
+        // Конвертируем строковую роль в enum
+        if (employee.Role?.Value != null)
+        {
+            CurrentRole = employee.Role.Value.ToLower() switch
+            {
+                "системный администратор" => UserRole.SystemAdministrator,
+                "система" => UserRole.System,
+                "администратор" => UserRole.Administrator,
+                "риэлтор" => UserRole.Realtor,
+                _ => null
+            };
+        }
+    }
+
+    public void Logout()
+    {
+        CurrentUser = null;
+        CurrentRole = null;
+    }
 
     /// <inheritdoc />
     public async Task<Employee?> LoginAsync(string? login, string? password)

@@ -1,0 +1,305 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:RealtorTool.Desktop.Converters"
+             xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="RealtorTool.Desktop.Views.Pages.DealDetailPageView"
+             x:DataType="pages:DealDetailPageViewModel"
+             x:Name="UserControl">
+    
+    <UserControl.Resources>
+        <converters:ByteArrayToImageConverter x:Key="BytesToImageConverter"/>
+        <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <converters:BooleanToColorConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:ObjectIsNotNullConverter x:Key="ObjectIsNotNullConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="15">
+            
+            <!-- Заголовок и кнопки действий -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0" 
+                          Text="Детали сделки" 
+                          FontSize="24" 
+                          FontWeight="Bold"
+                          VerticalAlignment="Center"/>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Редактировать" 
+                            Command="{Binding EditCommand}"
+                            IsVisible="{Binding !IsEditing}"
+                            Padding="15,8"/>
+                    <Button Content="Сохранить" 
+                            Command="{Binding SaveCommand}"
+                            IsVisible="{Binding IsEditing}"
+                            Padding="15,8"
+                            Classes="Success"/>
+                    <Button Content="Отмена" 
+                            Command="{Binding CancelCommand}"
+                            IsVisible="{Binding IsEditing}"
+                            Padding="15,8"
+                            Classes="Secondary"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Индикатор загрузки -->
+            <ProgressBar Grid.Row="1" 
+                        IsIndeterminate="True" 
+                        IsVisible="{Binding IsLoading}"
+                        Height="4"/>
+
+            <!-- Основная информация о сделке -->
+            <Border Grid.Row="2" 
+                    BorderBrush="#E0E0E0" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="20"
+                    Background="White">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
+                    
+                    <!-- Блок статуса -->
+                    <Border Grid.Column="0" 
+                            Background="{Binding Deal.Status.Value, Converter={StaticResource StatusToColorConverter}}"
+                            CornerRadius="6" 
+                            Padding="15,10"
+                            VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Text="Статус сделки" 
+                                       FontSize="12" 
+                                       Foreground="White"
+                                       Opacity="0.9"/>
+                            
+                            <ComboBox ItemsSource="{Binding AvailableStatuses}"
+                                      SelectedItem="{Binding SelectedStatus}"
+                                      IsEnabled="{Binding IsEditing}"
+                                      Margin="0,5,0,0"
+                                      Background="Transparent"
+                                      BorderThickness="0">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Value}" 
+                                                   Foreground="White"
+                                                   FontWeight="SemiBold"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                                <ComboBox.Styles>
+                                    <Style Selector="ComboBox:disabled">
+                                        <Setter Property="Opacity" Value="1"/>
+                                    </Style>
+                                </ComboBox.Styles>
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Основные данные -->
+                    <StackPanel Grid.Column="1" Spacing="12">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                            <StackPanel Grid.Column="0" Spacing="8">
+                                <TextBlock Text="{Binding RealtyName}" 
+                                           FontSize="18" 
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Address}" 
+                                           FontSize="14" 
+                                           Foreground="#666"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" Spacing="8" HorizontalAlignment="Right">
+                                <TextBlock Text="Финальная цена" 
+                                           FontSize="12" 
+                                           Foreground="#666"/>
+                                <TextBlock Text="{Binding FormattedFinalPrice}" 
+                                           FontSize="20" 
+                                           FontWeight="Bold"
+                                           Foreground="#2E7D32"/>
+                                
+                                <TextBlock Text="Комиссия" 
+                                           FontSize="12" 
+                                           Foreground="#666"
+                                           Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding FormattedCommission}" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold"
+                                           Foreground="#F57C00"/>
+                            </StackPanel>
+                        </Grid>
+                        
+                        <Separator Background="#E0E0E0"/>
+                        
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="15">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="Тип сделки" FontSize="11" Opacity="0.6"/>
+                                <TextBlock Text="{Binding Deal.DealType.Value}" FontSize="13" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Text="Дата сделки" FontSize="11" Opacity="0.6"/>
+                                <TextBlock Text="{Binding FormattedDealDate}" FontSize="13" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="2" Spacing="4">
+                                <TextBlock Text="ID сделки" FontSize="11" Opacity="0.6"/>
+                                <TextBlock Text="{Binding Deal.Id}" FontSize="13" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Участники сделки -->
+            <Border Grid.Row="3" 
+                    BorderBrush="#E0E0E0" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="20"
+                    Background="White">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Участники сделки" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"/>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                        <!-- Покупатель -->
+                        <Border Grid.Column="0" 
+                                BorderBrush="#E0E0E0" 
+                                BorderThickness="1" 
+                                CornerRadius="6" 
+                                Padding="15">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Покупатель" 
+                                           FontSize="12" 
+                                           Foreground="#666"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding BuyerName}" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding Deal.Buyer.Phone}" 
+                                           FontSize="12" 
+                                           Foreground="#666"/>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- Ответственный сотрудник -->
+                        <Border Grid.Column="1" 
+                                BorderBrush="#E0E0E0" 
+                                BorderThickness="1" 
+                                CornerRadius="6" 
+                                Padding="15">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Ответственный сотрудник" 
+                                           FontSize="12" 
+                                           Foreground="#666"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding EmployeeName}" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Дополнительные участники -->
+                    <StackPanel Spacing="10" 
+                                IsVisible="{Binding Deal.Participants.Count, Converter={StaticResource ObjectIsNotNullConverter}}">
+                        <TextBlock Text="Дополнительные участники" 
+                                   FontSize="14" 
+                                   FontWeight="SemiBold"/>
+                        
+                        <ItemsControl ItemsSource="{Binding Deal.Participants}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#E0E0E0" 
+                                            BorderThickness="1" 
+                                            CornerRadius="4" 
+                                            Padding="10"
+                                            Margin="0,0,0,5">
+                                        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                            <StackPanel Grid.Column="0" Spacing="2">
+                                                <TextBlock Text="{Binding ClientRequest.Client.FullName}" 
+                                                           FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Role}" 
+                                                           FontSize="11" 
+                                                           Foreground="#666"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" 
+                                                       Text="{Binding ClientRequest.Type}" 
+                                                       FontSize="11" 
+                                                       Foreground="#999"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Фотографии объекта -->
+            <Border Grid.Row="4" 
+                    BorderBrush="#E0E0E0" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="20"
+                    Background="White"
+                    IsVisible="{Binding HasPhotos}">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Фотографии объекта" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"/>
+                    
+                    <ItemsControl ItemsSource="{Binding Photos}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="120" 
+                                        Height="90" 
+                                        BorderBrush="#E0E0E0" 
+                                        BorderThickness="1"
+                                        CornerRadius="4">
+                                    <Image Source="{Binding FileData, Converter={StaticResource BytesToImageConverter}}"
+                                           Stretch="UniformToFill"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Информация о связанном объявлении -->
+            <Border Grid.Row="5" 
+                    BorderBrush="#E0E0E0" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="20"
+                    Background="White">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Связанное объявление" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"/>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                        <StackPanel Grid.Column="0" Spacing="6">
+                            <TextBlock Text="Исходная цена" FontSize="12" Foreground="#666"/>
+                            <TextBlock Text="{Binding Deal.Listing.Price, StringFormat='{}{0:N0} {1}', FallbackValue=Deal.Listing.Currency.Value}" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="1" Spacing="6">
+                            <TextBlock Text="Тип объявления" FontSize="12" Foreground="#666"/>
+                            <TextBlock Text="{Binding Deal.Listing.ListingType.Value}" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

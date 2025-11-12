@@ -7,7 +7,6 @@ using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Pages;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Windows;
 
@@ -31,6 +30,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand OpenEmployeesPage { get; private set; }
     public ICommand OpenApplicationsPage { get; private set; }
     public ICommand LogoutCommand { get; private set; }
+    public ICommand OpenDealListPage { get; private set; }
 
     /// <summary>
     /// Конструктор.
@@ -42,7 +42,9 @@ public class MainWindowViewModel : ViewModelBase
         CreatingApplicationPageViewModel creatingApplicationPageViewModel,
         EmployeesPageViewModel employeesPageViewModel,
         ApplicationsPageViewModel applicationsPageViewModel,
-        INavigationService navigationService, IWindowService windowService)
+        DealsListPageViewModel dealsListPageViewModel,
+        INavigationService navigationService, 
+        IWindowService windowService)
     {
         _navigationService = navigationService;
         _windowService = windowService;
@@ -54,7 +56,8 @@ public class MainWindowViewModel : ViewModelBase
             homePageViewModel,
             creatingApplicationPageViewModel,
             employeesPageViewModel,
-            applicationsPageViewModel
+            applicationsPageViewModel,
+            dealsListPageViewModel
         ];
         SelectedPageItem = PaneItems[2];
         
@@ -71,6 +74,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenCreatingApplicationPage = ReactiveCommand.Create(OpenCreatingApplicationPageImpl);
         OpenEmployeesPage = ReactiveCommand.Create(OpenEmployeesPageImpl);
         OpenApplicationsPage = ReactiveCommand.Create(OpenApplicationsPageImpl);
+        OpenDealListPage = ReactiveCommand.Create(OpenDealListPageImpl);
         LogoutCommand = ReactiveCommand.Create(LogoutImpl);
     }
     
@@ -95,6 +99,7 @@ public class MainWindowViewModel : ViewModelBase
     private void OpenCreatingApplicationPageImpl() => SelectedPageItem = PaneItems[3];
     private void OpenEmployeesPageImpl() => SelectedPageItem = PaneItems[4];
     private void OpenApplicationsPageImpl() => SelectedPageItem = PaneItems[5];
+    private void OpenDealListPageImpl() => SelectedPageItem = PaneItems[6];
 
     private void GetDataFromMessageBus()
     {

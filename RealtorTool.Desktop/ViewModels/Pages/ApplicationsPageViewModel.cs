@@ -11,7 +11,6 @@ using RealtorTool.Data.Context;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Items;
 using RealtorTool.Desktop.ViewModels.Windows;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Pages;
 

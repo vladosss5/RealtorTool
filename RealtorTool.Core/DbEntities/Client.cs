@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RealtorTool.Core.DbEntities;
 
 public class Client : BaseIdEntity, ISoftDelete
@@ -21,4 +23,7 @@ public class Client : BaseIdEntity, ISoftDelete
     public Photo? Photo { get; set; }
     
     public bool IsDeleted { get; set; }
+    
+    [NotMapped]
+    public string FullName => $"{FirstName} {LastName}";
 }

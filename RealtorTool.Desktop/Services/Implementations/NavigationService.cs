@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.Services.Implementations;
 
@@ -57,7 +57,17 @@ public class NavigationService : INavigationService
         }
         await Task.CompletedTask;
     }
-    
+
+    public void GoBack()
+    {
+        if (_navigationStack.Count > 1)
+        {
+            _navigationStack.Pop();
+            var previousViewModel = _navigationStack.Peek();
+            CurrentPageChanged?.Invoke(previousViewModel);
+        }
+    }
+
     public event Action<PageViewModelBase> OnNavigationRequested;
 
     public void NavigateTo(PageViewModelBase page)

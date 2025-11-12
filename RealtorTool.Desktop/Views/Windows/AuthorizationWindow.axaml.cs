@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.Views.Windows;
 

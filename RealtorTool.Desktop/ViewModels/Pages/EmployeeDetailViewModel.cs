@@ -10,11 +10,11 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
 using RealtorTool.Data.Context;
-using RealtorTool.Services.Interfaces;
+using RealtorTool.Desktop.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Pages;
 
-public class EmployeeDetailViewModel : PageViewModelBase, IParameterReceiver
+public class EmployeeDetailViewModel : AccountViewModelBase, IParameterReceiver
 {
     private readonly DataContext _context;
     
@@ -27,7 +27,9 @@ public class EmployeeDetailViewModel : PageViewModelBase, IParameterReceiver
     public ICommand DeleteCommand { get; }
     public ICommand RecoverCommand { get; }
 
-    public EmployeeDetailViewModel(DataContext context)
+    public EmployeeDetailViewModel(DataContext context, 
+        IAccountingService accountingService) 
+        : base(accountingService)
     {
         _context = context;
 

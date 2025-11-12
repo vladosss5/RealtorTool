@@ -9,7 +9,6 @@ using ReactiveUI.Fody.Helpers;
 using RealtorTool.Data;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.Views;
-using RealtorTool.Services.Interfaces;
 using MainWindow = RealtorTool.Desktop.Views.Windows.MainWindow;
 
 namespace RealtorTool.Desktop.ViewModels;
@@ -73,6 +72,7 @@ public class AuthorizationWindowViewModel : ViewModelBase
             return;
         }
         
+        _accountingService.SetCurrentUser(authPerson);
         _windowService.ShowWindow<MainWindow>();
         MessageBus.Current.SendMessage(authPerson, "CurrentAuth");
         currentWindow.Close();

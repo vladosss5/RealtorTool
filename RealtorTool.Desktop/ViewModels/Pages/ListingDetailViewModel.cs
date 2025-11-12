@@ -17,7 +17,6 @@ using RealtorTool.Core.Enums;
 using RealtorTool.Data.Context;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Pages.RealtyDetailPages;
-using RealtorTool.Services.Interfaces;
 
 namespace RealtorTool.Desktop.ViewModels.Pages;
 
