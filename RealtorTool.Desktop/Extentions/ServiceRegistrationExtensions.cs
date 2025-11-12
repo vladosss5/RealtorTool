@@ -36,7 +36,8 @@ public static class ServiceRegistrationExtensions
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     
         services.AddDbContext<DataContext>(options => 
-            options.UseNpgsql(connectionString));
+            options.UseNpgsql(connectionString),
+            contextLifetime: ServiceLifetime.Transient);
     }
     
     public static void AddConvertors(this IServiceCollection services)

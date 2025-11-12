@@ -66,7 +66,7 @@
         </Border>
         
         <Border Grid.Row="1" Margin="5" CornerRadius="10"
-                Background="WhiteSmoke" Opacity="0.5"/>
+                Background="#4F537C" Opacity="0.5"/>
         <TransitioningContentControl Grid.Row="1" Margin="5" Padding="5"
                                      Background="Transparent"
                                      Content="{Binding SelectedPageItem}" />

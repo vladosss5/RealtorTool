@@ -17,7 +17,6 @@ namespace RealtorTool.Desktop.ViewModels.Pages;
 public class ApplicationsPageViewModel : PageViewModelBase
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly DataContext _dataContext;
     private readonly INavigationService _navigationService;
 
     private ListingItemViewModel? _selectedListing;
@@ -41,32 +40,41 @@ public class ApplicationsPageViewModel : PageViewModelBase
     }
 
     public ApplicationsPageViewModel(
-        DataContext dataContext,
         IServiceProvider serviceProvider, 
         INavigationService navigationService)
     {
-        _dataContext = dataContext;
         _serviceProvider = serviceProvider;
         _navigationService = navigationService;
 
         _ = LoadDataAsync();
     }
 
-    public async Task LoadDataAsync()
+    private async Task LoadDataAsync()
     {
-        var listings = await _dataContext.Listings
-            .Include(l => l.Realty)
-            .ThenInclude(r => r.Photos.OrderBy(p => p.SortOrder).Take(1))
-            .Include(l => l.Currency)
-            .Include(l => l.ListingType)
-            .Include(l => l.Status)
-            .ToListAsync();
-
-        Listings.Clear();
-
-        foreach (var listing in listings)
+        try
         {
-            Listings.Add(new ListingItemViewModel(listing));
+            using var scope = _serviceProvider.CreateScope();
+            var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+            var listings = await dataContext.Listings
+                .Include(l => l.Realty)
+                .ThenInclude(r => r.Photos.OrderBy(p => p.SortOrder).Take(1))
+                .Include(l => l.Currency)
+                .Include(l => l.ListingType)
+                .Include(l => l.Status)
+                .ToListAsync();
+
+            Listings.Clear();
+
+            foreach (var listing in listings)
+            {
+                Listings.Add(new ListingItemViewModel(listing));
+            }
+        }
+        catch (Exception ex)
+        {
+            await MessageBoxManager
+                .GetMessageBoxStandard("Ошибка", (ex.InnerException?.Message != null ? ex.InnerException?.Message! : ex.Message))
+                .ShowAsync();
         }
     }
 

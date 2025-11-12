@@ -8,7 +8,6 @@ using MsBox.Avalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Data.Context;
-using RealtorTool.Desktop.Services.Implementations;
 using RealtorTool.Desktop.Services.Interfaces;
 using RealtorTool.Desktop.ViewModels.Items;
 
@@ -17,7 +16,6 @@ namespace RealtorTool.Desktop.ViewModels.Pages;
 public class DealsListPageViewModel : PageViewModelBase
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly DataContext _dataContext;
     private readonly INavigationService _navigationService;
 
     private DealItemViewModel? _selectedDeal;
@@ -42,39 +40,49 @@ public class DealsListPageViewModel : PageViewModelBase
 
     public DealsListPageViewModel(
         IServiceProvider serviceProvider, 
-        INavigationService navigationService, 
-        DataContext dataContext)
+        INavigationService navigationService)
     {
         _serviceProvider = serviceProvider;
         _navigationService = navigationService;
-        _dataContext = dataContext;
 
         _ = LoadDataAsync();
     }
 
     private async Task LoadDataAsync()
     {
-        var deals = await _dataContext.Deals
-            .Include(d => d.Listing)
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+            
+            var deals = await dataContext.Deals
+                .Include(d => d.Listing)
                 .ThenInclude(l => l.Realty)
                 .ThenInclude(r => r.Photos.OrderBy(p => p.SortOrder).Take(1))
-            .Include(d => d.Listing)
+                .Include(d => d.Listing)
                 .ThenInclude(l => l.Currency)
-            .Include(d => d.Buyer)
-            .Include(d => d.Employee)
-            .Include(d => d.DealType)
-            .Include(d => d.Status)
-            .Include(d => d.Participants)
+                .Include(d => d.Buyer)
+                .Include(d => d.Employee)
+                .Include(d => d.DealType)
+                .Include(d => d.Status)
+                .Include(d => d.Participants)
                 .ThenInclude(p => p.ClientRequest)
                 .ThenInclude(cr => cr.Client)
-            .Where(d => !d.IsDeleted)
-            .ToListAsync();
+                .Where(d => !d.IsDeleted)
+                .ToListAsync();
 
-        Deals.Clear();
+            Deals.Clear();
 
-        foreach (var deal in deals)
+            foreach (var deal in deals)
+            {
+                Deals.Add(new DealItemViewModel(deal));
+            }
+        }
+        catch (Exception ex)
         {
-            Deals.Add(new DealItemViewModel(deal));
+            await MessageBoxManager
+                .GetMessageBoxStandard("Ошибка", (ex.InnerException?.Message != null ? ex.InnerException?.Message! : ex.Message))
+                .ShowAsync();
         }
     }
 

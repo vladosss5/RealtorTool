@@ -23,6 +23,7 @@ public class SellApplicationPageViewModel : ViewModelBase
     /// Сервисы.
     private readonly DataContext _context;
     private readonly IPhotoService _photoService;
+    private readonly IAccountingService _accountingService;
 
     // Поля.
     [Reactive] public Address NewAddress { get; set; } = new();
@@ -68,11 +69,13 @@ public class SellApplicationPageViewModel : ViewModelBase
     /// </summary>
     public SellApplicationPageViewModel(
         DataContext context,
-        IPhotoService photoService)
+        IPhotoService photoService, 
+        IAccountingService accountingService)
     {
         _context = context;
         _photoService = photoService;
-        
+        _accountingService = accountingService;
+
         CreateSellRequest = ReactiveCommand.CreateFromTask(CreateSellRequestAsync);
         SelectImagesCommand = ReactiveCommand.CreateFromTask(SelectImagesAsync);
         RemovePhotoCommand = ReactiveCommand.Create<UploadedPhoto>(RemovePhoto);
@@ -99,7 +102,8 @@ public class SellApplicationPageViewModel : ViewModelBase
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
-            var employee = await _context.Employees.FirstOrDefaultAsync(); // TODO Подключить MB
+            var employee = _accountingService.CurrentUser;
+            
             if (employee == null)
             {
                 await MessageBoxManager
@@ -108,18 +112,14 @@ public class SellApplicationPageViewModel : ViewModelBase
                 return;
             }
 
-            _context.Clients.Attach(NewClient);
-
-            _context.Addresses.Attach(NewAddress);
-
-            Realty createdRealty = null;
+            Realty? createdRealty = null;
 
             switch (CurrentRealtyType)
             {
                 case RealtyType.Area:
                     NewArea.Address = NewAddress;
                     NewArea.RealtyType = RealtyType.Area;
-                    _context.Areas.Attach(NewArea);
+                    _context.Areas.Add(NewArea);
                     createdRealty = NewArea;
                     break;
 
@@ -128,24 +128,38 @@ public class SellApplicationPageViewModel : ViewModelBase
                     NewApartament.BathroomType = BathroomTypes.FirstOrDefault(x => x.IsSelected);
                     NewApartament.Address = NewAddress;
                     NewApartament.RealtyType = RealtyType.Apartment;
-                    _context.Apartments.Attach(NewApartament);
+                    _context.Apartments.Add(NewApartament);
                     createdRealty = NewApartament;
                     break;
 
                 case RealtyType.PrivateHouse:
                     NewPrivateHouse.Address = NewAddress;
                     NewPrivateHouse.RealtyType = RealtyType.PrivateHouse;
-                    _context.PrivateHouses.Attach(NewPrivateHouse);
+                    _context.PrivateHouses.Add(NewPrivateHouse);
                     createdRealty = NewPrivateHouse;
                     break;
             }
+
+            int sortOrder = 0;
+            createdRealty.Photos = UploadedPhotos.Select(x => 
+                new Photo
+                {
+                    EntityType = EntityTypeForPhoto.Realty,
+                    EntityId = createdRealty.Id,
+                    FileName = x.FileName,
+                    ContentType = x.ContentType,
+                    IsMain = sortOrder == 0,
+                    SortOrder = sortOrder++,
+                    CreatedDate = DateTime.UtcNow,
+                    FileData = x.FileData
+                }).ToList();
 
             NewListing.Realty = createdRealty;
             NewListing.Owner = NewClient;
             NewListing.CurrencyId = "currency_rub";
             NewListing.ListingTypeId = "listing_sale";
             NewListing.StatusId = "listing_active";
-            _context.Listings.Attach(NewListing);
+            
 
             var sellRequest = new ClientRequest
             {
@@ -156,18 +170,13 @@ public class SellApplicationPageViewModel : ViewModelBase
                 EmployeeId = employee.Id,
                 CreatedDate = DateTime.UtcNow
             };
-            _context.ClientRequests.Attach(sellRequest);
-
+            
+            _context.Clients.Add(NewClient);
+            _context.Addresses.Add(NewAddress);
+            _context.Listings.Add(NewListing);
+            _context.ClientRequests.Add(sellRequest);
+            
             await _context.SaveChangesAsync();
-
-            if (createdRealty != null && UploadedPhotos.Any())
-            {
-                await _photoService.SavePhotosToDatabaseAsync(
-                    UploadedPhotos.ToList(), 
-                    createdRealty.Id, 
-                    EntityTypeForPhoto.Realty);
-            }
-
             await transaction.CommitAsync();
 
             await MessageBoxManager

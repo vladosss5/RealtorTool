@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using RealtorTool.Core.Enums;
+using RealtorTool.Data.Context;
 using RealtorTool.Desktop.DTOs;
 
 namespace RealtorTool.Desktop.Services.Interfaces;
