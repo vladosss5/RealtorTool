@@ -17,7 +17,7 @@
     <Panel>
         <Border MinWidth="200" MaxWidth="500"
                 Margin="15" Padding="20" CornerRadius="25"
-                Background="WhiteSmoke"
+                Background="#667D7CA0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch">
             <StackPanel>
@@ -31,7 +31,7 @@
                             CommandParameter="{Binding ElementName=ThisWindow}"
                             Background="#007ACC"
                             Foreground="White" Margin="5"/>
-                    <Button Content="Подать заявку на регистрацию" Margin="5"/>
+                    <!-- <Button Content="Подать заявку на регистрацию" Margin="5"/> -->
                 </StackPanel>
             </StackPanel>
         </Border>

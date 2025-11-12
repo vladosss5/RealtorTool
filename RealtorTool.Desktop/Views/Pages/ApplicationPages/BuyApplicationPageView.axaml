@@ -11,12 +11,12 @@
     
     <ScrollViewer>
         <StackPanel Margin="20" Spacing="15">
-            <Border Padding="15" Background="#f5f5f5" CornerRadius="5">
+            <Border Padding="15" Background="#667D7CA0" CornerRadius="5">
                 <TextBlock Text="Создание заявки на покупку" FontSize="20" FontWeight="Bold"/>
             </Border>
             
             <!-- Данные клиента -->
-            <Border Padding="15" Background="#f5f5f5" CornerRadius="5">
+            <Border Padding="15" Background="#667D7CA0" CornerRadius="5">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Данные клиента" FontWeight="Bold"/>
                     
@@ -33,7 +33,7 @@
             </Border>
 
             <!-- Параметры поиска -->
-            <Border Padding="15" Background="#f5f5f5" CornerRadius="5" VerticalAlignment="Stretch">
+            <Border Padding="15" Background="#667D7CA0" CornerRadius="5" VerticalAlignment="Stretch">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Параметры поиска" FontWeight="Bold"/>
                     <TabControl SelectedIndex="{Binding SelectedPropertyTypeIndex}">
@@ -71,7 +71,7 @@
                 </StackPanel>
             </Border>
             
-            <Border Padding="15" Background="#f5f5f5" CornerRadius="5" 
+            <Border Padding="15" Background="#667D7CA0" CornerRadius="5" 
                     IsVisible="{Binding HasMatches}">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Найденные варианты" FontWeight="Bold"/>

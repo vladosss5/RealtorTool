@@ -28,40 +28,61 @@
                         <Image Width="25" Height="25"
                                Source="/Assets/home.png"/>
                     </Button>
-                    <Button Content="Мой профиль" HorizontalContentAlignment="Center" 
+                    <Button HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Height="30" Margin="5"
                             Background="NavajoWhite"
-                            Command="{Binding OpenMyProfilePage}"/>
-                    <Button Content="Сотрудники" HorizontalContentAlignment="Center" 
+                            Command="{Binding OpenMyProfilePage}">
+                            <TextBlock Text="Мой профиль"
+                                       Foreground="Black"/>
+                    </Button>
+                    <Button HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Height="30" Margin="5"
                             Background="NavajoWhite"
-                            Command="{Binding OpenEmployeesPage}"/>
-                    <Button Content="Создать заявку" HorizontalContentAlignment="Center" 
+                            Command="{Binding OpenEmployeesPage}">
+                        <TextBlock Text="Сотрудники"
+                                   Foreground="Black"/>
+                    </Button>
+                    
+                    <Button HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Height="30" Margin="5"
                             Background="NavajoWhite"
-                            Command="{Binding OpenCreatingApplicationPage}"/>
-                    <Button Content="Заявки" HorizontalContentAlignment="Center" 
+                            Command="{Binding OpenCreatingApplicationPage}">
+                        <TextBlock Text="Создать заявку"
+                                   Foreground="Black"/>
+                    </Button>
+                    
+                    <Button HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Height="30" Margin="5"
                             Background="NavajoWhite"
-                            Command="{Binding OpenApplicationsPage}"/>
-                    <Button Content="Сделки" HorizontalContentAlignment="Center" 
+                            Command="{Binding OpenApplicationsPage}">
+                        <TextBlock Text="Заявки"
+                                   Foreground="Black"/>
+                    </Button>
+                    
+                    <Button HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Height="30" Margin="5"
                             Background="NavajoWhite"
-                            Command="{Binding OpenDealListPage}"/>
+                            Command="{Binding OpenDealListPage}">
+                        <TextBlock Text="Сделки"
+                                   Foreground="Black"/>
+                    </Button>
                 </StackPanel>
-                <Button Grid.Column="1" Content="Выйти" 
+                <Button Grid.Column="1" 
                         Command="{Binding LogoutCommand}" 
-                        HorizontalAlignment="Right" Margin="5"/>
+                        HorizontalAlignment="Right" Margin="5">
+                    <TextBlock Text="Выход"
+                               Foreground="Black"/>
+                </Button>
             </Grid>
         </Border>
         
