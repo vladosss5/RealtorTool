@@ -7,6 +7,7 @@
         x:Class="RealtorTool.Desktop.Views.Windows.AuthorizationWindow"
         x:DataType="viewModels:AuthorizationWindowViewModel"
         x:Name="ThisWindow"
+        Classes="auth-window"
         Icon="/Assets/logo.ico"
         Title="Окно авторизации">
 

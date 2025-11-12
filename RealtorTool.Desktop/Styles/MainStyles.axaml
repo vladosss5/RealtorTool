@@ -13,4 +13,11 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style Selector="Window.auth-window">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush Stretch="UniformToFill" Source="/Assets/Background.png" />
+            </Setter.Value>
+        </Setter>
+    </Style>
 </Styles>
