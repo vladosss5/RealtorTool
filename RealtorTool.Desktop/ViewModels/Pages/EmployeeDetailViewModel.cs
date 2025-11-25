@@ -62,7 +62,7 @@ public class EmployeeDetailViewModel : AccountViewModelBase, IParameterReceiver
             CanFire = false;
             CanRecover = true;
 
-            _context.Attach(Employee);
+            _context.Update(Employee);
         
             await _context.SaveChangesAsync();
             

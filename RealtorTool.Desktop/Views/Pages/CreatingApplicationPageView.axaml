@@ -8,29 +8,27 @@
              x:Class="RealtorTool.Desktop.Views.Pages.CreatingApplicationPageView"
              x:DataType="pages:CreatingApplicationPageViewModel">
     
-    <Design.DataContext>
-        <pages:CreatingApplicationPageViewModel/>
-    </Design.DataContext>
-    
-    <TabControl>
-        <TabItem Header="Покупка">
+    <Border  Background="#99F5F5F5" CornerRadius="10" Padding="5">
+        <TabControl>
+            <TabItem Header="Покупка">
                 <applicationPages1:BuyApplicationPageView 
                     DataContext="{Binding BuyApplicationPageViewModel}" />
-        </TabItem>
+            </TabItem>
                     
-        <TabItem Header="Продажа">
+            <TabItem Header="Продажа">
                 <applicationPages1:SellApplicationPageView 
                     DataContext="{Binding SellApplicationPageViewModel}" />
-        </TabItem>
+            </TabItem>
                     
-        <TabItem Header="Съём">
+            <TabItem Header="Съём">
                 <applicationPages1:LeaseApplicationPageView 
                     DataContext="{Binding LeaseApplicationPageViewModel}" />
-        </TabItem>
+            </TabItem>
                     
-        <TabItem Header="Сдача">
+            <TabItem Header="Сдача">
                 <applicationPages1:RentalApplicationPageView 
                     DataContext="{Binding RentalApplicationPageViewModel}" />
-        </TabItem>
-    </TabControl>
+            </TabItem>
+        </TabControl>
+    </Border>
 </UserControl>

@@ -84,6 +84,7 @@ public class EmployeesPageViewModel : AccountViewModelBase
             var employees = await _context.Employees
                 .Include(x => x.Photo)
                 .Include(x => x.Role)
+                .Where(x => !x.IsDeleted && x.RoleId != "system_role")
                 .ToListAsync();
                 
             Employees.Clear();
@@ -92,7 +93,9 @@ public class EmployeesPageViewModel : AccountViewModelBase
             if (!Roles.Any())
             {
                 var roles = await _context.DictionaryValues
-                    .Where(x => x.DictionaryId == "employee_role")
+                    .Where(x => 
+                        x.DictionaryId == "employee_role" && 
+                        x.Id != "system_role")
                     .ToListAsync();
                 
                 Roles.AddRange(roles);

@@ -28,13 +28,15 @@ public class DealsListPageViewModel : PageViewModelBase
         set
         {
             if (string.IsNullOrEmpty(value?.Deal.Id))
+            {
                 MessageBoxManager
                     .GetMessageBoxStandard("Ошибка", "Id сделки не найден")
-                    .ShowAsync();
-            
-            this.RaiseAndSetIfChanged(ref _selectedDeal, value);
+                    .ShowAsync();   
+            }
             
             OpenDealDetailAsync(value?.Deal.Id!);
+
+            _selectedDeal = null;
         }
     }
 

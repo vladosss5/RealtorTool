@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -17,7 +18,6 @@ namespace RealtorTool.Desktop.ViewModels.Pages;
 public class DealDetailPageViewModel : PageViewModelBase, IParameterReceiver
 {
     private readonly DataContext _dataContext;
-    private readonly IServiceProvider _serviceProvider;
     private readonly INavigationService _navigationService;
 
     [Reactive] public Deal? Deal { get; set; }
@@ -32,11 +32,9 @@ public class DealDetailPageViewModel : PageViewModelBase, IParameterReceiver
 
     public DealDetailPageViewModel(
         DataContext dataContext,
-        IServiceProvider serviceProvider,
         INavigationService navigationService)
     {
         _dataContext = dataContext;
-        _serviceProvider = serviceProvider;
         _navigationService = navigationService;
 
         SaveCommand = ReactiveCommand.CreateFromTask(SaveDealAsync);
@@ -85,6 +83,7 @@ public class DealDetailPageViewModel : PageViewModelBase, IParameterReceiver
                 _navigationService.GoBack();
                 return;
             }
+            
 
             // Загружаем доступные статусы для сделок
             await LoadAvailableStatusesAsync();
@@ -109,16 +108,12 @@ public class DealDetailPageViewModel : PageViewModelBase, IParameterReceiver
         try
         {
             var statuses = await _dataContext.DictionaryValues
-                .Include(dv => dv.Dictionary)
-                .Where(dv => dv.Dictionary.Type == "deal_status")
+                .Where(dv => dv.DictionaryId == "deal_status")
                 .OrderBy(dv => dv.Value)
                 .ToListAsync();
 
             AvailableStatuses.Clear();
-            foreach (var status in statuses)
-            {
-                AvailableStatuses.Add(status);
-            }
+            AvailableStatuses.AddRange(statuses);
         }
         catch (Exception ex)
         {
@@ -186,10 +181,6 @@ public class DealDetailPageViewModel : PageViewModelBase, IParameterReceiver
     public string FormattedFinalPrice => Deal != null ? $"{Deal.FinalPrice:N0} {Deal.Listing?.Currency?.Value}" : "";
     
     public string FormattedCommission => Deal != null ? $"{Deal.Commission:N0} {Deal.Listing?.Currency?.Value}" : "";
-
-    public string FormattedDealDate => Deal?.DealDate.ToString("dd.MM.yyyy") ?? "";
-
-    public int ParticipantsCount => Deal?.Participants?.Count ?? 0;
 
     public bool HasPhotos => Deal?.Listing?.Realty?.Photos?.Any() == true;
 

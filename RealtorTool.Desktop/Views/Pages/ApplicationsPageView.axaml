@@ -15,8 +15,8 @@
     
     <UserControl.Styles>
         <Style Selector="Border.default-image">
-            <Setter Property="Background" Value="#667D7CA0"/>
-            <Setter Property="BorderBrush" Value="#667D7CA0"/>
+            <Setter Property="Background" Value="#f5f5f5"/>
+            <Setter Property="BorderBrush" Value="#f5f5f5"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
         </Style>
@@ -47,9 +47,9 @@
     
         <ListBox.ItemTemplate>
             <DataTemplate>
-                <Border BorderBrush="#667D7CA0" BorderThickness="1" 
+                <Border BorderBrush="#f5f5f5" BorderThickness="1" 
                         CornerRadius="8" Padding="15" 
-                        Background="#667D7CA0">
+                        Background="#f5f5f5">
                     
                     <Border.Styles>
                         <Style Selector="Border:pointerover">
@@ -63,10 +63,10 @@
                         <Border Grid.Column="0" Grid.RowSpan="3"
                                 CornerRadius="6"
                                 BorderThickness="1"
-                                BorderBrush="#667D7CA0"
+                                BorderBrush="#f5f5f5"
                                 Width="70" 
                                 Height="70"
-                                Background="#667D7CA0">
+                                Background="#f5f5f5">
                             
                             <Panel>
                                 

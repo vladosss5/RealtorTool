@@ -16,12 +16,12 @@
     <Grid ColumnDefinitions="*, *" Margin="5">
         <!-- Левая колонка -->
         <StackPanel Grid.Column="0">
-            <Border Margin="5" Padding="15" Background="#667D7CA0" CornerRadius="5">
+            <Border Margin="5" Padding="15" Background="#f5f5f5" CornerRadius="5">
                 <TextBlock Text="Создание заявки на продажу" FontSize="20" FontWeight="Bold"/>
             </Border>
         
             <!-- Данные клиента -->
-            <Border Background="#667D7CA0" Margin="5" CornerRadius="10">
+            <Border Background="#f5f5f5" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <TextBlock Text="Данные о клиенте" Margin="10" FontSize="16"/>
                     <TextBox Text="{Binding NewClient.FirstName}" Margin="5">
@@ -49,7 +49,7 @@
             </Border>
             
             <!-- Информация по заявке -->
-            <Border Background="#667D7CA0" Margin="5" CornerRadius="10">
+            <Border Background="#f5f5f5" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <TextBlock Text="Информация по заявке" Margin="0,0,0,10" FontSize="16"/>
                     <TextBox Text="{Binding NewListing.Price}" Margin="0,0,0,5">
@@ -62,7 +62,7 @@
             </Border>
         
             <!-- Адрес недвижимости -->
-            <Border Background="#667D7CA0" Margin="5" CornerRadius="10">
+            <Border Background="#f5f5f5" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <TextBlock Text="Адрес недвижимости" Margin="0,0,0,10" FontSize="16"/>
                     <TextBox Text="{Binding NewAddress.City}" Margin="0,0,0,5">
@@ -87,7 +87,7 @@
         <!-- Парвая колонка -->
         <StackPanel Grid.Column="1">
             <!-- Параметры недвижимости -->
-            <Border Background="#667D7CA0" Margin="5" CornerRadius="10">
+            <Border Background="#f5f5f5" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <!-- Тип недвижимости -->
                     <TabControl SelectedIndex="{Binding SelectedPropertyTypeIndex}" Margin="0,0,0,10">
@@ -157,7 +157,7 @@
             </Border>
             
             <!-- Панель добавления фото -->
-            <Border Background="#667D7CA0" Margin="5" CornerRadius="10">
+            <Border Background="#f5f5f5" Margin="5" CornerRadius="10">
                 <StackPanel Margin="10">
                     <Grid ColumnDefinitions="*, *">
                         <TextBlock Grid.Column="0" Text="Фотографии объекта" 

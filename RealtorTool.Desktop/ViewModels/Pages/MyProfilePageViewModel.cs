@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using RealtorTool.Core.DbEntities;
@@ -24,7 +26,10 @@ public class MyProfilePageViewModel : PageViewModelBase
             .Listen<Employee>("CurrentAuth")
             .Subscribe(x => 
             {
-                CurrentPerson = x;
+                CurrentPerson = _context.Employees
+                    .Include(x => x.Role)
+                    .Include(x => x.Photo)
+                    .FirstOrDefault(p => p.Id ==x.Id);
             });
 
         SaveChanges = ReactiveCommand.CreateFromTask(SaveChangesProfileDataAsync);
@@ -38,18 +43,4 @@ public class MyProfilePageViewModel : PageViewModelBase
         _context.Update(CurrentPerson);
         await _context.SaveChangesAsync();
     }
-
-    // private void LoadPersonData()
-    // {
-    //     CurrentPerson = _context.Persons.FirstOrDefault(x => x.Id == _authorizationData.Id);
-    //
-    //     if (CurrentPerson == default)
-    //         return;
-    //     
-    //     FName = CurrentPerson?.FName!;
-    //     SName = CurrentPerson?.SName!;
-    //     LName = CurrentPerson?.LName!;
-    //     PhoneNumber = CurrentPerson?.PhoneNumber!;
-    //     EMail = CurrentPerson?.EMail!;
-    // }
 }

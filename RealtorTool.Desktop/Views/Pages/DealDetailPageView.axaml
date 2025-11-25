@@ -12,7 +12,6 @@
     <UserControl.Resources>
         <converters:ByteArrayToImageConverter x:Key="BytesToImageConverter"/>
         <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
-        <converters:BooleanToColorConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:ObjectIsNotNullConverter x:Key="ObjectIsNotNullConverter"/>
     </UserControl.Resources>
 
@@ -45,19 +44,13 @@
                 </StackPanel>
             </Grid>
 
-            <!-- Индикатор загрузки -->
-            <ProgressBar Grid.Row="1" 
-                        IsIndeterminate="True" 
-                        IsVisible="{Binding IsLoading}"
-                        Height="4"/>
-
             <!-- Основная информация о сделке -->
             <Border Grid.Row="2" 
                     BorderBrush="White" 
                     BorderThickness="1" 
                     CornerRadius="8" 
                     Padding="20"
-                    Background="#667D7CA0">
+                    Background="#f5f5f5">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
                     
                     <!-- Блок статуса -->
@@ -126,7 +119,7 @@
                             </StackPanel>
                         </Grid>
                         
-                        <Separator Background="#667D7CA0"/>
+                        <Separator Background="#f5f5f5"/>
                         
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="15">
                             <StackPanel Grid.Column="0" Spacing="4">
@@ -136,7 +129,7 @@
                             
                             <StackPanel Grid.Column="1" Spacing="4">
                                 <TextBlock Text="Дата сделки" FontSize="11" Opacity="0.6"/>
-                                <TextBlock Text="{Binding FormattedDealDate}" FontSize="13" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding Deal.DealDate}" FontSize="13" FontWeight="SemiBold"/>
                             </StackPanel>
                             
                             <StackPanel Grid.Column="2" Spacing="4">
@@ -154,7 +147,7 @@
                     BorderThickness="1" 
                     CornerRadius="8" 
                     Padding="20"
-                    Background="#667D7CA0">
+                    Background="#f5f5f5">
                 <StackPanel Spacing="15">
                     <TextBlock Text="Участники сделки" 
                                FontSize="16" 
@@ -241,7 +234,7 @@
                     BorderThickness="1" 
                     CornerRadius="8" 
                     Padding="20"
-                    Background="#667D7CA0"
+                    Background="#f5f5f5"
                     IsVisible="{Binding HasPhotos}">
                 <StackPanel Spacing="15">
                     <TextBlock Text="Фотографии объекта" 
@@ -276,7 +269,7 @@
                     BorderThickness="1" 
                     CornerRadius="8" 
                     Padding="20"
-                    Background="#667D7CA0">
+                    Background="#f5f5f5">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Связанное объявление" 
                                FontSize="16" 

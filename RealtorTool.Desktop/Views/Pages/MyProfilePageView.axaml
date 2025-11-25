@@ -3,17 +3,60 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:RealtorTool.Desktop.ViewModels.Pages"
+             xmlns:converters="clr-namespace:RealtorTool.Desktop.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RealtorTool.Desktop.Views.Pages.MyProfilePageView"
              x:DataType="pages:MyProfilePageViewModel">
     
+    <UserControl.Resources>
+        <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+    </UserControl.Resources>
+    
     <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto, *">
-        <Border Grid.Column="1" Grid.Row="1">
+        <Border Grid.Column="0" Grid.Row="0" Width="150" Height="150" 
+                Background="Transparent" CornerRadius="20"
+                Margin="10">
+            <Panel>
+                <Border Background="LightGray"
+                        CornerRadius="50" Margin="2">
+                    <TextBlock Text="👱‍♂️"
+                               FontSize="50"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+                                    
+                <Border ClipToBounds="True" CornerRadius="20">
+                    <Image Source="{Binding CurrentPerson.Photo.FileData, Converter={StaticResource ByteArrayToImageConverter}}"
+                           Stretch="UniformToFill"
+                           IsVisible="{Binding CurrentPerson.HasPhoto}"/>
+                </Border>
+            </Panel>
+        </Border>
+        
+        <Border Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <StackPanel>
+                    <TextBlock Text="{Binding CurrentPerson.FullName}" FontWeight="Bold" FontSize="25" Margin="10"/>
+                    <StackPanel Orientation="Horizontal" Margin="10">
+                        <TextBlock Text="Роль: "
+                                   HorizontalAlignment="Left" 
+                                   Margin="5,0,0,0"
+                                   FontSize="20"/>
+                        <TextBlock Text="{Binding CurrentPerson.Role.Value}"
+                                   HorizontalAlignment="Left" 
+                                   FontSize="20"/>
+                    </StackPanel>
+                    
+                    <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}" Margin="10"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        
+        <Border Grid.Column="2" Grid.Row="0">
             <StackPanel>
-                <TextBox Text="{Binding CurrentPerson.FirstName}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.MiddleName}" Margin="5" CornerRadius="5"/>
-                <TextBox Text="{Binding CurrentPerson.LastName}" Margin="5" CornerRadius="5"/>
-                <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}"/>
+                <TextBox Watermark="Текущий пароль" />
+                <TextBox Watermark="Новый пароль" />
+                <TextBox Watermark="Повтор пароль" />
             </StackPanel>
         </Border>
     </Grid>
