@@ -149,7 +149,7 @@ public class PhotoService : IPhotoService
 
         bool entityExists = await CheckEntityExistsAsync(entityId, entityType);
         if (!entityExists)
-            throw new ArgumentException($"Entity with ID {entityId} and type {entityType} does not exist");
+            throw new ArgumentException($"Карточки с ID {entityId} и типом {entityType} не существует");
 
         var photos = uploadedPhotos.Select((uploaded, index) => new Photo
         {
@@ -221,13 +221,26 @@ public class PhotoService : IPhotoService
     
     private async Task<bool> CheckEntityExistsAsync(string entityId, EntityTypeForPhoto entityType)
     {
-        return entityType switch
+        switch (entityType)
         {
-            EntityTypeForPhoto.Realty => await _context.Realties.AnyAsync(r => r.Id == entityId),
-            EntityTypeForPhoto.Client => await _context.Clients.AnyAsync(c => c.Id == entityId),
-            EntityTypeForPhoto.Employee => await _context.Employees.AnyAsync(e => e.Id == entityId),
-            _ => false
-        };
+            case EntityTypeForPhoto.Realty:
+            {
+                var realty = await _context.Realties.FindAsync(entityId);
+                return realty != null;
+            }
+            case EntityTypeForPhoto.Employee:
+            {
+                var employee = await _context.Employees.FindAsync(entityId);
+                return employee != null;
+            }
+            case EntityTypeForPhoto.Client:
+            {
+                var client = await _context.Clients.FindAsync(entityId);
+                return client != null;
+            }
+            default:
+                return false;
+        }
     }
     
     private async Task RemoveExistingPhotosAsync(string entityId, EntityTypeForPhoto entityType)

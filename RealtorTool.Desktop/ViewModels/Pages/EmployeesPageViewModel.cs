@@ -29,15 +29,20 @@ public class EmployeesPageViewModel : AccountViewModelBase
     
     private Employee? _selectedEmployee;
     
+    [Reactive] public string FName { get; set; }
+    [Reactive] public string SName { get; set; }
+    [Reactive] public string LName { get; set; }
+    [Reactive] public string Login { get; set; }
+    
     [Reactive] public ObservableCollection<Employee> Employees { get; set; } = new();
-    [Reactive] public Employee NewEmployee { get; set; } = new();
-    [Reactive] public string Password { get; set; } = string.Empty;
     [Reactive] public List<DictionaryValue> Roles { get; set; } = new();
     [Reactive] public DictionaryValue SelectedRole { get; set; } = new();
     
     // Заменяем коллекцию на одно свойство для фотографии
     [Reactive] public UploadedPhoto? CurrentPhoto { get; set; }
     [Reactive] public string PhotosSummary { get; set; } = "Фотография не добавлена";
+    
+    private const string Password = "qweasd123";
     
     public Employee SelectedEmployee
     {
@@ -111,7 +116,7 @@ public class EmployeesPageViewModel : AccountViewModelBase
 
     private async Task CreateEmployeeAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewEmployee.FirstName) || string.IsNullOrWhiteSpace(NewEmployee.LastName))
+        if (string.IsNullOrWhiteSpace(FName) || string.IsNullOrWhiteSpace(LName))
         {
             await MessageBoxManager
                 .GetMessageBoxStandard("Ошибка", "Заполните имя и фамилию сотрудника")
@@ -119,10 +124,18 @@ public class EmployeesPageViewModel : AccountViewModelBase
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(NewEmployee.Login) || string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
         {
             await MessageBoxManager
                 .GetMessageBoxStandard("Ошибка", "Заполните логин и пароль")
+                .ShowAsync();
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(SelectedRole.Value))
+        {
+            await MessageBoxManager
+                .GetMessageBoxStandard("Ошибка", "Выберите роль")
                 .ShowAsync();
             return;
         }
@@ -131,25 +144,32 @@ public class EmployeesPageViewModel : AccountViewModelBase
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
-            var passwordHashAndSalt = _accountingService.HashPassword(Password);
-            NewEmployee.PasswordHash = passwordHashAndSalt.Hash;
-            NewEmployee.Salt = passwordHashAndSalt.Salt;
-            NewEmployee.RoleId = SelectedRole.Id;
+            var newEmployee = new Employee();
             
-            await _context.Employees.AddAsync(NewEmployee);
+            var passwordHashAndSalt = _accountingService.HashPassword(Password);
+            
+            newEmployee.Login = Login;
+            newEmployee.FirstName = FName;
+            newEmployee.LastName = LName;
+            newEmployee.MiddleName = SName;
+            newEmployee.PasswordHash = passwordHashAndSalt.Hash;
+            newEmployee.Salt = passwordHashAndSalt.Salt;
+            newEmployee.RoleId = SelectedRole.Id;
+            
+            _context.Add(newEmployee);
             await _context.SaveChangesAsync();
 
             if (CurrentPhoto != null)
             {
                 var photoIds = await _photoService.SavePhotosToDatabaseAsync(
                     new List<UploadedPhoto> { CurrentPhoto }, 
-                    NewEmployee.Id, 
+                    newEmployee.Id, 
                     EntityTypeForPhoto.Employee);
 
-                NewEmployee.PhotoId = photoIds![0];
+                newEmployee.PhotoId = photoIds![0];
             }
 
-            _context.Attach(NewEmployee);
+            _context.Attach(newEmployee);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
@@ -209,8 +229,10 @@ public class EmployeesPageViewModel : AccountViewModelBase
 
     private void ClearForm()
     {
-        NewEmployee = new Employee();
-        Password = string.Empty;
+        FName = "";
+        SName = "";
+        LName = "";
+        Login = "";
         CurrentPhoto = null;
         UpdatePhotosSummary();
         this.RaisePropertyChanged(nameof(HasPhoto));

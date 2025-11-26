@@ -60,16 +60,14 @@
                     <Grid ColumnDefinitions="80,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="15">
                         
                         <!-- Колонка 0: Главное изображение -->
-                        <Border Grid.Column="0" Grid.RowSpan="3"
+                        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
                                 CornerRadius="6"
                                 BorderThickness="1"
                                 BorderBrush="#f5f5f5"
-                                Width="70" 
-                                Height="70"
+                                Width="70" Height="70"
                                 Background="#f5f5f5">
                             
                             <Panel>
-                                
                                 <!-- Плейсхолдер (всегда на заднем плане) -->
                                 <Border Background="#F5F5F5"
                                         CornerRadius="4">
@@ -109,10 +107,12 @@
                         <!-- Колонка 2: Цена -->
                         <StackPanel Grid.Column="2" Grid.Row="0"
                                     Orientation="Horizontal" Spacing="5"
-                                    HorizontalAlignment="Right">
+                                    HorizontalAlignment="Right" 
+                                    VerticalAlignment="Top">
                             <TextBlock Text="{Binding Listing.Price, StringFormat='{}{0:N0}'}" 
                                        FontWeight="Bold" 
                                        FontSize="18"
+                                       VerticalAlignment="Bottom"
                                        Foreground="#2E7D32"/>
                             <TextBlock Text="{Binding Listing.Currency.Value}" 
                                        FontSize="14"

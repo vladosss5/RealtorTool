@@ -82,7 +82,6 @@ public class DataContext : DbContext
         modelBuilder.Entity<Client>(entity =>
         {
             entity.HasKey(c => c.Id);
-            entity.HasIndex(c => c.Phone).IsUnique();
             entity.HasOne(c => c.Photo)
                 .WithOne()
                 .HasForeignKey<Client>(c => c.PhotoId)

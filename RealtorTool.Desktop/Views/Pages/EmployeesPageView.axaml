@@ -123,36 +123,29 @@
                     
                     <StackPanel Grid.Row="0" Grid.Column="1">
                         <StackPanel>
-                            <TextBox Text="{Binding NewEmployee.FirstName}" 
+                            <TextBox Text="{Binding LName}" 
+                                     Watermark="Фамилия" 
+                                     Margin="0,5"
+                                     Padding="12,8"
+                                     FontSize="14"/>
+                            
+                            <TextBox Text="{Binding FName}" 
                                      Watermark="Имя" 
                                      Margin="0,5"
                                      Padding="12,8"
                                      FontSize="14"/>
                     
-                            <TextBox Text="{Binding NewEmployee.LastName}" 
-                                     Watermark="Фамилия" 
-                                     Margin="0,5"
-                                     Padding="12,8"
-                                     FontSize="14"/>
-                    
-                            <TextBox Text="{Binding NewEmployee.MiddleName}" 
+                            <TextBox Text="{Binding SName}" 
                                      Watermark="Отчество" 
                                      Margin="0,5"
                                      Padding="12,8"
                                      FontSize="14"/>
                     
-                            <TextBox Text="{Binding NewEmployee.Login}" 
+                            <TextBox Text="{Binding Login}" 
                                      Watermark="Логин" 
                                      Margin="0,5"
                                      Padding="12,8"
                                      FontSize="14"/>
-                    
-                            <TextBox Text="{Binding Password}" 
-                                     Watermark="Пароль" 
-                                     Margin="0,5"
-                                     Padding="12,8"
-                                     FontSize="14"
-                                     PasswordChar="*"/>
                         </StackPanel>
                     </StackPanel>
                     
