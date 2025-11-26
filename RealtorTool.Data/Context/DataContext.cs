@@ -89,7 +89,6 @@ public class DataContext : DbContext
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasQueryFilter(e => !e.IsDeleted && !e.Fired);
             
             entity.Property(e => e.Login).HasMaxLength(50).IsRequired();
             entity.Property(e => e.PasswordHash).HasMaxLength(255).IsRequired();
