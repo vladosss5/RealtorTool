@@ -19,24 +19,22 @@ public class DataContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Server=localhost;port=5415;user id=postgres;password=toor;database=RT;");
 
-    public DbSet<Address> Addresses { get; set; } = null!;
-    public DbSet<Client> Clients { get; set; } = null!;
-    public DbSet<Employee> Employees { get; set; } = null!;
-    public DbSet<Dictionary> Dictionaries { get; set; } = null!;
-    public DbSet<DictionaryValue> DictionaryValues { get; set; } = null!;
-    public DbSet<Photo> Photos { get; set; } = null!;
-    public DbSet<ClientRequest> ClientRequests { get; set; } = null!;
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Client> Clients { get; set; }
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<Realty> Realties { get; set; }
+    public DbSet<Apartment> Apartments { get; set; }
+    public DbSet<PrivateHouse> PrivateHouses { get; set; }
+    public DbSet<Area> Areas { get; set; }
+    public DbSet<Listing> Listings { get; set; }
+    public DbSet<ClientRequest> ClientRequests { get; set; }
+    public DbSet<Deal> Deals { get; set; }
+    public DbSet<DealParticipant> DealParticipants { get; set; }
+    public DbSet<Dictionary> Dictionaries { get; set; }
+    public DbSet<DictionaryValue> DictionaryValues { get; set; }
+    public DbSet<Photo> Photos { get; set; }
     
-    // Недвижимость и её наследники (TPT стратегия)
-    public DbSet<Realty> Realties { get; set; } = null!;
-    public DbSet<Apartment> Apartments { get; set; } = null!;
-    public DbSet<PrivateHouse> PrivateHouses { get; set; } = null!;
-    public DbSet<Area> Areas { get; set; } = null!;
     
-    // Предложения и сделки
-    public DbSet<Listing> Listings { get; set; } = null!;
-    public DbSet<Deal> Deals { get; set; } = null!;
-    public DbSet<DealParticipant> DealParticipants { get; set; } = null!;
     public DbSet<PotentialMatch> PotentialMatches { get; set; } = null!;
 
     /// <summary>
@@ -46,364 +44,400 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Table Per Type (TPT) для наследования Realty
+        // Конфигурация наследования Realty (TPT - Table Per Type)
         modelBuilder.Entity<Realty>().ToTable("Realties");
         modelBuilder.Entity<Apartment>().ToTable("Apartments");
         modelBuilder.Entity<PrivateHouse>().ToTable("PrivateHouses");
         modelBuilder.Entity<Area>().ToTable("Areas");
-        
+
         // Конфигурация Address
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(a => a.Id);
-            entity.HasIndex(a => a.City);
-            entity.HasIndex(a => a.District);
-            entity.HasIndex(a => a.PostalCode);
+            entity.HasKey(e => e.Id);
             
-            // Уникальный индекс для предотвращения дубликатов
-            entity.HasIndex(a => new { a.City, a.District, a.Street, a.HouseNumber, a.BuildingNumber })
-                .IsUnique();
+            
+            entity.Property(e => e.City).HasMaxLength(100);
+            entity.Property(e => e.District).HasMaxLength(100);
+            entity.Property(e => e.Street).HasMaxLength(200).IsRequired();
+            entity.Property(e => e.HouseNumber).HasMaxLength(20);
+            entity.Property(e => e.BuildingNumber).HasMaxLength(20);
+            entity.Property(e => e.PostalCode).HasMaxLength(20);
         });
 
         // Конфигурация Client
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.HasKey(c => c.Id);
-            entity.HasIndex(c => c.Phone).IsUnique();
-            entity.HasOne(c => c.Photo)
-                .WithOne()
-                .HasForeignKey<Client>(c => c.PhotoId)
-                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasKey(e => e.Id);
+            
+            
+            entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.MiddleName).HasMaxLength(100);
+            entity.Property(e => e.Phone).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.PassportSeries).HasMaxLength(10);
+            entity.Property(e => e.PassportNumber).HasMaxLength(20);
+            entity.Property(e => e.RegistrationAddress).HasMaxLength(500);
 
-            entity.HasIndex(c => c.PhotoId);
+            // Связи
+            entity.HasOne(e => e.Photo)
+                  .WithOne()
+                  .HasForeignKey<Client>(e => e.PhotoId)
+                  .IsRequired(false);
         });
 
         // Конфигурация Employee
-        modelBuilder.Entity<Client>(entity =>
+        modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(c => c.Id);
-            entity.HasOne(c => c.Photo)
-                .WithOne()
-                .HasForeignKey<Client>(c => c.PhotoId)
-                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasKey(e => e.Id);
+            entity.HasQueryFilter(e => !e.IsDeleted && !e.Fired);
+            
+            entity.Property(e => e.Login).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.PasswordHash).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Salt).HasMaxLength(255);
+            entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.MiddleName).HasMaxLength(100);
+            entity.Property(e => e.LastAuthentication).IsRequired(false);
 
-            entity.HasIndex(c => c.PhotoId);
+            // Связи
+            entity.HasOne(e => e.Role)
+                  .WithMany()
+                  .HasForeignKey(e => e.RoleId)
+                  .IsRequired(false);
+
+            entity.HasOne(e => e.Photo)
+                  .WithOne()
+                  .HasForeignKey<Employee>(e => e.PhotoId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Конфигурация Realty
         modelBuilder.Entity<Realty>(entity =>
         {
-            entity.HasKey(r => r.Id);
+            entity.HasKey(e => e.Id);
+            
+            
+            entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+            entity.Property(e => e.Description).HasMaxLength(2000);
+            entity.Property(e => e.AddressId).IsRequired();
+            entity.Property(e => e.ParentRealtyId).IsRequired(false);
+            entity.Property(e => e.RealtyType).IsRequired();
 
-            // Связь с Address
-            entity.HasOne(r => r.Address)
-                .WithMany()
-                .HasForeignKey(r => r.AddressId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Связи
+            entity.HasOne(e => e.Address)
+                  .WithMany()
+                  .HasForeignKey(e => e.AddressId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Самореференциальная связь (Parent-Child)
-            entity.HasOne(r => r.ParentRealty)
-                .WithMany(r => r.ChildRealties)
-                .HasForeignKey(r => r.ParentRealtyId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.ParentRealty)
+                  .WithMany(e => e.ChildRealties)
+                  .HasForeignKey(e => e.ParentRealtyId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasMany(r => r.Photos)
-                .WithOne()
-                .HasForeignKey(p => p.EntityId)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Listings)
+                  .WithOne(e => e.Realty)
+                  .HasForeignKey(e => e.RealtyId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Индексы
-            entity.HasIndex(r => r.IsActive);
-            entity.HasIndex(r => r.AddressId);
-            entity.HasIndex(r => r.ParentRealtyId);
-            entity.HasIndex(r => r.RealtyType);
+            entity.HasMany(e => e.Photos)
+                  .WithOne()
+                  .HasForeignKey(e => e.EntityId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         // Конфигурация Apartment
         modelBuilder.Entity<Apartment>(entity =>
         {
-            entity.HasOne(a => a.RenovationType)
-                .WithMany()
-                .HasForeignKey(a => a.RenovationTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.ToTable("Apartments");
+            
+            entity.Property(e => e.ApartmentNumber).HasMaxLength(20);
 
-            entity.HasOne(a => a.BathroomType)
-                .WithMany()
-                .HasForeignKey(a => a.BathroomTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Связи для справочников
+            entity.HasOne(e => e.RenovationType)
+                  .WithMany()
+                  .HasForeignKey(e => e.RenovationTypeId)
+                  .IsRequired(false);
 
-            entity.HasIndex(a => a.RenovationTypeId);
-            entity.HasIndex(a => a.BathroomTypeId);
-            entity.HasIndex(a => a.Floor);
-            entity.HasIndex(a => a.RoomsCount);
-            entity.HasIndex(a => a.TotalArea);
+            entity.HasOne(e => e.BathroomType)
+                  .WithMany()
+                  .HasForeignKey(e => e.BathroomTypeId)
+                  .IsRequired(false);
         });
 
         // Конфигурация PrivateHouse
         modelBuilder.Entity<PrivateHouse>(entity =>
         {
-            entity.HasOne(ph => ph.HeatingType)
-                .WithMany()
-                .HasForeignKey(ph => ph.HeatingTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.ToTable("PrivateHouses");
 
-            entity.HasOne(ph => ph.ConstructionMaterial)
-                .WithMany()
-                .HasForeignKey(ph => ph.ConstructionMaterialId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Связи для справочников
+            entity.HasOne(e => e.HeatingType)
+                  .WithMany()
+                  .HasForeignKey(e => e.HeatingTypeId)
+                  .IsRequired(false);
 
-            entity.HasIndex(ph => ph.HeatingTypeId);
-            entity.HasIndex(ph => ph.ConstructionMaterialId);
-            entity.HasIndex(ph => ph.YearBuilt);
-            entity.HasIndex(ph => ph.FloorsCount);
-            entity.HasIndex(ph => ph.RoomsCount);
+            entity.HasOne(e => e.ConstructionMaterial)
+                  .WithMany()
+                  .HasForeignKey(e => e.ConstructionMaterialId)
+                  .IsRequired(false);
         });
 
         // Конфигурация Area
         modelBuilder.Entity<Area>(entity =>
         {
-            entity.HasOne(a => a.LandCategory)
-                .WithMany()
-                .HasForeignKey(a => a.LandCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.ToTable("Areas");
+            entity.Property(e => e.Square).IsRequired();
 
-            entity.HasIndex(a => a.LandCategoryId);
-            entity.HasIndex(a => a.Square);
-        });
-
-        // Конфигурация ClientRequest (УБРАНА связь с Realty)
-        modelBuilder.Entity<ClientRequest>(entity =>
-        {
-            entity.HasKey(cr => cr.Id);
-
-            // Связь с Client
-            entity.HasOne(cr => cr.Client)
-                .WithMany()
-                .HasForeignKey(cr => cr.ClientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Связь с Employee
-            entity.HasOne(cr => cr.Employee)
-                .WithMany()
-                .HasForeignKey(cr => cr.EmployeeId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Связь с Listing
-            entity.HasOne(cr => cr.Listing)
-                .WithMany(l => l.ClientRequests)
-                .HasForeignKey(cr => cr.ListingId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // УБРАНА связь с Realty
-            // entity.HasOne(cr => cr.Realty)...
-
-            // Самореференциальная связь (MatchedRequest)
-            entity.HasOne(cr => cr.MatchedRequest)
-                .WithMany()
-                .HasForeignKey(cr => cr.MatchedRequestId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Связь с Deal через DealParticipant (обратная связь)
-            entity.HasMany<DealParticipant>()
-                .WithOne(dp => dp.ClientRequest)
-                .HasForeignKey(dp => dp.ClientRequestId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Индексы
-            entity.HasIndex(cr => cr.Type);
-            entity.HasIndex(cr => cr.Status);
-            entity.HasIndex(cr => cr.CreatedDate);
-            entity.HasIndex(cr => cr.ClientId);
-            entity.HasIndex(cr => cr.EmployeeId);
-            entity.HasIndex(cr => cr.ListingId);
-            entity.HasIndex(cr => cr.MatchedRequestId);
-            entity.HasIndex(cr => new { cr.Status, cr.Type });
+            entity.HasOne(e => e.LandCategory)
+                  .WithMany()
+                  .HasForeignKey(e => e.LandCategoryId)
+                  .IsRequired(false);
         });
 
         // Конфигурация Listing
         modelBuilder.Entity<Listing>(entity =>
         {
-            entity.HasKey(l => l.Id);
+            entity.HasKey(e => e.Id);
+            
+            
+            entity.Property(e => e.Price).IsRequired();
+            entity.Property(e => e.Terms).HasMaxLength(1000);
+            entity.Property(e => e.CreatedDate).IsRequired();
 
-            // Связь с Realty
-            entity.HasOne(l => l.Realty)
-                .WithMany(r => r.Listings)
-                .HasForeignKey(l => l.RealtyId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Связи
+            entity.HasOne(e => e.Realty)
+                  .WithMany(e => e.Listings)
+                  .HasForeignKey(e => e.RealtyId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с Client (Owner)
-            entity.HasOne(l => l.Owner)
-                .WithMany()
-                .HasForeignKey(l => l.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Owner)
+                  .WithMany()
+                  .HasForeignKey(e => e.OwnerId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с Employee (ResponsibleEmployee)
-            entity.HasOne(l => l.ResponsibleEmployee)
-                .WithMany()
-                .HasForeignKey(l => l.ResponsibleEmployeeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.ResponsibleEmployee)
+                  .WithMany()
+                  .HasForeignKey(e => e.ResponsibleEmployeeId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с DictionaryValue (Currency)
-            entity.HasOne(l => l.Currency)
-                .WithMany()
-                .HasForeignKey(l => l.CurrencyId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Currency)
+                  .WithMany()
+                  .HasForeignKey(e => e.CurrencyId)
+                  .IsRequired(false);
 
-            // Связь с DictionaryValue (ListingType)
-            entity.HasOne(l => l.ListingType)
-                .WithMany()
-                .HasForeignKey(l => l.ListingTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.ListingType)
+                  .WithMany()
+                  .HasForeignKey(e => e.ListingTypeId)
+                  .IsRequired();
 
-            // Связь с DictionaryValue (Status)
-            entity.HasOne(l => l.Status)
-                .WithMany()
-                .HasForeignKey(l => l.StatusId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Индексы
-            entity.HasIndex(l => l.RealtyId);
-            entity.HasIndex(l => l.OwnerId);
-            entity.HasIndex(l => l.ResponsibleEmployeeId);
-            entity.HasIndex(l => l.CurrencyId);
-            entity.HasIndex(l => l.ListingTypeId);
-            entity.HasIndex(l => l.StatusId);
-            entity.HasIndex(l => l.Price);
-            entity.HasIndex(l => l.CreatedDate);
-            entity.HasIndex(l => new { l.StatusId, l.CreatedDate });
+            entity.HasOne(e => e.Status)
+                  .WithMany()
+                  .HasForeignKey(e => e.StatusId)
+                  .IsRequired(false);
         });
 
-        // Конфигурация Deal (ОБНОВЛЕНА - убрана связь с ClientRequest)
+        // Конфигурация ClientRequest
+        modelBuilder.Entity<ClientRequest>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            
+            
+            entity.Property(e => e.Type).IsRequired();
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.CreatedDate).IsRequired();
+            entity.Property(e => e.CompletedDate).IsRequired(false);
+            entity.Property(e => e.ClientId).IsRequired();
+            entity.Property(e => e.EmployeeId).IsRequired();
+            entity.Property(e => e.DesiredLocation).HasMaxLength(200);
+            entity.Property(e => e.AdditionalRequirements).HasMaxLength(1000);
+            entity.Property(e => e.ListingId).IsRequired(false);
+            entity.Property(e => e.MatchedRequestId).IsRequired(false);
+            entity.Property(e => e.DealId).IsRequired(false);
+            entity.Property(e => e.DesiredRealtyType).IsRequired(false);
+
+            // Связи
+            entity.HasOne(e => e.Client)
+                  .WithMany()
+                  .HasForeignKey(e => e.ClientId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Employee)
+                  .WithMany()
+                  .HasForeignKey(e => e.EmployeeId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Listing)
+                  .WithMany(e => e.ClientRequests)
+                  .HasForeignKey(e => e.ListingId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.MatchedRequest)
+                  .WithMany()
+                  .HasForeignKey(e => e.MatchedRequestId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Deal)
+                  .WithMany()
+                  .HasForeignKey(e => e.DealId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Конфигурация Deal
         modelBuilder.Entity<Deal>(entity =>
         {
-            entity.HasKey(d => d.Id);
+            entity.HasKey(e => e.Id);
+            
+            
+            entity.Property(e => e.ListingId).IsRequired();
+            entity.Property(e => e.BuyerId).IsRequired();
+            entity.Property(e => e.EmployeeId).IsRequired(false);
+            entity.Property(e => e.FinalPrice).IsRequired();
+            entity.Property(e => e.Commission).IsRequired();
+            entity.Property(e => e.DealDate).IsRequired();
+            entity.Property(e => e.DealTypeId).IsRequired(false);
+            entity.Property(e => e.StatusId).IsRequired();
 
-            // Связь с Listing
-            entity.HasOne(d => d.Listing)
-                .WithMany()
-                .HasForeignKey(d => d.ListingId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Связи
+            entity.HasOne(e => e.Listing)
+                  .WithMany()
+                  .HasForeignKey(e => e.ListingId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с Client (Buyer) - оставляем для быстрого доступа к основному покупателю
-            entity.HasOne(d => d.Buyer)
-                .WithMany()
-                .HasForeignKey(d => d.BuyerId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Buyer)
+                  .WithMany()
+                  .HasForeignKey(e => e.BuyerId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с Employee
-            entity.HasOne(d => d.Employee)
-                .WithMany()
-                .HasForeignKey(d => d.EmployeeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Employee)
+                  .WithMany()
+                  .HasForeignKey(e => e.EmployeeId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с DictionaryValue (DealType)
-            entity.HasOne(d => d.DealType)
-                .WithMany()
-                .HasForeignKey(d => d.DealTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.DealType)
+                  .WithMany()
+                  .HasForeignKey(e => e.DealTypeId)
+                  .IsRequired(false);
 
-            // Связь с DictionaryValue (Status)
-            entity.HasOne(d => d.Status)
-                .WithMany()
-                .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Status)
+                  .WithMany()
+                  .HasForeignKey(e => e.StatusId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Связь с DealParticipant
-            entity.HasMany(d => d.Participants)
-                .WithOne(dp => dp.Deal)
-                .HasForeignKey(dp => dp.DealId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Индексы
-            entity.HasIndex(d => d.ListingId);
-            entity.HasIndex(d => d.BuyerId);
-            entity.HasIndex(d => d.EmployeeId);
-            entity.HasIndex(d => d.DealTypeId);
-            entity.HasIndex(d => d.StatusId);
-            entity.HasIndex(d => d.DealDate);
-            entity.HasIndex(d => d.FinalPrice);
-            entity.HasIndex(d => new { d.StatusId, d.DealDate });
+            entity.HasMany(e => e.Participants)
+                  .WithOne(e => e.Deal)
+                  .HasForeignKey(e => e.DealId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // Конфигурация DealParticipant (НОВАЯ сущность)
+        // Конфигурация DealParticipant
         modelBuilder.Entity<DealParticipant>(entity =>
         {
-            entity.HasKey(dp => dp.Id);
-
-            // Связь с Deal
-            entity.HasOne(dp => dp.Deal)
-                .WithMany(d => d.Participants)
-                .HasForeignKey(dp => dp.DealId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Связь с ClientRequest
-            entity.HasOne(dp => dp.ClientRequest)
-                .WithMany()
-                .HasForeignKey(dp => dp.ClientRequestId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Уникальный индекс - одна заявка не может участвовать дважды в одной сделке
-            entity.HasIndex(dp => new { dp.DealId, dp.ClientRequestId })
-                .IsUnique();
-
-            // Индекс для поиска по роли
-            entity.HasIndex(dp => dp.Role);
+            entity.HasKey(e => e.Id);
             
-            // Индекс для поиска всех сделок заявки
-            entity.HasIndex(dp => dp.ClientRequestId);
-        });
+            
+            entity.Property(e => e.DealId).IsRequired();
+            entity.Property(e => e.ClientRequestId).IsRequired();
+            entity.Property(e => e.Role).IsRequired();
 
-        // Конфигурация DictionaryValue
-        modelBuilder.Entity<DictionaryValue>(entity =>
-        {
-            entity.HasKey(dv => dv.Id);
+            // Связи
+            entity.HasOne(e => e.Deal)
+                  .WithMany(e => e.Participants)
+                  .HasForeignKey(e => e.DealId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(dv => dv.Dictionary)
-                .WithMany()
-                .HasForeignKey(dv => dv.DictionaryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(dv => dv.DictionaryId);
-            entity.HasIndex(dv => dv.Value);
-            entity.HasIndex(dv => new { dv.DictionaryId, dv.Value }).IsUnique();
+            entity.HasOne(e => e.ClientRequest)
+                  .WithMany()
+                  .HasForeignKey(e => e.ClientRequestId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Конфигурация Dictionary
         modelBuilder.Entity<Dictionary>(entity =>
         {
-            entity.HasKey(d => d.Id);
-            entity.HasIndex(d => d.Type).IsUnique();
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Type).HasMaxLength(100).IsRequired();
         });
 
-        // Конфигурация Photo (базовый класс)
+        // Конфигурация DictionaryValue
+        modelBuilder.Entity<DictionaryValue>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.DictionaryId).IsRequired();
+            entity.Property(e => e.Value).HasMaxLength(200).IsRequired();
+
+            // Связи
+            entity.HasOne(e => e.Dictionary)
+                  .WithMany()
+                  .HasForeignKey(e => e.DictionaryId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Конфигурация Photo
         modelBuilder.Entity<Photo>(entity =>
         {
-            entity.HasKey(p => p.Id);
+            entity.HasKey(e => e.Id);
             
-            // Общие индексы для всех фото
-            entity.HasIndex(p => p.IsMain);
-            entity.HasIndex(p => p.SortOrder);
-            entity.HasIndex(p => p.CreatedDate);
-            entity.HasIndex(p => p.EntityType);
-            entity.HasIndex(p => p.EntityId);
-
-            // Ограничение на размер файла (20MB максимум)
-            entity.Property(p => p.FileData)
-                .HasMaxLength(20 * 1024 * 1024);
+            
+            entity.Property(e => e.EntityType).IsRequired();
+            entity.Property(e => e.EntityId).IsRequired();
+            entity.Property(e => e.FileName).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.ContentType).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.SortOrder).IsRequired();
+            entity.Property(e => e.CreatedDate).IsRequired();
+            entity.Property(e => e.FileData).IsRequired();
         });
-        
+
+        // Конфигурация View PotentialMatch
         modelBuilder.Entity<PotentialMatch>(entity =>
         {
             entity.HasNoKey();
-            entity.ToView("PotentialMatches");
-            
-            entity.Ignore(e => e.MatchScore);
-            entity.Ignore(e => e.IsGoodMatch);
-            entity.Ignore(e => e.IsPerfectMatch);
-            entity.Ignore(e => e.MatchDescription);
-            entity.Ignore(e => e.PriceDifference);
-            entity.Ignore(e => e.IsWithinBudget);
+            entity.ToView("PotentialMatches"); // Укажите имя view в БД
+
+            entity.Property(e => e.BuyRequestId).IsRequired();
+            entity.Property(e => e.SellRequestId).IsRequired();
+            entity.Property(e => e.BuyerId).IsRequired();
+            entity.Property(e => e.SellerId).IsRequired();
+            entity.Property(e => e.ListingPrice).IsRequired();
+            entity.Property(e => e.RealtyId).IsRequired();
+            entity.Property(e => e.SellListingId).IsRequired();
+            entity.Property(e => e.RealtyType).IsRequired();
+            entity.Property(e => e.RealtyName).IsRequired();
+            entity.Property(e => e.City).IsRequired();
+            entity.Property(e => e.District).IsRequired();
+            entity.Property(e => e.DesiredLocation).IsRequired();
+            entity.Property(e => e.BuyType).IsRequired();
+            entity.Property(e => e.SellType).IsRequired();
         });
+
+        // Индексы для улучшения производительности
+        modelBuilder.Entity<Client>().HasIndex(e => e.Phone);
+        modelBuilder.Entity<Employee>().HasIndex(e => e.Login);
+        modelBuilder.Entity<Realty>().HasIndex(e => e.AddressId);
+        modelBuilder.Entity<Realty>().HasIndex(e => e.ParentRealtyId);
+        modelBuilder.Entity<Realty>().HasIndex(e => e.RealtyType);
+        modelBuilder.Entity<Listing>().HasIndex(e => e.RealtyId);
+        modelBuilder.Entity<Listing>().HasIndex(e => e.OwnerId);
+        modelBuilder.Entity<Listing>().HasIndex(e => e.ResponsibleEmployeeId);
+        modelBuilder.Entity<Listing>().HasIndex(e => e.CreatedDate);
+        modelBuilder.Entity<ClientRequest>().HasIndex(e => e.ClientId);
+        modelBuilder.Entity<ClientRequest>().HasIndex(e => e.EmployeeId);
+        modelBuilder.Entity<ClientRequest>().HasIndex(e => e.ListingId);
+        modelBuilder.Entity<ClientRequest>().HasIndex(e => e.MatchedRequestId);
+        modelBuilder.Entity<ClientRequest>().HasIndex(e => e.Type);
+        modelBuilder.Entity<ClientRequest>().HasIndex(e => e.Status);
+        modelBuilder.Entity<Deal>().HasIndex(e => e.ListingId);
+        modelBuilder.Entity<Deal>().HasIndex(e => e.BuyerId);
+        modelBuilder.Entity<Deal>().HasIndex(e => e.EmployeeId);
+        modelBuilder.Entity<Deal>().HasIndex(e => e.DealDate);
+        modelBuilder.Entity<DictionaryValue>().HasIndex(e => e.DictionaryId);
+        modelBuilder.Entity<Photo>().HasIndex(e => new { e.EntityType, e.EntityId });
     }
     
     /// <summary>
