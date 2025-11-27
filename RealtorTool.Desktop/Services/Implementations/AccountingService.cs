@@ -88,7 +88,7 @@ public class AccountingService : IAccountingService
         return (hash, salt);
     }
 
-    private static bool VerifyPassword(string password, string storedHash, string storedSalt)
+    public bool VerifyPassword(string password, string storedHash, string storedSalt)
     {
         string computedHash = ComputeHash(password, storedSalt);
         return storedHash == computedHash;

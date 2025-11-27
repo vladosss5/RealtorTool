@@ -15,7 +15,7 @@
     </Window.Styles>
     
     <Grid RowDefinitions="Auto, *">
-        <Border Grid.Column="0" Background="WhiteSmoke"
+        <Border Grid.Row="0" Grid.Column="0" Background="WhiteSmoke"
                 Margin="5" CornerRadius="10">
             <Grid ColumnDefinitions="Auto, *">
                 <StackPanel Grid.Column="0" Orientation="Horizontal">

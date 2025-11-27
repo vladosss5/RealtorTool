@@ -12,52 +12,58 @@
         <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
     </UserControl.Resources>
     
-    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto, *">
-        <Border Grid.Column="0" Grid.Row="0" Width="150" Height="150" 
-                Background="Transparent" CornerRadius="20"
-                Margin="10">
-            <Panel>
-                <Border Background="LightGray"
-                        CornerRadius="50" Margin="2">
-                    <TextBlock Text="👱‍♂️"
-                               FontSize="50"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                </Border>
-                                    
-                <Border ClipToBounds="True" CornerRadius="20">
-                    <Image Source="{Binding CurrentPerson.Photo.FileData, Converter={StaticResource ByteArrayToImageConverter}}"
-                           Stretch="UniformToFill"
-                           IsVisible="{Binding CurrentPerson.HasPhoto}"/>
-                </Border>
-            </Panel>
-        </Border>
-        
-        <Border Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <StackPanel>
-                    <TextBlock Text="{Binding CurrentPerson.FullName}" FontWeight="Bold" FontSize="25" Margin="10"/>
-                    <StackPanel Orientation="Horizontal" Margin="10">
-                        <TextBlock Text="Роль: "
-                                   HorizontalAlignment="Left" 
-                                   Margin="5,0,0,0"
-                                   FontSize="20"/>
-                        <TextBlock Text="{Binding CurrentPerson.Role.Value}"
-                                   HorizontalAlignment="Left" 
-                                   FontSize="20"/>
+    <Panel>
+        <Grid ColumnDefinitions="Auto, *, Auto" 
+              RowDefinitions="Auto, Auto, *" 
+              Background="#99dddddd" 
+              VerticalAlignment="Top" Margin="5">
+            <Border Grid.Column="0" Grid.Row="0" Width="150" Height="150" 
+                    Background="Transparent" CornerRadius="20"
+                    Margin="10">
+                <Panel>
+                    <Border Background="LightGray"
+                            CornerRadius="50" Margin="2">
+                        <TextBlock Text="👱‍♂️"
+                                   FontSize="50"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                                        
+                    <Border ClipToBounds="True" CornerRadius="20">
+                        <Image Source="{Binding CurrentPerson.Photo.FileData, Converter={StaticResource ByteArrayToImageConverter}}"
+                               Stretch="UniformToFill"
+                               IsVisible="{Binding CurrentPerson.HasPhoto}"/>
+                    </Border>
+                </Panel>
+            </Border>
+            
+            <Border Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CurrentPerson.FullName}" FontWeight="Bold" FontSize="25" Margin="10"/>
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="Роль: "
+                                       HorizontalAlignment="Left" 
+                                       Margin="5,0,0,0"
+                                       FontSize="20"/>
+                            <TextBlock Text="{Binding CurrentPerson.Role.Value}"
+                                       HorizontalAlignment="Left" 
+                                       FontSize="20"/>
+                        </StackPanel>
+                        
+                        <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}" Margin="10"/>
                     </StackPanel>
-                    
-                    <Button Content="Сохранить редактирование" Command="{Binding SaveChanges}" Margin="10"/>
                 </StackPanel>
-            </StackPanel>
-        </Border>
-        
-        <Border Grid.Column="2" Grid.Row="0">
-            <StackPanel>
-                <TextBox Watermark="Текущий пароль" />
-                <TextBox Watermark="Новый пароль" />
-                <TextBox Watermark="Повтор пароль" />
-            </StackPanel>
-        </Border>
-    </Grid>
+            </Border>
+            
+            <Border Grid.Column="2" Grid.Row="0" Margin="10">
+                <StackPanel>
+                    <TextBox Text="{Binding OldPassword}" Watermark="Текущий пароль" />
+                    <TextBox Text="{Binding NewPassword}" Watermark="Новый пароль" />
+                    <TextBox Text="{Binding RepeatPassword}" Watermark="Повтор пароль" />
+                    <Button Command="{Binding ChangePassword}" Content="Сменить пароль"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Panel>
 </UserControl>

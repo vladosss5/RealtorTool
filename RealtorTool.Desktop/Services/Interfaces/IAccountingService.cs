@@ -21,6 +21,8 @@ public interface IAccountingService
     public bool HasAnyRole(params UserRole[] roles);
     
     public void SetCurrentUser(Employee employee);
+
+    public bool VerifyPassword(string password, string storedHash, string storedSalt);
     
     public void Logout();
 }
