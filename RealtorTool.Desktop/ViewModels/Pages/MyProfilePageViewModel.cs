@@ -26,10 +26,13 @@ public class MyProfilePageViewModel : PageViewModelBase
             .Listen<Employee>("CurrentAuth")
             .Subscribe(x => 
             {
-                CurrentPerson = _context.Employees
-                    .Include(x => x.Role)
-                    .Include(x => x.Photo)
-                    .FirstOrDefault(p => p.Id ==x.Id);
+                if (x != null)
+                {
+                    CurrentPerson = _context.Employees
+                        .Include(x => x.Role)
+                        .Include(x => x.Photo)
+                        .FirstOrDefault(p => p.Id ==x.Id);   
+                }
             });
 
         SaveChanges = ReactiveCommand.CreateFromTask(SaveChangesProfileDataAsync);

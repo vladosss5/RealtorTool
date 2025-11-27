@@ -147,10 +147,6 @@ public class PhotoService : IPhotoService
         if (uploadedPhotos == null || !uploadedPhotos.Any()) 
             return null;
 
-        bool entityExists = await CheckEntityExistsAsync(entityId, entityType);
-        if (!entityExists)
-            throw new ArgumentException($"Карточки с ID {entityId} и типом {entityType} не существует");
-
         var photos = uploadedPhotos.Select((uploaded, index) => new Photo
         {
             Id = Guid.NewGuid().ToString(),
@@ -163,8 +159,6 @@ public class PhotoService : IPhotoService
             IsMain = index == 0,
             CreatedDate = DateTime.UtcNow
         }).ToList();
-
-        await RemoveExistingPhotosAsync(entityId, entityType);
 
         await _context.Photos.AddRangeAsync(photos);
         await _context.SaveChangesAsync();
