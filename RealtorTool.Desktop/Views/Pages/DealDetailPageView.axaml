@@ -16,33 +16,38 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="15">
+        <Grid Margin="5" 
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
+              RowSpacing="5">
             
             <!-- Заголовок и кнопки действий -->
-            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" VerticalAlignment="Center">
-                <TextBlock Grid.Column="0" 
-                          Text="Детали сделки" 
-                          FontSize="24" 
-                          FontWeight="Bold"
-                          VerticalAlignment="Center"/>
+            <Border Grid.Row="0" Background="White" Padding="10" CornerRadius="10">
+                <Grid ColumnDefinitions="*,Auto" 
+                      VerticalAlignment="Center">
+                    <TextBlock Grid.Column="0" 
+                               Text="Детали сделки" 
+                               FontSize="24" 
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
                 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                    <Button Content="Редактировать" 
-                            Command="{Binding EditCommand}"
-                            IsVisible="{Binding !IsEditing}"
-                            Padding="15,8"/>
-                    <Button Content="Сохранить" 
-                            Command="{Binding SaveCommand}"
-                            IsVisible="{Binding IsEditing}"
-                            Padding="15,8"
-                            Classes="Success"/>
-                    <Button Content="Отмена" 
-                            Command="{Binding CancelCommand}"
-                            IsVisible="{Binding IsEditing}"
-                            Padding="15,8"
-                            Classes="Secondary"/>
-                </StackPanel>
-            </Grid>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                        <Button Content="Редактировать" 
+                                Command="{Binding EditCommand}"
+                                IsVisible="{Binding !IsEditing}"
+                                Padding="15,8"/>
+                        <Button Content="Сохранить" 
+                                Command="{Binding SaveCommand}"
+                                IsVisible="{Binding IsEditing}"
+                                Padding="15,8"
+                                Classes="Success"/>
+                        <Button Content="Отмена" 
+                                Command="{Binding CancelCommand}"
+                                IsVisible="{Binding IsEditing}"
+                                Padding="15,8"
+                                Classes="Secondary"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
             <!-- Основная информация о сделке -->
             <Border Grid.Row="2" 
@@ -62,7 +67,6 @@
                         <StackPanel>
                             <TextBlock Text="Статус сделки" 
                                        FontSize="12" 
-                                       Foreground="White"
                                        Opacity="0.9"/>
                             
                             <ComboBox ItemsSource="{Binding AvailableStatuses}"
@@ -74,7 +78,6 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Value}" 
-                                                   Foreground="White"
                                                    FontWeight="SemiBold"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -183,7 +186,6 @@
                             <StackPanel Spacing="8">
                                 <TextBlock Text="Ответственный сотрудник" 
                                            FontSize="12" 
-                                           Foreground="White"
                                            FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding EmployeeName}" 
                                            FontSize="14" 
@@ -278,7 +280,7 @@
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
                         <StackPanel Grid.Column="0" Spacing="6">
                             <TextBlock Text="Исходная цена" FontSize="12" Foreground="#666"/>
-                            <TextBlock Text="{Binding Deal.Listing.Price, StringFormat='{}{0:N0} {1}', FallbackValue=Deal.Listing.Currency}" 
+                            <TextBlock Text="{Binding Deal.Listing.Price, StringFormat='{}{0:N0} {1}'}" 
                                        FontSize="14" 
                                        FontWeight="SemiBold"/>
                         </StackPanel>

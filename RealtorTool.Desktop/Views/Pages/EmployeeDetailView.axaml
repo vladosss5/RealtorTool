@@ -13,7 +13,8 @@
         <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
     </UserControl.Resources>
    
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Background="#99dddddd" 
+                 Margin="5">
         <Border MaxWidth="200" MaxHeight="200" 
                 Background="#F5F5F5" CornerRadius="20"
                 Margin="10">
